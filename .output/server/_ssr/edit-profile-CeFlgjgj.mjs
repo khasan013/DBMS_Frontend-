@@ -4,47 +4,79 @@ import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].
 import { t as Button } from "./button-C0l3U_YE.mjs";
 import { t as Input } from "./input-Drd4JUO3.mjs";
 import { t as Label } from "./label-BsPZHm4o.mjs";
-import { t as Textarea } from "./textarea-BAjNaazS.mjs";
+import { i as saveSession, r as getSession, t as api } from "./api-DJE8ICXP.mjs";
 import { g as useNavigate, h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as RequireAuth } from "./require-auth-LEI6g9SC.mjs";
 import { A as Camera, F as ArrowLeft, s as ShieldCheck, x as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/edit-profile-B0rAhsJi.js
+//#region node_modules/.nitro/vite/services/ssr/assets/edit-profile-CeFlgjgj.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function EditProfilePage() {
 	const navigate = useNavigate();
-	const [avatar, setAvatar] = (0, import_react.useState)(null);
-	const [values, setValues] = (0, import_react.useState)({
-		name: "Nafiz Barakah",
-		email: "nafiz@university.edu",
-		phone: "+880 1712 345678",
-		department: "Computer Science & Engineering",
-		address: "Dhanmondi, Dhaka",
-		bio: "Third-year CSE student. Usually around the Central Library."
-	});
-	const [errors, setErrors] = (0, import_react.useState)({});
+	const fileInput = (0, import_react.useRef)(null);
+	const session = getSession();
+	const userId = session?.user?.userId;
+	const [profile, setProfile] = (0, import_react.useState)(session?.user ?? null);
+	const [name, setName] = (0, import_react.useState)(session?.user?.name ?? "");
+	const [phone, setPhone] = (0, import_react.useState)(session?.user?.phone ?? "");
+	const [photoFile, setPhotoFile] = (0, import_react.useState)(null);
+	const [photoPreview, setPhotoPreview] = (0, import_react.useState)(session?.user?.profileImgUrl ?? "");
+	const [loading, setLoading] = (0, import_react.useState)(true);
 	const [saving, setSaving] = (0, import_react.useState)(false);
-	const pickAvatar = (event) => {
-		const file = event.target.files?.[0];
-		if (file) setAvatar(URL.createObjectURL(file));
+	(0, import_react.useEffect)(() => {
+		if (!userId) return;
+		api(`/api/users/${userId}`).then((user) => {
+			setProfile(user);
+			setName(user.name);
+			setPhone(user.phone);
+			setPhotoPreview(user.profileImgUrl ?? "");
+		}).catch((error) => toast.error(error.message)).finally(() => setLoading(false));
+	}, [userId]);
+	const selectPhoto = (event) => {
+		const selected = event.target.files?.[0];
+		if (!selected) return;
+		setPhotoFile(selected);
+		setPhotoPreview(URL.createObjectURL(selected));
 	};
-	const save = (event) => {
+	const save = async (event) => {
 		event.preventDefault();
-		const next = {};
-		if (values.name.trim().length < 2) next["name"] = "Please enter your full name.";
-		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) next["email"] = "Enter a valid email address.";
-		if (values.phone.replace(/\D/g, "").length < 8) next["phone"] = "Enter a reachable phone number.";
-		if (values.bio.length > 200) next["bio"] = "Keep your bio under 200 characters.";
-		setErrors(next);
-		if (Object.keys(next).length) return;
+		if (name.trim().length < 2 || phone.replace(/\D/g, "").length < 7) {
+			toast.error("Enter your name and a valid phone number.");
+			return;
+		}
 		setSaving(true);
-		setTimeout(() => {
-			setSaving(false);
-			toast.success("Profile updated");
+		try {
+			let profileImgUrl = profile?.profileImgUrl ?? null;
+			if (photoFile) {
+				const body = new FormData();
+				body.append("file", photoFile);
+				profileImgUrl = (await api("/api/uploads/images", {
+					method: "POST",
+					body
+				})).imageUrl;
+			}
+			const updated = await api(`/api/users/${userId}`, {
+				method: "PUT",
+				body: JSON.stringify({
+					name: name.trim(),
+					phone: phone.trim(),
+					profileImgUrl
+				})
+			});
+			saveSession({
+				...session,
+				user: updated
+			});
+			toast.success("Profile updated.");
 			navigate({ to: "/my-listings" });
-		}, 600);
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setSaving(false);
+		}
 	};
+	const initials = (name || profile?.studentId || "?").split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
 		className: "container-shell max-w-3xl py-10",
 		children: [
@@ -59,12 +91,14 @@ function EditProfilePage() {
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 				className: "mt-1.5 text-muted-foreground",
-				children: "Keep your contact details current so students can reach you."
+				children: "Keep your account name, phone number, and photo current."
 			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+			loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "flex justify-center py-16",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin" })
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 				className: "mt-8 space-y-8",
 				onSubmit: save,
-				noValidate: true,
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex flex-wrap items-center gap-5 rounded-xl border border-border bg-card p-5",
@@ -72,11 +106,11 @@ function EditProfilePage() {
 							className: "relative",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "flex size-20 items-center justify-center overflow-hidden rounded-full bg-primary text-xl font-bold text-primary-foreground",
-								children: avatar ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-									src: avatar,
-									alt: "Profile preview",
+								children: photoPreview ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+									src: photoPreview,
+									alt: "Profile",
 									className: "size-full object-cover"
-								}) : "NB"
+								}) : initials
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 								className: "absolute -bottom-1 -right-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-border bg-background shadow-soft",
 								children: [
@@ -86,19 +120,20 @@ function EditProfilePage() {
 										children: "Upload profile photo"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										ref: fileInput,
 										type: "file",
-										accept: "image/*",
+										accept: "image/jpeg,image/png,image/webp,image/gif",
 										className: "hidden",
-										onChange: pickAvatar
+										onChange: selectPhoto
 									})
 								]
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
 							className: "flex items-center gap-1.5 text-sm font-semibold",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "size-4 text-success" }), "Verified Student"]
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "size-4 text-success" }), profile?.emailVerified ? "Verified Student" : "Email verification pending"]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "mt-1 text-sm text-muted-foreground",
-							children: "JPG or PNG, square images look best."
+							children: "JPEG, PNG, WebP, or GIF up to 10 MB."
 						})] })]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -106,25 +141,15 @@ function EditProfilePage() {
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "space-y-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-										htmlFor: "name",
-										children: "Full name"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-										id: "name",
-										value: values.name,
-										onChange: (e) => setValues({
-											...values,
-											name: e.target.value
-										}),
-										"aria-invalid": !!errors["name"]
-									}),
-									errors["name"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs font-medium text-danger",
-										children: errors["name"]
-									})
-								]
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
+									htmlFor: "name",
+									children: "Full name"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+									id: "name",
+									value: name,
+									onChange: (event) => setName(event.target.value),
+									required: true
+								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "space-y-2",
@@ -135,96 +160,39 @@ function EditProfilePage() {
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 										id: "email",
-										type: "email",
-										value: values.email,
-										onChange: (e) => setValues({
-											...values,
-											email: e.target.value
-										}),
-										"aria-invalid": !!errors["email"]
+										value: profile?.email ?? "",
+										readOnly: true,
+										disabled: true
 									}),
-									errors["email"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs font-medium text-danger",
-										children: errors["email"]
-									})
-								]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-										htmlFor: "phone",
-										children: "Phone"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-										id: "phone",
-										value: values.phone,
-										onChange: (e) => setValues({
-											...values,
-											phone: e.target.value
-										}),
-										"aria-invalid": !!errors["phone"]
-									}),
-									errors["phone"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs font-medium text-danger",
-										children: errors["phone"]
-									})
-								]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-									htmlFor: "department",
-									children: "Department"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									id: "department",
-									value: values.department,
-									onChange: (e) => setValues({
-										...values,
-										department: e.target.value
-									})
-								})]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-2 sm:col-span-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-									htmlFor: "address",
-									children: "Address"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									id: "address",
-									value: values.address,
-									onChange: (e) => setValues({
-										...values,
-										address: e.target.value
-									})
-								})]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-2 sm:col-span-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-										htmlFor: "bio",
-										children: "About you"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Textarea, {
-										id: "bio",
-										rows: 4,
-										value: values.bio,
-										onChange: (e) => setValues({
-											...values,
-											bio: e.target.value
-										}),
-										"aria-invalid": !!errors["bio"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 										className: "text-xs text-muted-foreground",
-										children: [values.bio.length, "/200"]
-									}),
-									errors["bio"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs font-medium text-danger",
-										children: errors["bio"]
+										children: "Email is set when the account is created."
 									})
 								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
+									htmlFor: "phone",
+									children: "Phone"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+									id: "phone",
+									value: phone,
+									onChange: (event) => setPhone(event.target.value),
+									required: true
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
+									htmlFor: "student-id",
+									children: "Student ID"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+									id: "student-id",
+									value: profile?.studentId ?? "",
+									readOnly: true,
+									disabled: true
+								})]
 							})
 						]
 					}),

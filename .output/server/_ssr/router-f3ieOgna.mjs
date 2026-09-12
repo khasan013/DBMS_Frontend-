@@ -4,7 +4,6 @@ import { f as require_jsx_runtime, n as AvatarFallback$1, r as AvatarImage$1, t 
 import { r as cn, t as Button } from "./button-C0l3U_YE.mjs";
 import { t as Input } from "./input-Drd4JUO3.mjs";
 import { t as Label } from "./label-BsPZHm4o.mjs";
-import { t as Textarea } from "./textarea-BAjNaazS.mjs";
 import { n as clearSession, r as getSession, t as api } from "./api-DJE8ICXP.mjs";
 import { _ as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useNavigate, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { D as ChevronRight, M as Building2, N as Box, O as ChevronLeft, S as ImagePlus, T as Circle, _ as Menu, a as Sun, b as LogIn, f as Plus, h as Moon, k as Check, l as Settings, n as UserRound, o as ShoppingBag, r as UserPlus, t as X, u as Search, x as LoaderCircle } from "../_libs/lucide-react.mjs";
@@ -15,7 +14,7 @@ import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndic
 import { t as Route$10 } from "./verify-email-Ce093lwD.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-CW8pzYIh.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-f3ieOgna.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-DmMxfTfT.css";
@@ -147,6 +146,14 @@ var DialogDescription = import_react.forwardRef(({ className, ...props }, ref) =
 	...props
 }));
 DialogDescription.displayName = DialogDescription$1.displayName;
+var Textarea = import_react.forwardRef(({ className, ...props }, ref) => {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+		className: cn("flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", className),
+		ref,
+		...props
+	});
+});
+Textarea.displayName = "Textarea";
 var options = [
 	{
 		id: "lost",
@@ -930,33 +937,8 @@ var Route$7 = createFileRoute("/")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$7, "component")
 });
-var $$splitComponentImporter$6 = () => import("./edit-profile-B0rAhsJi.mjs");
-var Route$6 = createFileRoute("/edit-profile")({
-	head: () => ({ meta: [
-		{ title: "Edit Profile — Campus Crate" },
-		{
-			name: "description",
-			content: "Update your Campus Crate student profile, contact details, and campus address."
-		},
-		{
-			property: "og:title",
-			content: "Edit Profile — Campus Crate"
-		},
-		{
-			property: "og:description",
-			content: "Update your Campus Crate student profile, contact details, and campus address."
-		},
-		{
-			property: "og:type",
-			content: "website"
-		},
-		{
-			name: "twitter:card",
-			content: "summary_large_image"
-		}
-	] }),
-	component: lazyRouteComponent($$splitComponentImporter$6, "component")
-});
+var $$splitComponentImporter$6 = () => import("./edit-profile-CeFlgjgj.mjs");
+var Route$6 = createFileRoute("/edit-profile")({ component: lazyRouteComponent($$splitComponentImporter$6, "component") });
 var $$splitComponentImporter$5 = () => import("./login-HyqDCVAz.mjs");
 var Route$5 = createFileRoute("/login")({
 	head: () => ({ meta: [

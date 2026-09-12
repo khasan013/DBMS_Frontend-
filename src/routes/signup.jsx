@@ -62,7 +62,7 @@ function SignupPage() {
         <form className="mt-6 space-y-4" onSubmit={submit} noValidate>
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
-            <Input id="name" value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} placeholder="Nafiz Barakah" aria-invalid={!!errors["name"]} />
+            <Input id="name" value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} placeholder="Your full name" aria-invalid={!!errors["name"]} />
             {errors["name"] && <p className="text-xs font-medium text-danger">{errors["name"]}</p>}
           </div>
           <div className="space-y-2">

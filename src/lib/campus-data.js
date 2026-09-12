@@ -1,7 +1,7 @@
 export const getListing = (id) => listings.find((item) => item.id === id);
 
 export const listingOwner = (listing) => ({
-  name: listing.owner ?? "Nafiz Barakah",
+  name: listing.owner ?? "Listing owner",
   role: listing.module === "market" ? "Student seller · Verified" : "Student · Verified",
   phone: listing.contact ?? "+880 1712 345678",
   email: "campuscrate@university.edu",
