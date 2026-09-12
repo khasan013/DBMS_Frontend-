@@ -1,0 +1,12 @@
+diff --git a/node_modules/@tanstack/start-plugin-core/dist/esm/start-router-plugin/route-tree-footer.js b/node_modules/@tanstack/start-plugin-core/dist/esm/start-router-plugin/route-tree-footer.js
+index 3ad8039..b1ea234 100644
+--- a/node_modules/@tanstack/start-plugin-core/dist/esm/start-router-plugin/route-tree-footer.js
++++ b/node_modules/@tanstack/start-plugin-core/dist/esm/start-router-plugin/route-tree-footer.js
+@@ -30,6 +30,7 @@ function buildRouteTreeFileFooter(opts) {
+ }
+ function buildRouteTreeFileFooterFromConfig(opts) {
+ 	const { startConfig, resolvedStartConfig } = opts.getConfig();
++	if (startConfig.router.disableTypes) return startConfig.router.routeTreeFileFooter ?? [];
+ 	return buildRouteTreeFileFooter({
+ 		generatedRouteTreePath: opts.generatedRouteTreePath,
+ 		startFilePath: resolvedStartConfig.startFilePath,
