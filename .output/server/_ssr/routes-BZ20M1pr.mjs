@@ -3,11 +3,11 @@ import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].mjs";
 import { t as Button } from "./button-C0l3U_YE.mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { D as CircleCheck, F as ArrowRight, N as Bus, P as Box, c as ShieldCheck, d as Search, s as ShoppingBag } from "../_libs/lucide-react.mjs";
+import { D as CircleCheck, F as ArrowRight, N as Building2, P as Box, c as ShieldCheck, d as Search, s as ShoppingBag } from "../_libs/lucide-react.mjs";
 import { i as listings } from "./campus-data-C-DYwDIf.mjs";
 import { t as ListingCard } from "./listing-card-EWptXo_O.mjs";
 import { n as TabsList, r as TabsTrigger, t as Tabs } from "./tabs-CdRWkLwa.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-Dvjxakbw.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-BZ20M1pr.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var features = [
@@ -28,11 +28,11 @@ var features = [
 		tone: "feature-white"
 	},
 	{
-		title: "Shuttle Service",
-		copy: "Find active campus shuttles and request a pickup on your route.",
-		action: "View Shuttle Service",
-		to: "/shuttle",
-		icon: Bus,
+		title: "To-let Service",
+		copy: "Find rooms and apartments near campus, or share an available place.",
+		action: "Browse To-let",
+		to: "/to-let",
+		icon: Building2,
 		tone: "feature-green"
 	}
 ];
@@ -64,7 +64,7 @@ function Index() {
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg",
-							children: "Find what you've lost, get a great deal, or request a pickup from a campus shuttle."
+							children: "Find what you've lost, get a great deal, or find a student-friendly place to live."
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "mt-7 flex flex-wrap gap-3",
@@ -80,8 +80,8 @@ function Index() {
 								variant: "outline",
 								asChild: true,
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-									to: "/shuttle",
-									children: "Find a shuttle"
+									to: "/to-let",
+									children: "Find a place"
 								})
 							})]
 						})

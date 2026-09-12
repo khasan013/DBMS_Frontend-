@@ -15,9 +15,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LostAndFoundRouteImport } from './routes/lost-and-found'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MyListingsRouteImport } from './routes/my-listings'
-import { Route as ShuttleRouteImport } from './routes/shuttle'
-import { Route as ShuttleDriverRouteImport } from './routes/shuttle-driver'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ToLetRouteImport } from './routes/to-let'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as ListingIdRouteImport } from './routes/listing.$id'
 
@@ -51,19 +50,14 @@ const MyListingsRoute = MyListingsRouteImport.update({
   path: '/my-listings',
   getParentRoute: () => rootRouteImport,
 })
-const ShuttleRoute = ShuttleRouteImport.update({
-  id: '/shuttle',
-  path: '/shuttle',
-  getParentRoute: () => rootRouteImport,
-})
-const ShuttleDriverRoute = ShuttleDriverRouteImport.update({
-  id: '/shuttle-driver',
-  path: '/shuttle-driver',
-  getParentRoute: () => rootRouteImport,
-})
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+})
+const ToLetRoute = ToLetRouteImport.update({
+  id: '/to-let',
+  path: '/to-let',
   getParentRoute: () => rootRouteImport,
 })
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
@@ -84,9 +78,8 @@ const rootRouteChildren = {
   LostAndFoundRoute: LostAndFoundRoute,
   MarketplaceRoute: MarketplaceRoute,
   MyListingsRoute: MyListingsRoute,
-  ShuttleRoute: ShuttleRoute,
-  ShuttleDriverRoute: ShuttleDriverRoute,
   SignupRoute: SignupRoute,
+  ToLetRoute: ToLetRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   ListingIdRoute: ListingIdRoute,
 }

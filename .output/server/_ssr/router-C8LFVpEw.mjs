@@ -9,16 +9,16 @@ import { n as clearSession, r as getSession } from "./api-DJE8ICXP.mjs";
 import { _ as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useNavigate, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { A as Check, C as ImagePlus, E as Circle, O as ChevronRight, P as Box, d as Search, g as Moon, k as ChevronLeft, n as UserRound, o as Sun, p as Plus, r as UserPlus, s as ShoppingBag, t as X, u as Settings, v as Menu, x as LogIn } from "../_libs/lucide-react.mjs";
 import { n as toast, t as Toaster } from "../_libs/sonner.mjs";
-import { t as Route$10 } from "./listing._id-C4LkicDa.mjs";
+import { t as Route$9 } from "./listing._id-C4LkicDa.mjs";
 import { a as DialogOverlay$1, i as DialogDescription$1, n as DialogClose, o as DialogPortal$1, r as DialogContent$1, s as DialogTitle$1, t as Dialog$1 } from "../_libs/@radix-ui/react-dialog+[...].mjs";
 import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndicator2, l as Separator2, n as Content2, o as Portal2, r as Item2, s as RadioItem2, t as CheckboxItem2, u as SubContent2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
-import { t as Route$11 } from "./verify-email-Clh9XnjD.mjs";
+import { t as Route$10 } from "./verify-email-Clh9XnjD.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-CQCbuavV.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-C8LFVpEw.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-BJaOP6UA.css";
+var styles_default = "/assets/styles-CCu_tfhV.css";
 var Avatar = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Avatar$1, {
 	ref,
 	className: cn("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className),
@@ -378,7 +378,7 @@ function SiteHeader() {
 		const section = String(form.get("section"));
 		if (section === "lost") navigate({ to: "/lost-and-found" });
 		else if (section === "market") navigate({ to: "/marketplace" });
-		else if (section === "shuttle") navigate({ to: "/shuttle" });
+		else if (section === "to-let") navigate({ to: "/to-let" });
 	};
 	const links = [
 		{
@@ -390,8 +390,8 @@ function SiteHeader() {
 			label: "Marketplace"
 		},
 		{
-			to: "/shuttle",
-			label: "Shuttle Service"
+			to: "/to-let",
+			label: "To-let"
 		}
 	];
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
@@ -442,8 +442,8 @@ function SiteHeader() {
 									children: "Marketplace"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-									value: "shuttle",
-									children: "Shuttle"
+									value: "to-let",
+									children: "To-let"
 								})
 							]
 						}),
@@ -644,7 +644,7 @@ function ErrorComponent({ error, reset }) {
 		})
 	});
 }
-var Route$9 = createRootRouteWithContext()({
+var Route$8 = createRootRouteWithContext()({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -711,7 +711,7 @@ function RootShell({ children }) {
 	});
 }
 function RootComponent() {
-	const { queryClient } = Route$9.useRouteContext();
+	const { queryClient } = Route$8.useRouteContext();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(QueryClientProvider, {
 		client: queryClient,
 		children: [
@@ -721,13 +721,13 @@ function RootComponent() {
 		]
 	});
 }
-var $$splitComponentImporter$8 = () => import("./routes-Dvjxakbw.mjs");
-var Route$8 = createFileRoute("/")({
+var $$splitComponentImporter$7 = () => import("./routes-BZ20M1pr.mjs");
+var Route$7 = createFileRoute("/")({
 	head: () => ({ meta: [
 		{ title: "Campus Crate — Your Campus, Connected" },
 		{
 			name: "description",
-			content: "Find lost items, student deals, and campus shuttles in one community."
+			content: "Find lost items, student deals, and student-friendly rentals in one community."
 		},
 		{
 			property: "og:title",
@@ -735,7 +735,7 @@ var Route$8 = createFileRoute("/")({
 		},
 		{
 			property: "og:description",
-			content: "Find lost items, student deals, and campus shuttles in one community."
+			content: "Find lost items, student deals, and student-friendly rentals in one community."
 		},
 		{
 			property: "og:type",
@@ -746,10 +746,10 @@ var Route$8 = createFileRoute("/")({
 			content: "summary_large_image"
 		}
 	] }),
-	component: lazyRouteComponent($$splitComponentImporter$8, "component")
+	component: lazyRouteComponent($$splitComponentImporter$7, "component")
 });
-var $$splitComponentImporter$7 = () => import("./edit-profile-B0rAhsJi.mjs");
-var Route$7 = createFileRoute("/edit-profile")({
+var $$splitComponentImporter$6 = () => import("./edit-profile-B0rAhsJi.mjs");
+var Route$6 = createFileRoute("/edit-profile")({
 	head: () => ({ meta: [
 		{ title: "Edit Profile — Campus Crate" },
 		{
@@ -773,10 +773,10 @@ var Route$7 = createFileRoute("/edit-profile")({
 			content: "summary_large_image"
 		}
 	] }),
-	component: lazyRouteComponent($$splitComponentImporter$7, "component")
+	component: lazyRouteComponent($$splitComponentImporter$6, "component")
 });
-var $$splitComponentImporter$6 = () => import("./login-HyqDCVAz.mjs");
-var Route$6 = createFileRoute("/login")({
+var $$splitComponentImporter$5 = () => import("./login-HyqDCVAz.mjs");
+var Route$5 = createFileRoute("/login")({
 	head: () => ({ meta: [
 		{ title: "Sign In — Campus Crate" },
 		{
@@ -800,10 +800,10 @@ var Route$6 = createFileRoute("/login")({
 			content: "summary_large_image"
 		}
 	] }),
-	component: lazyRouteComponent($$splitComponentImporter$6, "component")
+	component: lazyRouteComponent($$splitComponentImporter$5, "component")
 });
-var $$splitComponentImporter$5 = () => import("./lost-and-found-C9ia4MP9.mjs");
-var Route$5 = createFileRoute("/lost-and-found")({
+var $$splitComponentImporter$4 = () => import("./lost-and-found-C9ia4MP9.mjs");
+var Route$4 = createFileRoute("/lost-and-found")({
 	head: () => ({ meta: [
 		{ title: "Lost & Found — Campus Crate" },
 		{
@@ -827,10 +827,10 @@ var Route$5 = createFileRoute("/lost-and-found")({
 			content: "summary_large_image"
 		}
 	] }),
-	component: lazyRouteComponent($$splitComponentImporter$5, "component")
+	component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-var $$splitComponentImporter$4 = () => import("./marketplace-Cr8TA0_p.mjs");
-var Route$4 = createFileRoute("/marketplace")({
+var $$splitComponentImporter$3 = () => import("./marketplace-Cr8TA0_p.mjs");
+var Route$3 = createFileRoute("/marketplace")({
 	head: () => ({ meta: [
 		{ title: "Marketplace — Campus Crate" },
 		{
@@ -854,10 +854,10 @@ var Route$4 = createFileRoute("/marketplace")({
 			content: "summary_large_image"
 		}
 	] }),
-	component: lazyRouteComponent($$splitComponentImporter$4, "component")
+	component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-var $$splitComponentImporter$3 = () => import("./my-listings-DcAkx8hS.mjs");
-var Route$3 = createFileRoute("/my-listings")({
+var $$splitComponentImporter$2 = () => import("./my-listings-DcAkx8hS.mjs");
+var Route$2 = createFileRoute("/my-listings")({
 	head: () => ({ meta: [
 		{ title: "My Listings — Campus Crate" },
 		{
@@ -881,19 +881,15 @@ var Route$3 = createFileRoute("/my-listings")({
 			content: "summary_large_image"
 		}
 	] }),
-	component: lazyRouteComponent($$splitComponentImporter$3, "component")
+	component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-var $$splitComponentImporter$2 = () => import("./shuttle-BSIzBB2n.mjs");
-var Route$2 = createFileRoute("/shuttle")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
-var $$splitComponentImporter$1 = () => import("./shuttle-driver-BxPs0Hbc.mjs");
-var Route$1 = createFileRoute("/shuttle-driver")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
-var $$splitComponentImporter = () => import("./signup-BmTd-sIJ.mjs");
-var Route = createFileRoute("/signup")({
+var $$splitComponentImporter$1 = () => import("./signup-BmTd-sIJ.mjs");
+var Route$1 = createFileRoute("/signup")({
 	head: () => ({ meta: [
 		{ title: "Create Account — Campus Crate" },
 		{
 			name: "description",
-			content: "Join Campus Crate to post lost items, sell things, and use the campus shuttle service."
+			content: "Join Campus Crate to post lost items, sell things, and find student-friendly rentals."
 		},
 		{
 			property: "og:title",
@@ -901,7 +897,7 @@ var Route = createFileRoute("/signup")({
 		},
 		{
 			property: "og:description",
-			content: "Join Campus Crate to post lost items, sell things, and use the campus shuttle service."
+			content: "Join Campus Crate to post lost items, sell things, and find student-friendly rentals."
 		},
 		{
 			property: "og:type",
@@ -912,66 +908,69 @@ var Route = createFileRoute("/signup")({
 			content: "summary_large_image"
 		}
 	] }),
+	component: lazyRouteComponent($$splitComponentImporter$1, "component")
+});
+var $$splitComponentImporter = () => import("./to-let-g78tqLej.mjs");
+var Route = createFileRoute("/to-let")({
+	head: () => ({ meta: [{ title: "To-let — Campus Crate" }, {
+		name: "description",
+		content: "Find student-friendly rooms and apartments near campus."
+	}] }),
 	component: lazyRouteComponent($$splitComponentImporter, "component")
 });
 var rootRouteChildren = {
-	IndexRoute: Route$8.update({
+	IndexRoute: Route$7.update({
 		id: "/",
 		path: "/",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	EditProfileRoute: Route$7.update({
+	EditProfileRoute: Route$6.update({
 		id: "/edit-profile",
 		path: "/edit-profile",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	LoginRoute: Route$6.update({
+	LoginRoute: Route$5.update({
 		id: "/login",
 		path: "/login",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	LostAndFoundRoute: Route$5.update({
+	LostAndFoundRoute: Route$4.update({
 		id: "/lost-and-found",
 		path: "/lost-and-found",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	MarketplaceRoute: Route$4.update({
+	MarketplaceRoute: Route$3.update({
 		id: "/marketplace",
 		path: "/marketplace",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	MyListingsRoute: Route$3.update({
+	MyListingsRoute: Route$2.update({
 		id: "/my-listings",
 		path: "/my-listings",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	ShuttleRoute: Route$2.update({
-		id: "/shuttle",
-		path: "/shuttle",
-		getParentRoute: () => Route$9
-	}),
-	ShuttleDriverRoute: Route$1.update({
-		id: "/shuttle-driver",
-		path: "/shuttle-driver",
-		getParentRoute: () => Route$9
-	}),
-	SignupRoute: Route.update({
+	SignupRoute: Route$1.update({
 		id: "/signup",
 		path: "/signup",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	VerifyEmailRoute: Route$11.update({
+	ToLetRoute: Route.update({
+		id: "/to-let",
+		path: "/to-let",
+		getParentRoute: () => Route$8
+	}),
+	VerifyEmailRoute: Route$10.update({
 		id: "/verify-email",
 		path: "/verify-email",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	}),
-	ListingIdRoute: Route$10.update({
+	ListingIdRoute: Route$9.update({
 		id: "/listing/$id",
 		path: "/listing/$id",
-		getParentRoute: () => Route$9
+		getParentRoute: () => Route$8
 	})
 };
-var routeTree = Route$9._addFileChildren(rootRouteChildren);
+var routeTree = Route$8._addFileChildren(rootRouteChildren);
 var getRouter = () => {
 	const queryClient = new QueryClient();
 	return createRouter({

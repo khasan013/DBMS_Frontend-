@@ -161,38 +161,26 @@ var Box = createLucideIcon("box", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Bus = createLucideIcon("bus", [
+var Building2 = createLucideIcon("building-2", [
 	["path", {
-		d: "M8 6v6",
-		key: "18i7km"
-	}],
-	["path", {
-		d: "M15 6v6",
-		key: "1sg6z9"
+		d: "M10 12h4",
+		key: "a56b0p"
 	}],
 	["path", {
-		d: "M2 12h19.6",
-		key: "de5uta"
+		d: "M10 8h4",
+		key: "1sr2af"
 	}],
 	["path", {
-		d: "M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3",
-		key: "1wwztk"
-	}],
-	["circle", {
-		cx: "7",
-		cy: "18",
-		r: "2",
-		key: "19iecd"
+		d: "M14 21v-3a2 2 0 0 0-4 0v3",
+		key: "1rgiei"
 	}],
 	["path", {
-		d: "M9 18h5",
-		key: "lrx6i"
+		d: "M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2",
+		key: "secmi2"
 	}],
-	["circle", {
-		cx: "16",
-		cy: "18",
-		r: "2",
-		key: "1v4tcr"
+	["path", {
+		d: "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16",
+		key: "16ra0t"
 	}]
 ]);
 /**
@@ -801,4 +789,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { Check as A, ImagePlus as C, CircleCheck as D, Circle as E, ArrowRight as F, ArrowLeft as I, CalendarDays as M, Bus as N, ChevronRight as O, Box as P, LoaderCircle as S, Ellipsis as T, MessageCircle as _, Tag as a, Mail as b, ShieldCheck as c, Search as d, RefreshCw as f, Moon as g, PenLine as h, Trash2 as i, Camera as j, ChevronLeft as k, Share2 as l, Phone as m, UserRound as n, Sun as o, Plus as p, UserPlus as r, ShoppingBag as s, X as t, Settings as u, Menu as v, Funnel as w, LogIn as x, MapPin as y };
+export { Check as A, ImagePlus as C, CircleCheck as D, Circle as E, ArrowRight as F, ArrowLeft as I, CalendarDays as M, Building2 as N, ChevronRight as O, Box as P, LoaderCircle as S, Ellipsis as T, MessageCircle as _, Tag as a, Mail as b, ShieldCheck as c, Search as d, RefreshCw as f, Moon as g, PenLine as h, Trash2 as i, Camera as j, ChevronLeft as k, Share2 as l, Phone as m, UserRound as n, Sun as o, Plus as p, UserPlus as r, ShoppingBag as s, X as t, Settings as u, Menu as v, Funnel as w, LogIn as x, MapPin as y };

@@ -12,9 +12,9 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "Create Account — Campus Crate" },
-      { name: "description", content: "Join Campus Crate to post lost items, sell things, and use the campus shuttle service." },
+      { name: "description", content: "Join Campus Crate to post lost items, sell things, and find student-friendly rentals." },
       { property: "og:title", content: "Create Account — Campus Crate" },
-      { property: "og:description", content: "Join Campus Crate to post lost items, sell things, and use the campus shuttle service." },
+      { property: "og:description", content: "Join Campus Crate to post lost items, sell things, and find student-friendly rentals." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
