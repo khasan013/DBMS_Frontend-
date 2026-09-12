@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-DrisJQEq.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-BdCTY_-C.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/__root.jsx",
@@ -15,10 +15,10 @@ var tsrStartManifest = () => ({ routes: {
 			"/listing/$id"
 		],
 		preloads: [
-			"/assets/index-B4cqRJEk.js",
+			"/assets/index-BFXBxhQE.js",
 			"/assets/button-DCpgzuu7.js",
 			"/assets/link-Icz8sc9E.js",
-			"/assets/listing._id-PILReiUm.js",
+			"/assets/listing._id-C09ME3ww.js",
 			"/assets/preload-helper-DHNYsi4w.js",
 			"/assets/useNavigate-54l4aXKw.js",
 			"/assets/createLucideIcon-DEtyq1Q5.js",
@@ -29,17 +29,17 @@ var tsrStartManifest = () => ({ routes: {
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-B4cqRJEk.js"
+			src: "/assets/index-BFXBxhQE.js"
 		} }]
 	},
 	"/": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/index.jsx",
 		children: void 0,
 		preloads: [
-			"/assets/routes-Bja4hXeD.js",
+			"/assets/routes-zNq1y5XO.js",
 			"/assets/building-2-BFwsIa_d.js",
 			"/assets/listing-card-330_G0tu.js",
-			"/assets/tabs-CkpczpXT.js",
+			"/assets/tabs-TMzZtlkE.js",
 			"/assets/shield-check-B0E1sTm4.js"
 		]
 	},
@@ -47,53 +47,53 @@ var tsrStartManifest = () => ({ routes: {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/edit-profile.jsx",
 		children: void 0,
 		preloads: [
-			"/assets/edit-profile-DtKLCXNZ.js",
+			"/assets/edit-profile-DM9MqFji.js",
 			"/assets/arrow-left-ChEqPzcR.js",
 			"/assets/loader-circle-fqUD_pyS.js",
 			"/assets/shield-check-B0E1sTm4.js",
-			"/assets/require-auth-B7M_HlIa.js"
+			"/assets/require-auth-BAunu0Gk.js"
 		]
 	},
 	"/login": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/login.jsx",
 		children: void 0,
-		preloads: ["/assets/login-CUgTzKEx.js", "/assets/loader-circle-fqUD_pyS.js"]
+		preloads: ["/assets/login-D4S_yBud.js", "/assets/loader-circle-fqUD_pyS.js"]
 	},
 	"/lost-and-found": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/lost-and-found.jsx",
 		children: void 0,
-		preloads: ["/assets/lost-and-found-BmOeCYMo.js", "/assets/feed-page-D5fBBais.js"]
+		preloads: ["/assets/lost-and-found-B1f7T5LR.js", "/assets/feed-page-DRWLkXUM.js"]
 	},
 	"/marketplace": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/marketplace.jsx",
 		children: void 0,
-		preloads: ["/assets/marketplace-D61UFykd.js", "/assets/feed-page-D5fBBais.js"]
+		preloads: ["/assets/marketplace-DwmbgS4M.js", "/assets/feed-page-DRWLkXUM.js"]
 	},
 	"/my-listings": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/my-listings.jsx",
 		children: void 0,
 		preloads: [
-			"/assets/my-listings-BUQW0zKU.js",
+			"/assets/my-listings-BWd0Wd-z.js",
 			"/assets/listing-card-330_G0tu.js",
-			"/assets/tabs-CkpczpXT.js",
+			"/assets/tabs-TMzZtlkE.js",
 			"/assets/shield-check-B0E1sTm4.js",
-			"/assets/require-auth-B7M_HlIa.js"
+			"/assets/require-auth-BAunu0Gk.js"
 		]
 	},
 	"/signup": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/signup.jsx",
 		children: void 0,
 		preloads: [
-			"/assets/signup-D0OHD5gF.js",
+			"/assets/signup-B2I8WyT7.js",
 			"/assets/loader-circle-fqUD_pyS.js",
-			"/assets/checkbox-BvlaMsMr.js"
+			"/assets/checkbox-BAiTetso.js"
 		]
 	},
 	"/to-let": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/to-let.jsx",
 		children: void 0,
 		preloads: [
-			"/assets/to-let-C5HtPXDj.js",
+			"/assets/to-let-DcxB_lk4.js",
 			"/assets/building-2-BFwsIa_d.js",
 			"/assets/loader-circle-fqUD_pyS.js"
 		]
@@ -101,13 +101,13 @@ var tsrStartManifest = () => ({ routes: {
 	"/verify-email": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/verify-email.jsx",
 		children: void 0,
-		preloads: ["/assets/verify-email-DUqmUACs.js"]
+		preloads: ["/assets/verify-email-2LjxTUQ1.js"]
 	},
 	"/listing/$id": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/listing.$id.jsx",
 		children: void 0,
 		preloads: [
-			"/assets/listing._id-BUrVXH46.js",
+			"/assets/listing._id-DbE-sZY0.js",
 			"/assets/arrow-left-ChEqPzcR.js",
 			"/assets/listing-card-330_G0tu.js",
 			"/assets/shield-check-B0E1sTm4.js"

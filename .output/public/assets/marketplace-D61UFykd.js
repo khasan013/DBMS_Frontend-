@@ -1,1 +1,0 @@
-import{l as e}from"./button-DCpgzuu7.js";import{t}from"./feed-page-D5fBBais.js";var n=e(),r=()=>(0,n.jsx)(t,{module:`market`});export{r as component};

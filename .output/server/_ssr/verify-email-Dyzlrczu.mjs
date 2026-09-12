@@ -7,18 +7,26 @@ import { t as Label } from "./label-BsPZHm4o.mjs";
 import { t as api } from "./api-DJE8ICXP.mjs";
 import { g as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as toast } from "../_libs/sonner.mjs";
-import { t as Route } from "./verify-email-Clh9XnjD.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/verify-email-C5kqehX2.js
+import { t as Route } from "./verify-email-Ce093lwD.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/verify-email-Dyzlrczu.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
+var OTP_LIFETIME_SECONDS = 600;
+var formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 function VerifyEmail() {
 	const navigate = useNavigate();
 	const { email: initialEmail } = Route.useSearch();
 	const [email, setEmail] = (0, import_react.useState)(initialEmail);
 	const [code, setCode] = (0, import_react.useState)("");
 	const [busy, setBusy] = (0, import_react.useState)(false);
-	const verify = (e) => {
-		e.preventDefault();
+	const [resendBusy, setResendBusy] = (0, import_react.useState)(false);
+	const [remainingSeconds, setRemainingSeconds] = (0, import_react.useState)(OTP_LIFETIME_SECONDS);
+	(0, import_react.useEffect)(() => {
+		const timer = window.setInterval(() => setRemainingSeconds((seconds) => Math.max(0, seconds - 1)), 1e3);
+		return () => window.clearInterval(timer);
+	}, []);
+	const verify = (event) => {
+		event.preventDefault();
 		setBusy(true);
 		api("/api/users/verify-email", {
 			method: "POST",
@@ -29,12 +37,20 @@ function VerifyEmail() {
 		}).then(() => {
 			toast.success("Email verified. You can now sign in.");
 			navigate({ to: "/login" });
-		}).catch((e) => toast.error(e.message)).finally(() => setBusy(false));
+		}).catch((error) => toast.error(error.message)).finally(() => setBusy(false));
 	};
-	const resend = () => api("/api/users/resend-verification", {
-		method: "POST",
-		body: JSON.stringify({ email })
-	}).then(() => toast.success("A new code has been sent.")).catch((e) => toast.error(e.message));
+	const resend = () => {
+		if (resendBusy) return;
+		setResendBusy(true);
+		api("/api/users/resend-verification", {
+			method: "POST",
+			body: JSON.stringify({ email })
+		}).then(() => {
+			setRemainingSeconds(OTP_LIFETIME_SECONDS);
+			setCode("");
+			toast.success("A new code has been sent.");
+		}).catch((error) => toast.error(error.message)).finally(() => setResendBusy(false));
+	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
 		className: "container-shell flex min-h-[calc(100vh-4rem)] items-center justify-center py-12",
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
@@ -47,7 +63,11 @@ function VerifyEmail() {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "mt-2 text-sm text-muted-foreground",
-					children: "Enter the six-digit code sent by Resend. It expires in 10 minutes."
+					children: "Enter the six-digit code sent to your email."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: `mt-3 text-sm font-semibold ${remainingSeconds === 0 ? "text-danger" : "text-primary"}`,
+					children: remainingSeconds === 0 ? "Your code has expired. Request a new one." : `Code expires in ${formatTime(remainingSeconds)}`
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "mt-6 space-y-4",
@@ -58,7 +78,7 @@ function VerifyEmail() {
 						id: "email",
 						type: "email",
 						value: email,
-						onChange: (e) => setEmail(e.target.value),
+						onChange: (event) => setEmail(event.target.value),
 						required: true
 					})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
 						htmlFor: "code",
@@ -68,21 +88,22 @@ function VerifyEmail() {
 						inputMode: "numeric",
 						maxLength: 6,
 						value: code,
-						onChange: (e) => setCode(e.target.value.replace(/\D/g, "")),
+						onChange: (event) => setCode(event.target.value.replace(/\D/g, "")),
 						required: true
 					})] })]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 					className: "mt-6 w-full",
-					disabled: busy,
-					children: "Verify email"
+					disabled: busy || remainingSeconds === 0,
+					children: busy ? "Verifying…" : "Verify email"
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 					type: "button",
 					variant: "link",
 					className: "mt-2 w-full",
+					disabled: resendBusy,
 					onClick: resend,
-					children: "Resend code"
+					children: resendBusy ? "Sending…" : "Resend code"
 				})
 			]
 		})
