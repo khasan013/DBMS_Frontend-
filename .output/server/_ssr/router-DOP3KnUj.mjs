@@ -8,13 +8,13 @@ import { n as clearSession, r as getSession, t as api } from "./api-DJE8ICXP.mjs
 import { _ as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useNavigate, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { D as ChevronRight, M as Building2, N as Box, O as ChevronLeft, S as ImagePlus, T as Circle, _ as Menu, a as Sun, b as LogIn, f as Plus, h as Moon, k as Check, l as Settings, n as UserRound, o as ShoppingBag, r as UserPlus, t as X, u as Search, x as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast, t as Toaster } from "../_libs/sonner.mjs";
-import { t as Route$9 } from "./listing._id-BWxJKpi9.mjs";
+import { t as Route$9 } from "./listing._id-BYe25nE6.mjs";
 import { a as DialogOverlay$1, i as DialogDescription$1, n as DialogClose, o as DialogPortal$1, r as DialogContent$1, s as DialogTitle$1, t as Dialog$1 } from "../_libs/@radix-ui/react-dialog+[...].mjs";
 import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndicator2, l as Separator2, n as Content2, o as Portal2, r as Item2, s as RadioItem2, t as CheckboxItem2, u as SubContent2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
 import { t as Route$10 } from "./verify-email-Ce093lwD.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-f3ieOgna.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-DOP3KnUj.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-DmMxfTfT.css";
@@ -672,9 +672,12 @@ function SiteHeader() {
 								size: "icon",
 								className: "rounded-full",
 								"aria-label": "Account menu",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Avatar, {
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Avatar, {
 									className: "size-8",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, { children: signedIn ? initials : "?" })
+									children: [user.profileImgUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarImage, {
+										src: user.profileImgUrl,
+										alt: `${displayName}'s profile`
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, { children: signedIn ? initials : "?" })]
 								})
 							})
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuContent, {
@@ -966,7 +969,7 @@ var Route$5 = createFileRoute("/login")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$5, "component")
 });
-var $$splitComponentImporter$4 = () => import("./lost-and-found-Bk794SOS.mjs");
+var $$splitComponentImporter$4 = () => import("./lost-and-found-BjWxTW25.mjs");
 var Route$4 = createFileRoute("/lost-and-found")({
 	head: () => ({ meta: [
 		{ title: "Lost & Found — Campus Crate" },
@@ -993,7 +996,7 @@ var Route$4 = createFileRoute("/lost-and-found")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-var $$splitComponentImporter$3 = () => import("./marketplace-CODeQEQ-.mjs");
+var $$splitComponentImporter$3 = () => import("./marketplace-B5rzDifm.mjs");
 var Route$3 = createFileRoute("/marketplace")({
 	head: () => ({ meta: [
 		{ title: "Marketplace — Campus Crate" },
@@ -1022,7 +1025,7 @@ var Route$3 = createFileRoute("/marketplace")({
 });
 var $$splitComponentImporter$2 = () => import("./my-listings-B6fGyeQm.mjs");
 var Route$2 = createFileRoute("/my-listings")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
-var $$splitComponentImporter$1 = () => import("./signup-BmTd-sIJ.mjs");
+var $$splitComponentImporter$1 = () => import("./signup-DdWiKbid.mjs");
 var Route$1 = createFileRoute("/signup")({
 	head: () => ({ meta: [
 		{ title: "Create Account — Campus Crate" },

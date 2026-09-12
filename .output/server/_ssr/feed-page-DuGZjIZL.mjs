@@ -5,11 +5,11 @@ import { r as cn, t as Button } from "./button-C0l3U_YE.mjs";
 import { t as Input } from "./input-Drd4JUO3.mjs";
 import { t as api } from "./api-DJE8ICXP.mjs";
 import { k as Check, o as ShoppingBag, u as Search, w as Funnel } from "../_libs/lucide-react.mjs";
-import { i as moduleLabel } from "./campus-data-CXIJlUbh.mjs";
+import { i as moduleLabel } from "./campus-data-D17YTlYr.mjs";
 import { t as ListingCard } from "./listing-card-iVgwo_dO.mjs";
 import { t as Checkbox } from "./checkbox-B85j75X-.mjs";
 import { i as SliderTrack, n as SliderRange, r as SliderThumb, t as Slider$1 } from "../_libs/@radix-ui/react-slider+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/feed-page-DVb8CWPu.js
+//#region node_modules/.nitro/vite/services/ssr/assets/feed-page-DuGZjIZL.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var Slider = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Slider$1, {

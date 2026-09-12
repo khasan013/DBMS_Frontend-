@@ -1,7 +1,7 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/campus-data-CXIJlUbh.js
+//#region node_modules/.nitro/vite/services/ssr/assets/campus-data-D17YTlYr.js
 var getListing = (id) => listings.find((item) => item.id === id);
 var listingOwner = (listing) => ({
-	name: listing.owner ?? "Nafiz Barakah",
+	name: listing.owner ?? "Listing owner",
 	role: listing.module === "market" ? "Student seller · Verified" : "Student · Verified",
 	phone: listing.contact ?? "+880 1712 345678",
 	email: "campuscrate@university.edu"

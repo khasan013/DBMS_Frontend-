@@ -9,7 +9,7 @@ import { g as useNavigate, h as Link } from "../_libs/@tanstack/react-router+[..
 import { N as Box, x as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
 import { t as Checkbox } from "./checkbox-B85j75X-.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/signup-BmTd-sIJ.js
+//#region node_modules/.nitro/vite/services/ssr/assets/signup-DdWiKbid.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function SignupPage() {
@@ -87,7 +87,7 @@ function SignupPage() {
 										...values,
 										name: e.target.value
 									}),
-									placeholder: "Nafiz Barakah",
+									placeholder: "Your full name",
 									"aria-invalid": !!errors["name"]
 								}),
 								errors["name"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {

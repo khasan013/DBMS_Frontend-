@@ -1,7 +1,7 @@
 import { f as lazyRouteComponent, j as notFound, p as createFileRoute } from "../_libs/@tanstack/react-router+[...].mjs";
-import { n as listingDescription, t as getListing } from "./campus-data-CXIJlUbh.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/listing._id-BWxJKpi9.js
-var $$splitComponentImporter = () => import("./listing._id-Dn-6g_1K.mjs");
+import { n as listingDescription, t as getListing } from "./campus-data-D17YTlYr.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/listing._id-BYe25nE6.js
+var $$splitComponentImporter = () => import("./listing._id-CDWgRWWd.mjs");
 var Route = createFileRoute("/listing/$id")({
 	loader: ({ params }) => {
 		const listing = getListing(Number(params.id));
