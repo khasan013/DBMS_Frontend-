@@ -1,1 +1,0 @@
-import{l as e}from"./button-DCpgzuu7.js";import{t}from"./feed-page-CNJm_6VS.js";var n=e(),r=()=>(0,n.jsx)(t,{module:`lost`});export{r as component};

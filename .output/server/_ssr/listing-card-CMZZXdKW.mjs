@@ -2,20 +2,22 @@ import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].
 import { n as buttonVariants, r as cn } from "./button-C0l3U_YE.mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { M as CalendarDays, _ as MessageCircle, n as UserRound, y as MapPin } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/listing-card-EWptXo_O.js
+//#region node_modules/.nitro/vite/services/ssr/assets/listing-card-CMZZXdKW.js
 var import_jsx_runtime = require_jsx_runtime();
 var campus_listings_default = "/assets/campus-listings-0ZouSTjP.jpg";
 function ListingImage({ listing }) {
+	const imageIndex = Number(listing.image) || 0;
+	const column = imageIndex % 4;
+	const row = Math.floor(imageIndex / 4);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-		className: "sprite-frame",
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-			className: `sprite-image sprite-${listing.image}`,
-			src: campus_listings_default,
-			alt: listing.title,
-			loading: "lazy",
-			width: 1600,
-			height: 900
-		})
+		role: "img",
+		"aria-label": listing.title,
+		className: "h-full w-full bg-cover bg-center",
+		style: {
+			backgroundImage: `url(${campus_listings_default})`,
+			backgroundPosition: `${column * 33.333}% ${row * 100}%`,
+			backgroundSize: "400% auto"
+		}
 	});
 }
 function ListingCard({ listing, compact = false }) {
@@ -25,7 +27,7 @@ function ListingCard({ listing, compact = false }) {
 		params: { id: String(listing.id) },
 		className: "group block overflow-hidden rounded-xl border border-border bg-card shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-card",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: cn("relative", compact ? "h-40" : "h-48"),
+			className: "relative aspect-video",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ListingImage, { listing }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 				className: cn("absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide", listing.module === "lost" ? found ? "bg-success-soft text-success" : "bg-danger-soft text-danger" : "bg-card/95 text-foreground shadow-sm"),
 				children: listing.status

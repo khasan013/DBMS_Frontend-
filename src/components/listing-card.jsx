@@ -5,10 +5,20 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function ListingImage({ listing }) {
+  const imageIndex = Number(listing.image) || 0;
+  const column = imageIndex % 4;
+  const row = Math.floor(imageIndex / 4);
   return (
-    <div className="sprite-frame">
-      <img className={`sprite-image sprite-${listing.image}`} src={listingSprite} alt={listing.title} loading="lazy" width={1600} height={900} />
-    </div>
+    <div
+      role="img"
+      aria-label={listing.title}
+      className="h-full w-full bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${listingSprite})`,
+        backgroundPosition: `${column * 33.333}% ${row * 100}%`,
+        backgroundSize: "400% auto",
+      }}
+    />
   );
 }
 
@@ -20,7 +30,7 @@ export function ListingCard({ listing, compact = false }) {
       params={{ id: String(listing.id) }}
       className="group block overflow-hidden rounded-xl border border-border bg-card shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-card"
     >
-      <div className={cn("relative", compact ? "h-40" : "h-48")}>
+      <div className="relative aspect-video">
         <ListingImage listing={listing} />
         <span className={cn("absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide", listing.module === "lost" ? (found ? "bg-success-soft text-success" : "bg-danger-soft text-danger") : "bg-card/95 text-foreground shadow-sm")}>
           {listing.status}

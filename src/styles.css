@@ -250,35 +250,6 @@
   background: color-mix(in oklab, oklch(70.098% 0.18391 140.253) 60%, var(--card));
 }
 
-.sprite-frame {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  background: var(--muted);
-}
-
-.sprite-image {
-  height: 200%;
-  width: 400%;
-  max-width: none;
-  object-fit: fill;
-}
-
-.sprite-0 {
-  transform: translate(0, 0);
-}
-
-.sprite-1 {
-  transform: translate(-25%, 0);
-}
-
-.sprite-2 {
-  transform: translate(-50%, 0);
-}
-
-.sprite-3 {
-  transform: translate(-75%, 0);
-}
 
 .sprite-4 {
   transform: translate(0, -50%);

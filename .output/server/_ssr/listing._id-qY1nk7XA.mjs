@@ -4,9 +4,9 @@ import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { I as ArrowLeft, M as CalendarDays, _ as MessageCircle, a as Tag, b as Mail, c as ShieldCheck, l as Share2, m as Phone, y as MapPin } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
 import { a as moduleLabel, n as listingDescription, r as listingOwner } from "./campus-data-C-DYwDIf.mjs";
-import { t as Route } from "./listing._id-C4LkicDa.mjs";
-import { n as ListingImage } from "./listing-card-EWptXo_O.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/listing._id-D6rQlpgD.js
+import { t as Route } from "./listing._id-83kR8Mt3.mjs";
+import { n as ListingImage } from "./listing-card-CMZZXdKW.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/listing._id-qY1nk7XA.js
 var import_jsx_runtime = require_jsx_runtime();
 function ListingDetails() {
 	const { listing } = Route.useLoaderData();
