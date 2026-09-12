@@ -313,36 +313,51 @@ var Circle = createLucideIcon("circle", [["circle", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Ellipsis = createLucideIcon("ellipsis", [
-	["circle", {
-		cx: "12",
-		cy: "12",
-		r: "1",
-		key: "41hilf"
-	}],
-	["circle", {
-		cx: "19",
-		cy: "12",
-		r: "1",
-		key: "1wjl8i"
-	}],
-	["circle", {
-		cx: "5",
-		cy: "12",
-		r: "1",
-		key: "1pcz8c"
-	}]
-]);
+var Funnel = createLucideIcon("funnel", [["path", {
+	d: "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",
+	key: "sc7q7i"
+}]]);
 /**
 * @license lucide-react v0.575.0 - ISC
 *
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Funnel = createLucideIcon("funnel", [["path", {
-	d: "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",
-	key: "sc7q7i"
-}]]);
+var ImageOff = createLucideIcon("image-off", [
+	["line", {
+		x1: "2",
+		x2: "22",
+		y1: "2",
+		y2: "22",
+		key: "a6p6uj"
+	}],
+	["path", {
+		d: "M10.41 10.41a2 2 0 1 1-2.83-2.83",
+		key: "1bzlo9"
+	}],
+	["line", {
+		x1: "13.5",
+		x2: "6",
+		y1: "13.5",
+		y2: "21",
+		key: "1q0aeu"
+	}],
+	["line", {
+		x1: "18",
+		x2: "21",
+		y1: "12",
+		y2: "15",
+		key: "5mozeu"
+	}],
+	["path", {
+		d: "M3.59 3.59A1.99 1.99 0 0 0 3 5v14a2 2 0 0 0 2 2h14c.55 0 1.052-.22 1.41-.59",
+		key: "mmje98"
+	}],
+	["path", {
+		d: "M21 15V5a2 2 0 0 0-2-2H9",
+		key: "43el77"
+	}]
+]);
 /**
 * @license lucide-react v0.575.0 - ISC
 *
@@ -706,34 +721,6 @@ var Tag = createLucideIcon("tag", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Trash2 = createLucideIcon("trash-2", [
-	["path", {
-		d: "M10 11v6",
-		key: "nco0om"
-	}],
-	["path", {
-		d: "M14 11v6",
-		key: "outv1u"
-	}],
-	["path", {
-		d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
-		key: "miytrc"
-	}],
-	["path", {
-		d: "M3 6h18",
-		key: "d0wm0j"
-	}],
-	["path", {
-		d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
-		key: "e791ji"
-	}]
-]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var UserPlus = createLucideIcon("user-plus", [
 	["path", {
 		d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",
@@ -789,4 +776,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { Check as A, ImagePlus as C, CircleCheck as D, Circle as E, ArrowRight as F, ArrowLeft as I, CalendarDays as M, Building2 as N, ChevronRight as O, Box as P, LoaderCircle as S, Ellipsis as T, MessageCircle as _, Tag as a, Mail as b, ShieldCheck as c, Search as d, RefreshCw as f, Moon as g, PenLine as h, Trash2 as i, Camera as j, ChevronLeft as k, Share2 as l, Phone as m, UserRound as n, Sun as o, Plus as p, UserPlus as r, ShoppingBag as s, X as t, Settings as u, Menu as v, Funnel as w, LogIn as x, MapPin as y };
+export { Camera as A, ImageOff as C, ChevronRight as D, CircleCheck as E, ArrowLeft as F, Building2 as M, Box as N, ChevronLeft as O, ArrowRight as P, ImagePlus as S, Circle as T, Menu as _, Sun as a, LogIn as b, Share2 as c, RefreshCw as d, Plus as f, MessageCircle as g, Moon as h, Tag as i, CalendarDays as j, Check as k, Settings as l, PenLine as m, UserRound as n, ShoppingBag as o, Phone as p, UserPlus as r, ShieldCheck as s, X as t, Search as u, MapPin as v, Funnel as w, LoaderCircle as x, Mail as y };

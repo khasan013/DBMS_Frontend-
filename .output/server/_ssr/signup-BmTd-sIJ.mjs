@@ -6,7 +6,7 @@ import { t as Input } from "./input-Drd4JUO3.mjs";
 import { t as Label } from "./label-BsPZHm4o.mjs";
 import { i as saveSession, t as api } from "./api-DJE8ICXP.mjs";
 import { g as useNavigate, h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { P as Box, S as LoaderCircle } from "../_libs/lucide-react.mjs";
+import { N as Box, x as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
 import { t as Checkbox } from "./checkbox-B85j75X-.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/signup-BmTd-sIJ.js

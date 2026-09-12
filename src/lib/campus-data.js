@@ -15,18 +15,12 @@ export const listingDescription = (listing) =>
       ? `${listing.title} in ${listing.meta.toLowerCase()} condition, offered at ${listing.detail}. Handover on campus is preferred, and you're welcome to inspect it before deciding. Message the seller to arrange a time that suits you.`
       : `${listing.title} was shared by a verified Campus Crate student.`);
 
-export const listings = [
-  { id: 1, module: "lost", title: "Black wireless earbuds", detail: "Central Library, 2nd floor", meta: "Today, 10:30 AM", tag: "Electronics", status: "LOST", image: 0 },
-  { id: 2, module: "lost", title: "Navy blue backpack", detail: "Found near Arts Building", meta: "Yesterday", tag: "Bags", status: "FOUND", image: 1 },
-  { id: 3, module: "market", title: "Casio scientific calculator", detail: "৳1,200", meta: "Like new", tag: "Sell", status: "AVAILABLE", image: 2, owner: "Khalid" },
-  { id: 4, module: "market", title: "Campus commuter bicycle", detail: "৳8,500", meta: "Used · Great condition", tag: "Sell", status: "AVAILABLE", image: 3, owner: "Abriti" },
-  { id: 7, module: "lost", title: "Keys with navy keychain", detail: "Science Annex cafeteria", meta: "Sep 8", tag: "Keys", status: "FOUND", image: 6 },
-  { id: 8, module: "market", title: "Semester textbook bundle", detail: "Free", meta: "Good condition", tag: "Donate", status: "AVAILABLE", image: 7, owner: "Nafiz" },
-  { id: 9, module: "lost", title: "Student ID card", detail: "Business Faculty lobby", meta: "Sep 7", tag: "Documents", status: "LOST", image: 1 },
-  { id: 10, module: "market", title: "Study desk lamp", detail: "৳750", meta: "Like new", tag: "Exchange", status: "AVAILABLE", image: 0, owner: "Rafi" },
-];
+// Listing data comes from the backend APIs. Keep this empty only for legacy
+// detail-page helpers; no sample posts are rendered in the application.
+export const listings = [];
 
 export const moduleLabel = {
   lost: "Lost & Found",
   market: "Marketplace",
+  "to-let": "To-let",
 };

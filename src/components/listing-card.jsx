@@ -1,24 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, MapPin, MessageCircle, UserRound } from "lucide-react";
-import listingSprite from "@/assets/campus-listings.jpg";
+import { Building2, CalendarDays, ImageOff, MapPin, MessageCircle, ShoppingBag, UserRound } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function ListingImage({ listing }) {
-  const imageIndex = Number(listing.image) || 0;
-  const column = imageIndex % 4;
-  const row = Math.floor(imageIndex / 4);
+  if (listing.imageUrl) {
+    return <img src={listing.imageUrl} alt={listing.title} className="h-full w-full object-cover" loading="lazy" />;
+  }
+  const Icon = listing.module === "to-let" ? Building2 : listing.module === "market" ? ShoppingBag : ImageOff;
   return (
-    <div
-      role="img"
-      aria-label={listing.title}
-      className="h-full w-full bg-cover bg-center"
-      style={{
-        backgroundImage: `url(${listingSprite})`,
-        backgroundPosition: `${column * 33.333}% ${row * 100}%`,
-        backgroundSize: "400% auto",
-      }}
-    />
+    <div className="flex h-full w-full items-center justify-center bg-surface-subtle text-primary"><Icon className="size-12" aria-label="No image provided" /></div>
   );
 }
 
@@ -39,10 +30,10 @@ export function ListingCard({ listing, compact = false }) {
       <div className="p-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="rounded-full bg-accent px-2 py-1 text-[11px] font-semibold text-accent-foreground">{listing.tag}</span>
-          {listing.module === "market" && <span className="text-xs text-muted-foreground">{listing.meta}</span>}
+          {(listing.module === "market" || listing.module === "to-let") && <span className="text-xs text-muted-foreground">{listing.meta}</span>}
         </div>
         <h3 className="line-clamp-1 font-display text-base font-semibold text-card-foreground">{listing.title}</h3>
-        {listing.module === "market" ? (
+        {listing.module === "market" || listing.module === "to-let" ? (
           <div className="mt-3 flex items-center justify-between">
             <p className="font-display text-lg font-bold text-primary">{listing.detail}</p>
             <span className="flex items-center gap-1 text-xs text-muted-foreground"><UserRound className="size-3.5" />{listing.owner}</span>

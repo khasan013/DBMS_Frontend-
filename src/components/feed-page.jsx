@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, Filter, Search, ShoppingBag } from "lucide-react";
-import { listings, moduleLabel } from "@/lib/campus-data";
+import { moduleLabel } from "@/lib/campus-data";
 import { ListingCard } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,7 +17,7 @@ export function FeedPage({ module }) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [remoteListings, setRemoteListings] = useState(null);
+  const [remoteListings, setRemoteListings] = useState([]);
   const [loadError, setLoadError] = useState("");
   const content = config[module];
   const Icon = content.icon;
@@ -25,13 +25,13 @@ export function FeedPage({ module }) {
     const endpoint = module === "lost" ? "/api/items" : "/api/marketplace/posts/active";
     setLoadError("");
     api(endpoint)
-      .then((data) => setRemoteListings(data.map((item) => module === "lost" ? ({ id: item.itemId, module: "lost", title: item.title, detail: `Location #${item.locationId}`, meta: item.createdAt ?? "Recently", tag: item.itemType, status: item.status, image: item.itemId % 8 }) : ({ id: item.postId, module: "market", title: item.title, detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`, meta: item.condition, tag: item.sellingType, status: item.status, owner: `Student #${item.sellerId}`, image: item.postId % 8 }))))
+      .then((data) => setRemoteListings(data.map((item) => module === "lost" ? ({ id: item.itemId, module: "lost", title: item.title, detail: `Location #${item.locationId}`, meta: item.createdAt ?? "Recently", tag: item.itemType, status: item.status, imageUrl: item.imageUrl }) : ({ id: item.postId, module: "market", title: item.title, detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`, meta: item.condition, tag: item.sellingType, status: item.status, owner: `Student #${item.sellerId}` }))))
       .catch((error) => {
         setRemoteListings([]);
         setLoadError(error.message);
       });
   }, [module]);
-  const base = remoteListings ?? listings.filter((item) => item.module === module);
+  const base = remoteListings;
   const filtered = useMemo(() => base.filter((item) => item.title.toLowerCase().includes(query.toLowerCase()) && (!active.length || active.some((filter) => `${item.status} ${item.tag} ${item.meta}`.toLowerCase().includes(filter.toLowerCase())))), [active, base, query]);
   const groups = module === "lost" ? [{ title: "Type", options: ["Lost", "Found"] }, { title: "Category", options: ["Electronics", "Bags", "Keys", "Documents"] }, { title: "Status", options: ["Active", "Resolved"] }] : [{ title: "Category", options: ["Books", "Electronics", "Furniture", "Cycles"] }, { title: "Condition", options: ["New", "Like new", "Used"] }, { title: "Listing type", options: ["Sell", "Exchange", "Donate"] }];
   const toggle = (value) => setActive((old) => old.includes(value) ? old.filter((item) => item !== value) : [...old, value]);

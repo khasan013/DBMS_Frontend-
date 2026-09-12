@@ -7,7 +7,7 @@ import { t as Label } from "./label-BsPZHm4o.mjs";
 import { t as Textarea } from "./textarea-BAjNaazS.mjs";
 import { g as useNavigate, h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as RequireAuth } from "./require-auth-LEI6g9SC.mjs";
-import { I as ArrowLeft, S as LoaderCircle, c as ShieldCheck, j as Camera } from "../_libs/lucide-react.mjs";
+import { A as Camera, F as ArrowLeft, s as ShieldCheck, x as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/edit-profile-B0rAhsJi.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
