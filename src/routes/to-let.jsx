@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { ListingCard } from "@/components/listing-card";
 
 export const Route = createFileRoute("/to-let")({
   head: () => ({
@@ -131,13 +132,6 @@ function ToLetPage() {
       })
       .catch((error) => toast.error(error.message));
   };
-
-  const statusClass = (status) =>
-    status === "RENTED"
-      ? "bg-success-soft text-success"
-      : status === "CLOSED"
-        ? "bg-danger-soft text-danger"
-        : "bg-primary-soft text-primary";
 
   return (
     <main>
@@ -360,56 +354,19 @@ function ToLetPage() {
             ) : filtered.length ? (
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {filtered.map((listing) => (
-                  <article
+                  <ListingCard
                     key={listing.listingId}
-                    className="rounded-xl border border-border bg-card p-5 shadow-soft"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                          {listing.area}
-                        </p>
-                        <h3 className="mt-1 font-display text-xl font-bold">
-                          {listing.title}
-                        </h3>
-                      </div>
-                      <div className="flex items-end gap-2">
-                        <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-bold ${statusClass(listing.status)}`}
-                        >
-                          {listing.status}
-                        </span>
-                        <p className="shrink-0 font-display text-lg font-bold text-primary">
-                          ৳{Number(listing.monthlyRent).toLocaleString()}
-                          <span className="text-xs font-normal text-muted-foreground">
-                            /mo
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-sm text-muted-foreground">
-                      {listing.description}
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4 text-xs font-medium text-muted-foreground">
-                      <span className="rounded-full bg-accent px-2 py-1">
-                        {listing.bedrooms} bed
-                      </span>
-                      <span className="rounded-full bg-accent px-2 py-1">
-                        {listing.bathrooms} bath
-                      </span>
-                      {listing.availableFrom && (
-                        <span className="rounded-full bg-accent px-2 py-1">
-                          Available{" "}
-                          {new Date(
-                            `${listing.availableFrom}T00:00:00`,
-                          ).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-4 text-sm font-medium">
-                      Contact: {listing.contactPhone}
-                    </p>
-                  </article>
+                    listing={{
+                      id: `to-let-${listing.listingId}`,
+                      module: "to-let",
+                      title: listing.title,
+                      detail: `৳${Number(listing.monthlyRent).toLocaleString()}/mo`,
+                      meta: listing.area,
+                      tag: `${listing.bedrooms} bed · ${listing.bathrooms} bath`,
+                      status: listing.status,
+                      owner: `Student #${listing.ownerId}`,
+                    }}
+                  />
                 ))}
               </div>
             ) : (
