@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { getListingReference } from "@/lib/campus-data";
 import { ListingImage } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -180,6 +181,7 @@ function ListingDetails() {
     .join("")
     .slice(0, 2)
     .toUpperCase();
+  const referenceId = getListingReference(listing.id);
 
   return (
     <>
@@ -202,6 +204,9 @@ function ListingDetails() {
               </span>
               <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary">
                 {listing.status}
+              </span>
+              <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                Item ID: {referenceId}
               </span>
             </div>
             <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
