@@ -2,7 +2,7 @@ import { n as __toESM } from "../../_runtime.mjs";
 import { u as require_react } from "../@floating-ui/react-dom+[...].mjs";
 import { d as useComposedRefs, f as require_jsx_runtime, o as createContextScope, s as Primitive } from "./react-avatar+[...].mjs";
 import { t as composeEventHandlers } from "../radix-ui__primitive.mjs";
-import { a as useControllableState, i as useSize } from "./react-checkbox+[...].mjs";
+import { a as useControllableState, r as useSize } from "./react-checkbox+[...].mjs";
 import { t as clamp } from "../radix-ui__number.mjs";
 import { t as useDirection } from "../radix-ui__react-direction.mjs";
 import { t as createCollection } from "../radix-ui__react-collection.mjs";
