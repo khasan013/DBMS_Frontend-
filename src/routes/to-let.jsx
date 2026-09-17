@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Building2,
   Check,
   Filter,
   Loader2,
+  ImagePlus,
   Plus,
   Search,
   X,
@@ -45,6 +46,7 @@ const MAX_RENT = 100000;
 
 function ToLetPage() {
   const navigate = useNavigate();
+  const photoInputRef = useRef(null);
   const userId = getSession()?.user?.userId;
   const [listings, setListings] = useState([]);
   const [query, setQuery] = useState("");
@@ -54,6 +56,7 @@ function ToLetPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
@@ -113,20 +116,32 @@ function ToLetPage() {
       navigate({ to: "/login" });
       return;
     }
-    api("/api/to-let/listings", {
-      method: "POST",
-      body: JSON.stringify({
-        ...form,
-        ownerId: userId,
-        monthlyRent: Number(form.monthlyRent),
-        bedrooms: Number(form.bedrooms),
-        bathrooms: Number(form.bathrooms),
-        availableFrom: form.availableFrom || null,
+    Promise.all(
+      photos.map(async (photo) => {
+        const body = new FormData();
+        body.append("file", photo);
+        return (await api("/api/uploads/images", { method: "POST", body }))
+          .imageUrl;
       }),
-    })
+    )
+      .then((photoUrls) =>
+        api("/api/to-let/listings", {
+          method: "POST",
+          body: JSON.stringify({
+            ...form,
+            ownerId: userId,
+            monthlyRent: Number(form.monthlyRent),
+            bedrooms: Number(form.bedrooms),
+            bathrooms: Number(form.bathrooms),
+            availableFrom: form.availableFrom || null,
+            photoUrls,
+          }),
+        }),
+      )
       .then((listing) => {
         setListings((current) => [listing, ...current]);
         setForm(emptyForm);
+        setPhotos([]);
         setShowForm(false);
         toast.success("Your to-let listing is live.");
       })
@@ -330,6 +345,66 @@ function ToLetPage() {
                     placeholder="Include furnishing, utilities, preferred tenant, and other useful details."
                   />
                 </div>
+                <div className="md:col-span-2">
+                  <Label>Photos (up to 3)</Label>
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    multiple
+                    className="hidden"
+                    onChange={(event) => {
+                      const selected = Array.from(event.target.files ?? []);
+                      if (selected.length + photos.length > 3) {
+                        toast.error("You can upload a maximum of 3 photos.");
+                        return;
+                      }
+                      setPhotos((current) => [...current, ...selected]);
+                      event.target.value = "";
+                    }}
+                  />
+                  <div className="mt-2 grid grid-cols-3 gap-3">
+                    {photos.map((photo, index) => (
+                      <div
+                        key={`${photo.name}-${index}`}
+                        className="relative aspect-video overflow-hidden rounded-lg border border-border"
+                      >
+                        <img
+                          src={URL.createObjectURL(photo)}
+                          alt={`Selected photo ${index + 1}`}
+                          className="size-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPhotos((current) =>
+                              current.filter(
+                                (_, itemIndex) => itemIndex !== index,
+                              ),
+                            )
+                          }
+                          className="absolute right-1 top-1 rounded-full bg-background/90 p-1 text-foreground"
+                          aria-label={`Remove photo ${index + 1}`}
+                        >
+                          <X className="size-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {photos.length < 3 && (
+                      <button
+                        type="button"
+                        onClick={() => photoInputRef.current?.click()}
+                        className="flex aspect-video flex-col items-center justify-center rounded-lg border border-dashed border-primary/35 bg-primary-soft text-xs text-muted-foreground"
+                      >
+                        <ImagePlus className="mb-1 size-5 text-primary" />
+                        Add photo
+                      </button>
+                    )}
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    JPEG, PNG, WebP, or GIF. Maximum 3 photos.
+                  </p>
+                </div>
                 <div className="md:col-span-2 flex gap-3">
                   <Button type="submit">Publish listing</Button>
                   <Button
@@ -365,6 +440,7 @@ function ToLetPage() {
                       tag: `${listing.bedrooms} bed · ${listing.bathrooms} bath`,
                       status: listing.status,
                       owner: `Student #${listing.ownerId}`,
+                      imageUrl: listing.photoUrls?.[0],
                     }}
                   />
                 ))}

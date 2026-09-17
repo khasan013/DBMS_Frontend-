@@ -79,6 +79,7 @@ function normalizeListing(module, item) {
     meta: item.area,
     tag: `${item.bedrooms} bed · ${item.bathrooms} bath`,
     status: item.status,
+    imageUrl: item.photoUrls?.[0],
     owner: `Student #${item.ownerId}`,
     phone: item.contactPhone,
     availableFrom: item.availableFrom,
