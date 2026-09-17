@@ -70,6 +70,13 @@ function ToLetPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (sessionStorage.getItem("campus-crate-open-to-let-form") !== "true")
+      return;
+    sessionStorage.removeItem("campus-crate-open-to-let-form");
+    setShowForm(true);
+  }, []);
+
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
     const selectedBedrooms = bedrooms.map(Number);
