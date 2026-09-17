@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-BoazpZoX.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-Dn68vnVn.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/__root.jsx",
@@ -15,7 +15,7 @@ var tsrStartManifest = () => ({ routes: {
 			"/listing/$id"
 		],
 		preloads: [
-			"/assets/index-DUDSFrgX.js",
+			"/assets/index-yuKqDj3H.js",
 			"/assets/api-BpCgsloS.js",
 			"/assets/link-BnP1pFVc.js",
 			"/assets/preload-helper-DNevUDem.js",
@@ -42,7 +42,7 @@ var tsrStartManifest = () => ({ routes: {
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-DUDSFrgX.js"
+			src: "/assets/index-yuKqDj3H.js"
 		} }]
 	},
 	"/": {
@@ -68,7 +68,7 @@ var tsrStartManifest = () => ({ routes: {
 	"/login": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/login.jsx",
 		children: void 0,
-		preloads: ["/assets/login-BG7oTPN7.js"]
+		preloads: ["/assets/login-xomBhN9d.js"]
 	},
 	"/lost-and-found": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/lost-and-found.jsx",
@@ -93,7 +93,7 @@ var tsrStartManifest = () => ({ routes: {
 	"/signup": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/signup.jsx",
 		children: void 0,
-		preloads: ["/assets/signup-FbAHUTtR.js", "/assets/checkbox-XjIBLy-o.js"]
+		preloads: ["/assets/signup-Dx5RPzvL.js", "/assets/checkbox-XjIBLy-o.js"]
 	},
 	"/to-let": {
 		filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/to-let.jsx",

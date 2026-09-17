@@ -8,7 +8,7 @@ import { g as useNavigate, h as Link } from "../_libs/@tanstack/react-router+[..
 import { y as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
 import { t as Checkbox } from "./checkbox-B0qxxBcH.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/signup-C6co2wqB.js
+//#region node_modules/.nitro/vite/services/ssr/assets/signup-gubm5raD.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function SignupPage() {
@@ -29,7 +29,7 @@ function SignupPage() {
 		const next = {};
 		if (values.name.trim().length < 2) next["name"] = "Please enter your full name.";
 		if (!values.studentId.trim()) next["studentId"] = "Student ID is required.";
-		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) next["email"] = "Enter a valid email address.";
+		if (!/^[^\s@]+@[^\s@]+\.uiu\.ac\.bd$/i.test(values.email.trim())) next.email = "Use your UIU email ending in .uiu.ac.bd.";
 		if (values.phone.replace(/\D/g, "").length < 7) next["phone"] = "Enter a valid phone number.";
 		if (values.password.length < 8) next["password"] = "Use at least 8 characters.";
 		if (values.confirm !== values.password) next["confirm"] = "Passwords do not match.";
@@ -66,7 +66,7 @@ function SignupPage() {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "mt-1.5 text-sm text-muted-foreground",
-					children: "Verified students only — use your university email."
+					children: "Verified UIU students only — use an email ending in .uiu.ac.bd."
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 					className: "mt-6 space-y-4",
@@ -124,7 +124,7 @@ function SignupPage() {
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
 									htmlFor: "email",
-									children: "Email address"
+									children: "UIU email address"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 									id: "email",
@@ -134,12 +134,12 @@ function SignupPage() {
 										...values,
 										email: e.target.value
 									}),
-									placeholder: "you@university.edu",
-									"aria-invalid": !!errors["email"]
+									placeholder: "name@bscse.uiu.ac.bd",
+									"aria-invalid": !!errors.email
 								}),
-								errors["email"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								errors.email && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 									className: "text-xs font-medium text-danger",
-									children: errors["email"]
+									children: errors.email
 								})
 							]
 						}),

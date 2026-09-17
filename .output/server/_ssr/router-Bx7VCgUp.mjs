@@ -13,7 +13,7 @@ import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndic
 import { t as Route$10 } from "./verify-email-5om6Ftci.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BHODl7gP.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-Bx7VCgUp.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-BsMQVgBM.css";
@@ -881,7 +881,7 @@ var Route$7 = createFileRoute("/")({
 });
 var $$splitComponentImporter$6 = () => import("./edit-profile-B-MYA_aG.mjs");
 var Route$6 = createFileRoute("/edit-profile")({ component: lazyRouteComponent($$splitComponentImporter$6, "component") });
-var $$splitComponentImporter$5 = () => import("./login-BGN7gjXv.mjs");
+var $$splitComponentImporter$5 = () => import("./login-g3ZCCfSt.mjs");
 var Route$5 = createFileRoute("/login")({
 	head: () => ({ meta: [
 		{ title: "Sign In — Campus Crate" },
@@ -964,7 +964,7 @@ var Route$3 = createFileRoute("/marketplace")({
 });
 var $$splitComponentImporter$2 = () => import("./my-listings-DCxJVChj.mjs");
 var Route$2 = createFileRoute("/my-listings")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
-var $$splitComponentImporter$1 = () => import("./signup-C6co2wqB.mjs");
+var $$splitComponentImporter$1 = () => import("./signup-gubm5raD.mjs");
 var Route$1 = createFileRoute("/signup")({
 	head: () => ({ meta: [
 		{ title: "Create Account — Campus Crate" },

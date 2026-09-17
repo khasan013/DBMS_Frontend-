@@ -34,7 +34,7 @@ function SignupPage() {
     const next = {};
     if (values.name.trim().length < 2) next["name"] = "Please enter your full name.";
     if (!values.studentId.trim()) next["studentId"] = "Student ID is required.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) next["email"] = "Enter a valid email address.";
+    if (!/^[^\s@]+@[^\s@]+\.uiu\.ac\.bd$/i.test(values.email.trim())) next.email = "Use your UIU email ending in .uiu.ac.bd.";
     if (values.phone.replace(/\D/g, "").length < 7) next["phone"] = "Enter a valid phone number.";
     if (values.password.length < 8) next["password"] = "Use at least 8 characters.";
     if (values.confirm !== values.password) next["confirm"] = "Passwords do not match.";
@@ -58,7 +58,7 @@ function SignupPage() {
       <div className="w-full max-w-md rounded-xl border border-border bg-card p-7 shadow-soft">
         <img src="/campus-crate-logo.png" alt="Campus Crate" className="size-11 object-contain" />
         <h1 className="mt-5 font-display text-2xl font-bold">Create your account</h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">Verified students only — use your university email.</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">Verified UIU students only — use an email ending in .uiu.ac.bd.</p>
         <form className="mt-6 space-y-4" onSubmit={submit} noValidate>
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
@@ -70,7 +70,7 @@ function SignupPage() {
             <Input id="studentId" value={values.studentId} onChange={(e) => setValues({ ...values, studentId: e.target.value })} placeholder="e.g. 20230001" aria-invalid={!!errors["studentId"]} />
             {errors["studentId"] && <p className="text-xs font-medium text-danger">{errors["studentId"]}</p>}
           </div>
-          <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" type="email" value={values.email} onChange={(e) => setValues({ ...values, email: e.target.value })} placeholder="you@university.edu" aria-invalid={!!errors["email"]} />{errors["email"] && <p className="text-xs font-medium text-danger">{errors["email"]}</p>}</div>
+          <div className="space-y-2"><Label htmlFor="email">UIU email address</Label><Input id="email" type="email" value={values.email} onChange={(e) => setValues({ ...values, email: e.target.value })} placeholder="name@bscse.uiu.ac.bd" aria-invalid={!!errors.email} />{errors.email && <p className="text-xs font-medium text-danger">{errors.email}</p>}</div>
           <div className="space-y-2"><Label htmlFor="phone">Phone number</Label><Input id="phone" value={values.phone} onChange={(e) => setValues({ ...values, phone: e.target.value })} placeholder="+880 1XXXXXXXXX" aria-invalid={!!errors["phone"]} />{errors["phone"] && <p className="text-xs font-medium text-danger">{errors["phone"]}</p>}</div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">

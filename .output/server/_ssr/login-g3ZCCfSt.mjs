@@ -7,13 +7,13 @@ import { t as Label } from "./label-Bz2fWaly.mjs";
 import { g as useNavigate, h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { y as LoaderCircle } from "../_libs/lucide-react.mjs";
 import { n as toast } from "../_libs/sonner.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/login-BGN7gjXv.js
+//#region node_modules/.nitro/vite/services/ssr/assets/login-g3ZCCfSt.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function LoginPage() {
 	const navigate = useNavigate();
 	const [values, setValues] = (0, import_react.useState)({
-		studentId: "",
+		identifier: "",
 		password: ""
 	});
 	const [errors, setErrors] = (0, import_react.useState)({});
@@ -21,21 +21,33 @@ function LoginPage() {
 	const submit = (event) => {
 		event.preventDefault();
 		const next = {};
-		if (!values.studentId.trim()) next["studentId"] = "Enter your student ID.";
+		if (!values.identifier.trim()) next.identifier = "Enter your student ID or admin email.";
 		if (values.password.length < 8) next["password"] = "Password must be at least 8 characters.";
 		setErrors(next);
 		if (Object.keys(next).length) return;
 		setLoading(true);
-		api("/api/users/login", {
+		const identifier = values.identifier.trim();
+		const isAdminLogin = identifier.includes("@");
+		const endpoint = isAdminLogin ? "/api/admin/login" : "/api/users/login";
+		const request = isAdminLogin ? {
+			email: identifier,
+			password: values.password
+		} : {
+			studentId: identifier,
+			password: values.password
+		};
+		api(endpoint, {
 			method: "POST",
-			body: JSON.stringify(values)
+			body: JSON.stringify(request)
 		}).then((result) => {
+			const account = result.user ?? result;
 			saveSession({
 				token: result.accessToken,
-				user: result.user ?? result
+				role: isAdminLogin ? "ADMIN" : "USER",
+				user: account
 			});
-			toast.success("Welcome back to Campus Crate");
-			navigate({ to: "/my-listings" });
+			toast.success(isAdminLogin ? "Welcome back, administrator" : "Welcome back to Campus Crate");
+			navigate({ to: isAdminLogin ? "/" : "/my-listings" });
 		}).catch((error) => toast.error(error.message)).finally(() => setLoading(false));
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
@@ -65,23 +77,23 @@ function LoginPage() {
 							className: "space-y-2",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-									htmlFor: "studentId",
-									children: "Student ID"
+									htmlFor: "identifier",
+									children: "Student ID or admin email"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									id: "studentId",
+									id: "identifier",
 									autoComplete: "username",
-									placeholder: "e.g. 20230001",
-									value: values.studentId,
+									placeholder: "e.g. 20230001 or admin@example.com",
+									value: values.identifier,
 									onChange: (e) => setValues({
 										...values,
-										studentId: e.target.value
+										identifier: e.target.value
 									}),
-									"aria-invalid": !!errors["studentId"]
+									"aria-invalid": !!errors.identifier
 								}),
-								errors["studentId"] && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								errors.identifier && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 									className: "text-xs font-medium text-danger",
-									children: errors["studentId"]
+									children: errors.identifier
 								})
 							]
 						}),

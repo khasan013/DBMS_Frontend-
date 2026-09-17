@@ -23,23 +23,30 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [values, setValues] = useState({ studentId: "", password: "" });
+  const [values, setValues] = useState({ identifier: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const submit = (event) => {
     event.preventDefault();
     const next = {};
-    if (!values.studentId.trim()) next["studentId"] = "Enter your student ID.";
+    if (!values.identifier.trim()) next.identifier = "Enter your student ID or admin email.";
     if (values.password.length < 8) next["password"] = "Password must be at least 8 characters.";
     setErrors(next);
     if (Object.keys(next).length) return;
     setLoading(true);
-    api("/api/users/login", { method: "POST", body: JSON.stringify(values) })
+    const identifier = values.identifier.trim();
+    const isAdminLogin = identifier.includes("@");
+    const endpoint = isAdminLogin ? "/api/admin/login" : "/api/users/login";
+    const request = isAdminLogin
+      ? { email: identifier, password: values.password }
+      : { studentId: identifier, password: values.password };
+    api(endpoint, { method: "POST", body: JSON.stringify(request) })
       .then((result) => {
-        saveSession({ token: result.accessToken, user: result.user ?? result });
-        toast.success("Welcome back to Campus Crate");
-        navigate({ to: "/my-listings" });
+        const account = result.user ?? result;
+        saveSession({ token: result.accessToken, role: isAdminLogin ? "ADMIN" : "USER", user: account });
+        toast.success(isAdminLogin ? "Welcome back, administrator" : "Welcome back to Campus Crate");
+        navigate({ to: isAdminLogin ? "/" : "/my-listings" });
       })
       .catch((error) => toast.error(error.message))
       .finally(() => setLoading(false));
@@ -53,9 +60,9 @@ function LoginPage() {
         <p className="mt-1.5 text-sm text-muted-foreground">Sign in to manage your campus listings.</p>
         <form className="mt-6 space-y-4" onSubmit={submit} noValidate>
           <div className="space-y-2">
-            <Label htmlFor="studentId">Student ID</Label>
-            <Input id="studentId" autoComplete="username" placeholder="e.g. 20230001" value={values.studentId} onChange={(e) => setValues({ ...values, studentId: e.target.value })} aria-invalid={!!errors["studentId"]} />
-            {errors["studentId"] && <p className="text-xs font-medium text-danger">{errors["studentId"]}</p>}
+            <Label htmlFor="identifier">Student ID or admin email</Label>
+            <Input id="identifier" autoComplete="username" placeholder="e.g. 20230001 or admin@example.com" value={values.identifier} onChange={(e) => setValues({ ...values, identifier: e.target.value })} aria-invalid={!!errors.identifier} />
+            {errors.identifier && <p className="text-xs font-medium text-danger">{errors.identifier}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
