@@ -1,1 +1,0 @@
-import{d as e,p as t,s as n}from"./button-DCpgzuu7.js";var r=t(e(),1);function i(e){let t=n();return r.useCallback(n=>t.navigate({...n,from:n.from??e?.from}),[e?.from,t])}export{i as t};

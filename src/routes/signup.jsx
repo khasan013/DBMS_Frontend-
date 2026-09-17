@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Box, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +56,7 @@ function SignupPage() {
   return (
     <main className="container-shell flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
       <div className="w-full max-w-md rounded-xl border border-border bg-card p-7 shadow-soft">
-        <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-brand"><Box className="size-5" /></span>
+        <img src="/campus-crate-logo.png" alt="Campus Crate" className="size-11 object-contain" />
         <h1 className="mt-5 font-display text-2xl font-bold">Create your account</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">Verified students only — use your university email.</p>
         <form className="mt-6 space-y-4" onSubmit={submit} noValidate>

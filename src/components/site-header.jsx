@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Box, LogIn, Menu, Moon, Plus, Search, Settings, Sun, UserPlus, UserRound, X } from "lucide-react";
+import { LogIn, Menu, Moon, Plus, Search, Settings, Sun, UserPlus, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -40,7 +40,7 @@ export function SiteHeader() {
   return <>
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/92 backdrop-blur-xl">
       <div className="container-shell flex h-16 items-center gap-5">
-        <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Campus Crate home"><span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-brand"><Box className="size-5" /></span><span className="font-display text-lg font-bold">Campus Crate</span></Link>
+        <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Campus Crate home"><img src="/campus-crate-logo.png" alt="" className="size-9 object-contain" /><span className="font-display text-lg font-bold">Campus Crate</span></Link>
         <nav className="hidden items-center gap-1 lg:flex">{links.map((link) => <Link key={link.to} to={link.to} className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-accent hover:text-foreground" activeProps={{ className: "bg-accent text-foreground" }}>{link.label}</Link>)}</nav>
         <form onSubmit={runSearch} className="mx-auto hidden h-10 max-w-md flex-1 items-center rounded-xl border border-border bg-muted/60 md:flex">
           <select name="section" aria-label="Search category" className="h-full w-28 bg-transparent px-3 text-xs font-semibold text-foreground outline-none"><option value="all">All</option><option value="lost">Lost & Found</option><option value="market">Marketplace</option><option value="to-let">To-let</option></select><span className="h-5 w-px bg-border"/><Search className="mx-3 size-4 text-muted-foreground"/><input name="query" aria-label="Search Campus Crate" placeholder="Search campus…" className="min-w-0 flex-1 bg-transparent pr-3 text-sm outline-none placeholder:text-muted-foreground" />

@@ -25,7 +25,7 @@ export function FeedPage({ module }) {
     const endpoint = module === "lost" ? "/api/items" : "/api/marketplace/posts/active";
     setLoadError("");
     api(endpoint)
-      .then((data) => setRemoteListings(data.map((item) => module === "lost" ? ({ id: item.itemId, module: "lost", title: item.title, detail: `Location #${item.locationId}`, meta: item.createdAt ?? "Recently", tag: item.itemType, status: item.status, imageUrl: item.imageUrl }) : ({ id: item.postId, module: "market", title: item.title, detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`, meta: item.condition, tag: item.sellingType, status: item.status, owner: `Student #${item.sellerId}` }))))
+      .then((data) => setRemoteListings(data.map((item) => module === "lost" ? ({ id: `lost-${item.itemId}`, module: "lost", title: item.title, detail: `Location #${item.locationId}`, meta: item.createdAt ?? "Recently", tag: item.itemType, status: item.status, imageUrl: item.imageUrl }) : ({ id: `market-${item.postId}`, module: "market", title: item.title, detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`, meta: item.condition, tag: item.sellingType, status: item.status, owner: `Student #${item.sellerId}` }))))
       .catch((error) => {
         setRemoteListings([]);
         setLoadError(error.message);

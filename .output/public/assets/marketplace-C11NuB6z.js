@@ -1,0 +1,1 @@
+import{p as e}from"./api-B3nJ8WPI.js";import{t}from"./feed-page-B2nAaPx8.js";var n=e(),r=()=>(0,n.jsx)(t,{module:`market`});export{r as component};
