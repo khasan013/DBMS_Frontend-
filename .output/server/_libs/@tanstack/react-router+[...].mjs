@@ -3578,7 +3578,6 @@ var BaseRootRoute = class extends BaseRoute {
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/ssr/constants.js
 var import_jsx_runtime = require_jsx_runtime();
-require_react_dom();
 var GLOBAL_TSR = "$_TSR";
 var TSR_SCRIPT_BARRIER_ID = "$tsr-stream-barrier";
 //#endregion
@@ -4232,8 +4231,7 @@ function useRouteContext(opts) {
 		select: (match) => opts.select ? opts.select(match.context) : match.context
 	});
 }
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/link.js
+require_react_dom();
 /**
 * Build anchor-like props for declarative navigation and preloading.
 *

@@ -46,7 +46,7 @@ function LoginPage() {
         const account = result.user ?? result;
         saveSession({ token: result.accessToken, role: isAdminLogin ? "ADMIN" : "USER", user: account });
         toast.success(isAdminLogin ? "Welcome back, administrator" : "Welcome back to Campus Crate");
-        navigate({ to: isAdminLogin ? "/" : "/my-listings" });
+        navigate({ to: isAdminLogin ? "/admin" : "/my-listings" });
       })
       .catch((error) => toast.error(error.message))
       .finally(() => setLoading(false));

@@ -1,1 +1,0 @@
-import{_ as e,p as t,y as n}from"./api-BpCgsloS.js";var r=n(e(),1);function i(e){let n=t();return r.useCallback(t=>n.navigate({...t,from:t.from??e?.from}),[e?.from,n])}export{i as t};

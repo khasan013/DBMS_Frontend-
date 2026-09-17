@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as EditProfileRouteImport } from './routes/edit-profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LostAndFoundRouteImport } from './routes/lost-and-found'
@@ -23,6 +24,11 @@ import { Route as ListingIdRouteImport } from './routes/listing.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+})
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 })
 const EditProfileRoute = EditProfileRouteImport.update({
@@ -73,6 +79,7 @@ const ListingIdRoute = ListingIdRouteImport.update({
 
 const rootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   EditProfileRoute: EditProfileRoute,
   LoginRoute: LoginRoute,
   LostAndFoundRoute: LostAndFoundRoute,

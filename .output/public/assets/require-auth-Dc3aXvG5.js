@@ -1,1 +1,0 @@
-import{_ as e,h as t,r as n,y as r}from"./api-BpCgsloS.js";import{t as i}from"./useNavigate-BH7hjxoJ.js";var a=r(e(),1),o=t();function s({children:e}){let t=i(),r=n();return(0,a.useEffect)(()=>{r||t({to:`/login`,replace:!0})},[t,r]),r?e:(0,o.jsx)(`main`,{className:`container-shell py-16 text-center text-muted-foreground`,children:`Redirecting to sign in…`})}export{s as t};

@@ -2,10 +2,10 @@ import { n as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].mjs";
 import { n as api, t as Button } from "./api-BrSPGXDs.mjs";
-import { t as Input } from "./input-B2DL_XkA.mjs";
-import { t as Label } from "./label-Bz2fWaly.mjs";
 import { g as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as toast } from "../_libs/sonner.mjs";
+import { t as Input } from "./input-B2DL_XkA.mjs";
+import { t as Label } from "./label-Bz2fWaly.mjs";
 import { t as Route } from "./verify-email-5om6Ftci.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/verify-email-CPTezN2F.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
