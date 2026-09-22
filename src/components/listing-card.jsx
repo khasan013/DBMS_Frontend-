@@ -9,8 +9,8 @@ import {
   UserRound,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { getListingReference } from "@/lib/campus-data";
-import { cn } from "@/lib/utils";
+import { getListingReference } from "@/data/campus-data";
+import { cn } from "@/utils/utils";
 
 export function ListingImage({ listing }) {
   if (listing.imageUrl) {

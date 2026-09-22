@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { CreatePostDialog } from "@/components/create-post-dialog";
-import { clearSession, getSession } from "@/lib/api";
+import { clearSession, getSession } from "@/services/api";
 
 export function SiteHeader() {
   const [createOpen, setCreateOpen] = useState(false);

@@ -1,3 +1,2 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { FeedPage } from "@/components/feed-page";
-export const Route = createFileRoute("/lost-and-found")({ head: () => ({ meta: [{ title: "Lost & Found — Campus Crate" }, { name: "description", content: "Report and recover lost items across your university community." }, { property: "og:title", content: "Lost & Found — Campus Crate" }, { property: "og:description", content: "Report and recover lost items across your university community." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <FeedPage module="lost"/> });
+import { Route as pageRoute } from "@/pages/user/LostAndFoundPage";
+export const Route = pageRoute;

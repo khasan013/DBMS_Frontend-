@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { getSession } from "@/lib/api";
+import { getSession } from "@/services/api";
 
 /** Prevents protected page content from rendering for signed-out visitors. */
 export function RequireAuth({ children }) {
