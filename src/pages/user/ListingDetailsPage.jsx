@@ -271,7 +271,7 @@ export function ListingDetailsPage({ id }) {
               <div className="mt-5 grid gap-2">
                 <Button onClick={openContact}>
                   <MessageCircle />
-                  Contact owner
+                  Contact Admin
                 </Button>
                 <Button
                   variant="outline"
@@ -296,7 +296,7 @@ export function ListingDetailsPage({ id }) {
       <Dialog open={contactOpen} onOpenChange={setContactOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Contact owner</DialogTitle>
+            <DialogTitle>Contact Admin</DialogTitle>
             <DialogDescription>
               Reach out directly about this listing.
             </DialogDescription>

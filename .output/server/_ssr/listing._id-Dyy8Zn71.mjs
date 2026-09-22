@@ -220,7 +220,7 @@ function ListingDetails() {
 							className: "mt-5 grid gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 								onClick: openContact,
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, {}), "Contact owner"]
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, {}), "Contact Admin"]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 								variant: "outline",
 								onClick: () => navigator.clipboard?.writeText(window.location.href).then(() => toast.success("Listing link copied")),
@@ -240,7 +240,7 @@ function ListingDetails() {
 		onOpenChange: setContactOpen,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogContent, {
 			className: "sm:max-w-md",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogHeader, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogTitle, { children: "Contact owner" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogDescription, { children: "Reach out directly about this listing." })] }), contactLoading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogHeader, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogTitle, { children: "Contact Admin" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogDescription, { children: "Reach out directly about this listing." })] }), contactLoading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "flex justify-center py-8",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin text-primary" })
 			}) : contactError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
