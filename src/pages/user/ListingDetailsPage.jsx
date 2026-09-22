@@ -38,6 +38,12 @@ function endpointFor({ module, id }) {
   return `/api/to-let/listings/${id}`;
 }
 
+function contactEndpoint(listing) {
+  return listing.module === "lost"
+    ? "/api/admin/contact"
+    : `/api/users/${listing.ownerId}/contact`;
+}
+
 function normalizeListing(module, item) {
   if (module === "lost")
     return {
@@ -107,14 +113,15 @@ export function ListingDetailsPage({ id }) {
         setListing(normalized);
 
         try {
-          const owner = await api(`/api/users/${normalized.ownerId}/contact`);
+          const owner = await api(contactEndpoint(normalized));
           if (active) {
             setListing(
               (current) =>
                 current && {
                   ...current,
                   owner: owner.name,
-                  ownerImageUrl: owner.profileImgUrl,
+                  ownerImageUrl: owner.profileImgUrl ?? owner.profileImageUrl,
+                  isAdminContact: normalized.module === "lost",
                 },
             );
           }
@@ -156,7 +163,7 @@ export function ListingDetailsPage({ id }) {
     setContact(null);
     setContactError("");
     setContactLoading(true);
-    api(`/api/users/${listing.ownerId}/contact`)
+    api(contactEndpoint(listing))
       .then(setContact)
       .catch((requestError) => setContactError(requestError.message))
       .finally(() => setContactLoading(false));
@@ -240,7 +247,7 @@ export function ListingDetailsPage({ id }) {
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-xl border border-border bg-card p-5 shadow-soft">
               <p className="text-sm font-semibold text-muted-foreground">
-                {listing.module === "market" ? "Seller" : "Posted by"}
+                {listing.module === "market" ? "Seller" : listing.module === "lost" ? "Campus administrator" : "Posted by"}
               </p>
               <div className="mt-3 flex items-center gap-3">
                 <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-sm font-bold text-primary-foreground">
@@ -258,7 +265,7 @@ export function ListingDetailsPage({ id }) {
                   <p className="font-semibold">{listing.owner}</p>
                   <p className="flex items-center gap-1 text-xs text-success">
                     <ShieldCheck className="size-3.5" />
-                    Campus community member
+                    {listing.isAdminContact ? "Campus administrator" : "Campus community member"}
                   </p>
                 </div>
               </div>
@@ -271,7 +278,7 @@ export function ListingDetailsPage({ id }) {
               <div className="mt-5 grid gap-2">
                 <Button onClick={openContact}>
                   <MessageCircle />
-                  Contact Admin
+                  {listing.module === "lost" ? "Contact admin" : "Contact user"}
                 </Button>
                 <Button
                   variant="outline"
@@ -296,7 +303,7 @@ export function ListingDetailsPage({ id }) {
       <Dialog open={contactOpen} onOpenChange={setContactOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Contact Admin</DialogTitle>
+            <DialogTitle>{listing.module === "lost" ? "Contact Admin" : "Contact User"}</DialogTitle>
             <DialogDescription>
               Reach out directly about this listing.
             </DialogDescription>
