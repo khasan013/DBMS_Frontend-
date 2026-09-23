@@ -14,7 +14,7 @@ import { n as toast, t as Toaster } from "../_libs/sonner.mjs";
 import { t as Root } from "../_libs/radix-ui__react-label.mjs";
 import { i as Trigger$1, n as List, r as Root2$1, t as Content } from "../_libs/radix-ui__react-tabs.mjs";
 import { i as SliderTrack, n as SliderRange, r as SliderThumb, t as Slider$1 } from "../_libs/@radix-ui/react-slider+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-CBa7yASV.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-g-o6iZVn.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var globals_default = "/assets/globals-DlV2c2OK.css";
@@ -874,6 +874,18 @@ var Toaster$1 = ({ ...props }) => {
 	});
 };
 function AppLayout() {
+	(0, import_react.useEffect)(() => {
+		const validateSession = () => {
+			if (!getSession()) return;
+			api("/api/session").catch(() => {
+				clearSession();
+				window.location.assign("/");
+			});
+		};
+		validateSession();
+		const timer = window.setInterval(validateSession, 2e3);
+		return () => window.clearInterval(timer);
+	}, []);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SiteHeader, {}),
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}),
@@ -1161,7 +1173,8 @@ function HomePage() {
 	const [listings, setListings] = (0, import_react.useState)([]);
 	const [loading, setLoading] = (0, import_react.useState)(true);
 	(0, import_react.useEffect)(() => {
-		api("/api/highlights/recent?limit=12").then((highlights) => setListings(highlights.map((highlight) => ({
+		let active = true;
+		const loadHighlights = () => api("/api/highlights/recent?limit=12").then((highlights) => active && setListings(highlights.map((highlight) => ({
 			id: highlight.highlightId,
 			module: highlight.module,
 			title: highlight.title,
@@ -1170,7 +1183,13 @@ function HomePage() {
 			tag: highlight.categoryOrArea,
 			status: highlight.status,
 			imageUrl: highlight.imageUrl
-		})))).catch(() => setListings([])).finally(() => setLoading(false));
+		})))).catch(() => active && setListings([])).finally(() => active && setLoading(false));
+		loadHighlights();
+		const timer = window.setInterval(loadHighlights, 2e3);
+		return () => {
+			active = false;
+			window.clearInterval(timer);
+		};
 	}, []);
 	const visible = listings.filter((item) => tab === "all" || item.module === tab).slice(0, 8);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { children: [
@@ -1459,6 +1478,18 @@ function AdminPage() {
 			toast.success(`${module.title} post marked ${status.toLowerCase()}.`);
 		}).catch((error) => toast.error(error.message)).finally(() => setUpdating(""));
 	};
+	const deletePost = (module, post) => {
+		const postId = post[module.id];
+		if (!window.confirm(`Delete this ${module.title} post? This cannot be undone.`)) return;
+		setUpdating(`${module.key}-${postId}`);
+		api(`${module.adminEndpoint}/${postId}`, { method: "DELETE" }).then(() => {
+			setPosts((current) => ({
+				...current,
+				[module.key]: current[module.key].filter((item) => item[module.id] !== postId)
+			}));
+			toast.success(`${module.title} post deleted.`);
+		}).catch((error) => toast.error(error.message)).finally(() => setUpdating(""));
+	};
 	const deleteUser = (user) => {
 		if (!window.confirm(`Delete ${user.name}'s account and all of their posts? This cannot be undone.`)) return;
 		setUpdating(`user-${user.userId}`);
@@ -1613,13 +1644,14 @@ function AdminPage() {
 					module,
 					posts: posts[module.key],
 					updating,
-					onStatusChange: setStatus
+					onStatusChange: setStatus,
+					onDelete: deletePost
 				}, module.key))
 			})]
 		})] })]
 	});
 }
-function PostPanel({ module, posts, updating, onStatusChange }) {
+function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "overflow-hidden rounded-xl border border-border bg-card",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -1664,7 +1696,15 @@ function PostPanel({ module, posts, updating, onStatusChange }) {
 										children: status
 									}, status))
 								}),
-								updating === `${module.key}-${postId}` && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "size-4 animate-spin text-primary" })
+								updating === `${module.key}-${postId}` && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "size-4 animate-spin text-primary" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									size: "icon",
+									variant: "destructive",
+									"aria-label": `Delete ${module.title} post`,
+									disabled: updating === `${module.key}-${postId}`,
+									onClick: () => onDelete(module, post),
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {})
+								})
 							]
 						})
 					]

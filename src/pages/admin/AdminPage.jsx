@@ -114,6 +114,21 @@ export function AdminPage() {
       .catch((error) => toast.error(error.message))
       .finally(() => setUpdating(""));
   };
+  const deletePost = (module, post) => {
+    const postId = post[module.id];
+    if (!window.confirm(`Delete this ${module.title} post? This cannot be undone.`)) return;
+    setUpdating(`${module.key}-${postId}`);
+    api(`${module.adminEndpoint}/${postId}`, { method: "DELETE" })
+      .then(() => {
+        setPosts((current) => ({
+          ...current,
+          [module.key]: current[module.key].filter((item) => item[module.id] !== postId),
+        }));
+        toast.success(`${module.title} post deleted.`);
+      })
+      .catch((error) => toast.error(error.message))
+      .finally(() => setUpdating(""));
+  };
   const deleteUser = (user) => {
     if (!window.confirm(`Delete ${user.name}'s account and all of their posts? This cannot be undone.`)) return;
     setUpdating(`user-${user.userId}`);
@@ -273,6 +288,7 @@ export function AdminPage() {
                   posts={posts[module.key]}
                   updating={updating}
                   onStatusChange={setStatus}
+                  onDelete={deletePost}
                 />
               ))}
             </div>
@@ -283,7 +299,7 @@ export function AdminPage() {
   );
 }
 
-function PostPanel({ module, posts, updating, onStatusChange }) {
+function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="border-b border-border bg-surface-subtle px-4 py-3">
@@ -324,6 +340,15 @@ function PostPanel({ module, posts, updating, onStatusChange }) {
                 {updating === `${module.key}-${postId}` && (
                   <Loader2 className="size-4 animate-spin text-primary" />
                 )}
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  aria-label={`Delete ${module.title} post`}
+                  disabled={updating === `${module.key}-${postId}`}
+                  onClick={() => onDelete(module, post)}
+                >
+                  <Trash2 />
+                </Button>
               </div>
             </article>
           );

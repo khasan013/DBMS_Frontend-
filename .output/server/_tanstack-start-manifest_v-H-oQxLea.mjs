@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-FW458mR9.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-H-oQxLea.js
 var tsrStartManifest = () => ({ routes: { __root__: {
 	filePath: "C:/Users/ASUS/OneDrive/Desktop/DBMS_Frontend/campus_crate-main/src/routes/__root.jsx",
 	children: [
@@ -15,11 +15,11 @@ var tsrStartManifest = () => ({ routes: { __root__: {
 		"/verify-email",
 		"/listing/$id"
 	],
-	preloads: ["/assets/index-DjVxxC-F.js"],
+	preloads: ["/assets/index-ByV4hR57.js"],
 	scripts: [{ attrs: {
 		type: "module",
 		async: !0,
-		src: "/assets/index-DjVxxC-F.js"
+		src: "/assets/index-ByV4hR57.js"
 	} }]
 } } });
 //#endregion

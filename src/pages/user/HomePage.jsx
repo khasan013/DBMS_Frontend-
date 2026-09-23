@@ -20,8 +20,9 @@ export function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api("/api/highlights/recent?limit=12")
-      .then((highlights) => setListings(highlights.map((highlight) => ({
+    let active = true;
+    const loadHighlights = () => api("/api/highlights/recent?limit=12")
+      .then((highlights) => active && setListings(highlights.map((highlight) => ({
         id: highlight.highlightId,
         module: highlight.module,
         title: highlight.title,
@@ -31,8 +32,11 @@ export function HomePage() {
         status: highlight.status,
         imageUrl: highlight.imageUrl,
       }))))
-      .catch(() => setListings([]))
-      .finally(() => setLoading(false));
+      .catch(() => active && setListings([]))
+      .finally(() => active && setLoading(false));
+    loadHighlights();
+    const timer = window.setInterval(loadHighlights, 2000);
+    return () => { active = false; window.clearInterval(timer); };
   }, []);
 
   const visible = listings.filter((item) => tab === "all" || item.module === tab).slice(0, 8);

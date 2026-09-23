@@ -19,23 +19,16 @@ var public_assets_data_default = {
 	"/assets/globals-DlV2c2OK.css": {
 		"type": "text/css; charset=utf-8",
 		"etag": "\"c7a9-gWPvNNHHh4GdJEP+lVGXXV8Q0QQ\"",
-		"mtime": "2026-09-23T14:37:58.544Z",
+		"mtime": "2026-09-23T15:15:35.023Z",
 		"size": 51113,
 		"path": "../public/assets/globals-DlV2c2OK.css"
 	},
-	"/assets/index-DjVxxC-F.js": {
+	"/assets/index-ByV4hR57.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"9c413-u+8PS4MslCDnjF+FlDRz/mk4MGk\"",
-		"mtime": "2026-09-23T14:37:58.544Z",
-		"size": 640019,
-		"path": "../public/assets/index-DjVxxC-F.js"
-	},
-	"/robots.txt": {
-		"type": "text/plain; charset=utf-8",
-		"etag": "\"a0-CKGXSIe7TSsqDTmGm/nY1t/o5d0\"",
-		"mtime": "2026-09-12T13:45:41.545Z",
-		"size": 160,
-		"path": "../public/robots.txt"
+		"etag": "\"9c720-cJAPHdIDj4IjFnTJR/WD3lSwi34\"",
+		"mtime": "2026-09-23T15:15:35.022Z",
+		"size": 640800,
+		"path": "../public/assets/index-ByV4hR57.js"
 	},
 	"/campus-crate-logo.png": {
 		"type": "image/png",
@@ -43,6 +36,13 @@ var public_assets_data_default = {
 		"mtime": "2026-09-17T14:24:18.819Z",
 		"size": 2518,
 		"path": "../public/campus-crate-logo.png"
+	},
+	"/robots.txt": {
+		"type": "text/plain; charset=utf-8",
+		"etag": "\"a0-CKGXSIe7TSsqDTmGm/nY1t/o5d0\"",
+		"mtime": "2026-09-12T13:45:41.545Z",
+		"size": 160,
+		"path": "../public/robots.txt"
 	}
 };
 //#endregion
