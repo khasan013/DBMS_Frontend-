@@ -293,6 +293,43 @@ var Circle = createLucideIcon("circle", [["circle", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var ClipboardList = createLucideIcon("clipboard-list", [
+	["rect", {
+		width: "8",
+		height: "4",
+		x: "8",
+		y: "2",
+		rx: "1",
+		ry: "1",
+		key: "tgr4d6"
+	}],
+	["path", {
+		d: "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2",
+		key: "116196"
+	}],
+	["path", {
+		d: "M12 11h4",
+		key: "1jrz19"
+	}],
+	["path", {
+		d: "M12 16h4",
+		key: "n85exb"
+	}],
+	["path", {
+		d: "M8 11h.01",
+		key: "1dfujw"
+	}],
+	["path", {
+		d: "M8 16h.01",
+		key: "18s6g9"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Funnel = createLucideIcon("funnel", [["path", {
 	d: "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",
 	key: "sc7q7i"
@@ -449,16 +486,6 @@ var MessageCircle = createLucideIcon("message-circle", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Moon = createLucideIcon("moon", [["path", {
-	d: "M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401",
-	key: "kfwtm"
-}]]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var PenLine = createLucideIcon("pen-line", [["path", {
 	d: "M13 21h8",
 	key: "1jsn5i"
@@ -598,52 +625,6 @@ var ShoppingBag = createLucideIcon("shopping-bag", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Sun = createLucideIcon("sun", [
-	["circle", {
-		cx: "12",
-		cy: "12",
-		r: "4",
-		key: "4exip2"
-	}],
-	["path", {
-		d: "M12 2v2",
-		key: "tus03m"
-	}],
-	["path", {
-		d: "M12 20v2",
-		key: "1lh1kg"
-	}],
-	["path", {
-		d: "m4.93 4.93 1.41 1.41",
-		key: "149t6j"
-	}],
-	["path", {
-		d: "m17.66 17.66 1.41 1.41",
-		key: "ptbguv"
-	}],
-	["path", {
-		d: "M2 12h2",
-		key: "1t8f8n"
-	}],
-	["path", {
-		d: "M20 12h2",
-		key: "1q8mjw"
-	}],
-	["path", {
-		d: "m6.34 17.66-1.41 1.41",
-		key: "1m8zz5"
-	}],
-	["path", {
-		d: "m19.07 4.93-1.41 1.41",
-		key: "1shlcs"
-	}]
-]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Tag = createLucideIcon("tag", [["path", {
 	d: "M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z",
 	key: "vktsd0"
@@ -654,6 +635,34 @@ var Tag = createLucideIcon("tag", [["path", {
 	fill: "currentColor",
 	key: "kqv944"
 }]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Trash2 = createLucideIcon("trash-2", [
+	["path", {
+		d: "M10 11v6",
+		key: "nco0om"
+	}],
+	["path", {
+		d: "M14 11v6",
+		key: "outv1u"
+	}],
+	["path", {
+		d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
+		key: "miytrc"
+	}],
+	["path", {
+		d: "M3 6h18",
+		key: "d0wm0j"
+	}],
+	["path", {
+		d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+		key: "e791ji"
+	}]
+]);
 /**
 * @license lucide-react v0.575.0 - ISC
 *
@@ -795,4 +804,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { Check as A, ImagePlus as C, CircleCheck as D, Circle as E, ArrowLeft as F, CalendarDays as M, Building2 as N, ChevronRight as O, ArrowRight as P, LoaderCircle as S, Funnel as T, Moon as _, UserPlus as a, MapPin as b, Sun as c, Share2 as d, Settings as f, PenLine as g, Phone as h, UserRound as i, Camera as j, ChevronLeft as k, ShoppingBag as l, Plus as m, Users as n, UserCheck as o, Search as p, UserX as r, Tag as s, X as t, ShieldCheck as u, MessageCircle as v, ImageOff as w, LogIn as x, Menu as y };
+export { Check as A, ImageOff as C, CircleCheck as D, Circle as E, ArrowLeft as F, CalendarDays as M, Building2 as N, ChevronRight as O, ArrowRight as P, ImagePlus as S, ClipboardList as T, MessageCircle as _, UserPlus as a, LogIn as b, Tag as c, Share2 as d, Settings as f, PenLine as g, Phone as h, UserRound as i, Camera as j, ChevronLeft as k, ShoppingBag as l, Plus as m, Users as n, UserCheck as o, Search as p, UserX as r, Trash2 as s, X as t, ShieldCheck as u, Menu as v, Funnel as w, LoaderCircle as x, MapPin as y };

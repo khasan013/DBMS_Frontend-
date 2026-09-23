@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/verify-email-kEKS5rct.js","assets/api-B3nJ8WPI.js","assets/useNavigate-CD2y4xJv.js","assets/dist-Ciz9fFKQ.js","assets/input-DYyZeSBg.js","assets/label-CY0aXZ3l.js","assets/dist-DHfkTam1.js"])))=>i.map(i=>d[i]);
-import{n as e,r as t,t as n}from"./preload-helper-DmrTm_qj.js";var r=t(`/verify-email`)({validateSearch:e=>({email:e.email??``}),component:e(()=>n(()=>import(`./verify-email-kEKS5rct.js`),__vite__mapDeps([0,1,2,3,4,5,6])),`component`)});export{r as t};

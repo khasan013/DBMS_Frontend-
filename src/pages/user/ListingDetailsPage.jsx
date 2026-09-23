@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   CalendarDays,
@@ -12,7 +12,7 @@ import {
   Tag,
 } from "lucide-react";
 import { toast } from "sonner";
-import { api } from "@/services/api";
+import { api, getSession } from "@/services/api";
 import { getListingReference } from "@/data/campus-data";
 import { ListingImage } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
@@ -92,6 +92,7 @@ function normalizeListing(module, item) {
 }
 
 export function ListingDetailsPage({ id }) {
+  const navigate = useNavigate();
   const [listing, setListing] = useState(null);
   const [error, setError] = useState("");
   const [contactOpen, setContactOpen] = useState(false);
@@ -112,6 +113,7 @@ export function ListingDetailsPage({ id }) {
         if (!active) return;
         setListing(normalized);
 
+        if (!getSession()) return;
         try {
           const owner = await api(contactEndpoint(normalized));
           if (active) {
@@ -159,6 +161,11 @@ export function ListingDetailsPage({ id }) {
     );
 
   const openContact = () => {
+    if (!getSession()) {
+      toast.error("Sign in to view contact details.");
+      navigate({ to: "/login" });
+      return;
+    }
     setContactOpen(true);
     setContact(null);
     setContactError("");

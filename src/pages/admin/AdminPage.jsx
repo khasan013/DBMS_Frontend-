@@ -6,6 +6,7 @@ import {
   ShieldCheck,
   UserCheck,
   UserX,
+  Trash2,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -113,6 +114,17 @@ export function AdminPage() {
       .catch((error) => toast.error(error.message))
       .finally(() => setUpdating(""));
   };
+  const deleteUser = (user) => {
+    if (!window.confirm(`Delete ${user.name}'s account and all of their posts? This cannot be undone.`)) return;
+    setUpdating(`user-${user.userId}`);
+    api(`/api/admin/users/${user.userId}`, { method: "DELETE" })
+      .then(() => {
+        setUsers((current) => current.filter((item) => item.userId !== user.userId));
+        toast.success(`${user.name}'s account was deleted.`);
+      })
+      .catch((error) => toast.error(error.message))
+      .finally(() => setUpdating(""));
+  };
 
   if (!isAdmin) return null;
   return (
@@ -197,6 +209,7 @@ export function AdminPage() {
                           />
                         </td>
                         <td className="px-5 py-4 text-right">
+                          <div className="flex justify-end gap-2">
                           <Button
                             size="sm"
                             variant={user.suspended ? "outline" : "destructive"}
@@ -212,6 +225,16 @@ export function AdminPage() {
                             )}
                             {user.suspended ? "Reactivate" : "Suspend"}
                           </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled={updating === `user-${user.userId}`}
+                            onClick={() => deleteUser(user)}
+                          >
+                            <Trash2 />
+                            Delete
+                          </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}

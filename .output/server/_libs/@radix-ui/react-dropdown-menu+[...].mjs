@@ -1,17 +1,243 @@
 import { n as __toESM } from "../../_runtime.mjs";
 import { a as offset, c as useFloating, i as limitShift, n as flip, o as shift, r as hide, s as size, t as arrow, u as require_react } from "../@floating-ui/react-dom+[...].mjs";
-import { a as useLayoutEffect2, c as dispatchDiscreteCustomEvent, d as useComposedRefs, f as require_jsx_runtime, i as useCallbackRef, o as createContextScope, s as Primitive, u as createSlot } from "./react-avatar+[...].mjs";
+import { a as dispatchDiscreteCustomEvent, c as createContextScope, d as useComposedRefs, f as require_jsx_runtime, i as Primitive, o as useLayoutEffect2, s as useCallbackRef, u as createSlot } from "./react-avatar+[...].mjs";
 import { t as composeEventHandlers } from "../radix-ui__primitive.mjs";
-import { c as hideOthers, d as Portal$1, f as FocusScope, l as ReactRemoveScroll, m as useId, p as DismissableLayer, u as useFocusGuards } from "./react-dialog+[...].mjs";
-import { a as useControllableState, i as Presence, r as useSize } from "./react-checkbox+[...].mjs";
-import { t as useDirection } from "../radix-ui__react-direction.mjs";
+import { a as useControllableState, i as useSize, r as Presence } from "./react-checkbox+[...].mjs";
 import { t as createCollection } from "../radix-ui__react-collection.mjs";
+import { t as useDirection } from "../radix-ui__react-direction.mjs";
+import { c as ReactRemoveScroll, d as useId, f as FocusScope, l as hideOthers, m as DismissableLayer, p as useFocusGuards, u as Portal$1 } from "./react-dialog+[...].mjs";
 import { n as autoUpdate } from "../@floating-ui/dom+[...].mjs";
-//#region node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
-var import_jsx_runtime = require_jsx_runtime();
+//#region node_modules/@radix-ui/react-popper/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
+var import_jsx_runtime = require_jsx_runtime();
 var __defProp$4 = Object.defineProperty;
 var __name$4 = (target, value) => __defProp$4(target, "name", {
+	value,
+	configurable: true
+});
+var POPPER_NAME = "Popper";
+var [createPopperContext, createPopperScope] = createContextScope(POPPER_NAME);
+var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
+var Popper = /* @__PURE__ */ __name$4((props) => {
+	const { __scopePopper, children } = props;
+	const [anchor, setAnchor] = import_react.useState(null);
+	const [placementState, setPlacementState] = import_react.useState(void 0);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopperProvider, {
+		scope: __scopePopper,
+		anchor,
+		onAnchorChange: setAnchor,
+		placementState,
+		setPlacementState,
+		children
+	});
+}, "Popper");
+var ANCHOR_NAME = "PopperAnchor";
+var PopperAnchor = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$4(function PopperAnchor2(props, forwardedRef) {
+	const { __scopePopper, virtualRef, ...anchorProps } = props;
+	const context = usePopperContext(ANCHOR_NAME, __scopePopper);
+	const ref = import_react.useRef(null);
+	const onAnchorChange = context.onAnchorChange;
+	const callbackRef = import_react.useCallback((node) => {
+		ref.current = node;
+		if (node) onAnchorChange(node);
+	}, [onAnchorChange]);
+	const composedRefs = useComposedRefs(forwardedRef, callbackRef);
+	const anchorRef = import_react.useRef(null);
+	import_react.useEffect(() => {
+		if (!virtualRef) return;
+		const previousAnchor = anchorRef.current;
+		anchorRef.current = virtualRef.current;
+		if (previousAnchor !== anchorRef.current) onAnchorChange(anchorRef.current);
+	});
+	const sideAndAlign = context.placementState && getSideAndAlignFromPlacement(context.placementState);
+	const placedSide = sideAndAlign?.[0];
+	const placedAlign = sideAndAlign?.[1];
+	return virtualRef ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
+		"data-radix-popper-side": placedSide,
+		"data-radix-popper-align": placedAlign,
+		...anchorProps,
+		ref: composedRefs
+	});
+}, "PopperAnchor"));
+var CONTENT_NAME$2 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$2);
+var PopperContent = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$4(function PopperContent2(props, forwardedRef) {
+	const { __scopePopper, side = "bottom", sideOffset = 0, align = "center", alignOffset = 0, arrowPadding = 0, avoidCollisions = true, collisionBoundary = [], collisionPadding: collisionPaddingProp = 0, sticky = "partial", hideWhenDetached = false, updatePositionStrategy = "optimized", onPlaced, ...contentProps } = props;
+	const context = usePopperContext(CONTENT_NAME$2, __scopePopper);
+	const [content, setContent] = import_react.useState(null);
+	const composedRefs = useComposedRefs(forwardedRef, setContent);
+	const [arrow$1, setArrow] = import_react.useState(null);
+	const arrowSize = useSize(arrow$1);
+	const arrowWidth = arrowSize?.width ?? 0;
+	const arrowHeight = arrowSize?.height ?? 0;
+	const desiredPlacement = side + (align !== "center" ? "-" + align : "");
+	const collisionPadding = typeof collisionPaddingProp === "number" ? collisionPaddingProp : {
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+		...collisionPaddingProp
+	};
+	const boundary = Array.isArray(collisionBoundary) ? collisionBoundary : [collisionBoundary];
+	const hasExplicitBoundaries = boundary.length > 0;
+	const detectOverflowOptions = {
+		padding: collisionPadding,
+		boundary: boundary.filter(isNotNull),
+		altBoundary: hasExplicitBoundaries
+	};
+	const { refs, floatingStyles, placement, isPositioned, middlewareData } = useFloating({
+		strategy: "fixed",
+		placement: desiredPlacement,
+		whileElementsMounted: /* @__PURE__ */ __name$4((...args) => {
+			return autoUpdate(...args, { animationFrame: updatePositionStrategy === "always" });
+		}, "whileElementsMounted"),
+		elements: { reference: context.anchor },
+		middleware: [
+			offset({
+				mainAxis: sideOffset + arrowHeight,
+				alignmentAxis: alignOffset
+			}),
+			avoidCollisions && shift({
+				mainAxis: true,
+				crossAxis: false,
+				limiter: sticky === "partial" ? limitShift() : void 0,
+				...detectOverflowOptions
+			}),
+			avoidCollisions && flip({ ...detectOverflowOptions }),
+			size({
+				...detectOverflowOptions,
+				apply: /* @__PURE__ */ __name$4(({ elements, rects, availableWidth, availableHeight }) => {
+					const { width: anchorWidth, height: anchorHeight } = rects.reference;
+					const contentStyle = elements.floating.style;
+					contentStyle.setProperty("--radix-popper-available-width", `${availableWidth}px`);
+					contentStyle.setProperty("--radix-popper-available-height", `${availableHeight}px`);
+					contentStyle.setProperty("--radix-popper-anchor-width", `${anchorWidth}px`);
+					contentStyle.setProperty("--radix-popper-anchor-height", `${anchorHeight}px`);
+				}, "apply")
+			}),
+			arrow$1 && arrow({
+				element: arrow$1,
+				padding: arrowPadding
+			}),
+			transformOrigin({
+				arrowWidth,
+				arrowHeight
+			}),
+			hideWhenDetached && hide({
+				strategy: "referenceHidden",
+				...detectOverflowOptions,
+				boundary: hasExplicitBoundaries ? detectOverflowOptions.boundary : void 0
+			})
+		]
+	});
+	const setPlacementState = context.setPlacementState;
+	useLayoutEffect2(() => {
+		setPlacementState(placement);
+		return () => {
+			setPlacementState(void 0);
+		};
+	}, [placement, setPlacementState]);
+	const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
+	const handlePlaced = useCallbackRef(onPlaced);
+	useLayoutEffect2(() => {
+		if (isPositioned) handlePlaced?.();
+	}, [isPositioned, handlePlaced]);
+	const arrowX = middlewareData.arrow?.x;
+	const arrowY = middlewareData.arrow?.y;
+	const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
+	const [contentZIndex, setContentZIndex] = import_react.useState();
+	useLayoutEffect2(() => {
+		if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
+	}, [content]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		ref: refs.setFloating,
+		"data-radix-popper-content-wrapper": "",
+		style: {
+			...floatingStyles,
+			transform: isPositioned ? floatingStyles.transform : "translate(0, -200%)",
+			minWidth: "max-content",
+			zIndex: contentZIndex,
+			"--radix-popper-transform-origin": [middlewareData.transformOrigin?.x, middlewareData.transformOrigin?.y].join(" "),
+			...middlewareData.hide?.referenceHidden && {
+				visibility: "hidden",
+				pointerEvents: "none"
+			}
+		},
+		dir: props.dir,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopperContentProvider, {
+			scope: __scopePopper,
+			placedSide,
+			placedAlign,
+			onArrowChange: setArrow,
+			arrowX,
+			arrowY,
+			shouldHideArrow: cannotCenterArrow,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
+				"data-side": placedSide,
+				"data-align": placedAlign,
+				...contentProps,
+				ref: composedRefs,
+				style: {
+					...contentProps.style,
+					animation: !isPositioned ? "none" : contentProps.style?.animation
+				}
+			})
+		})
+	});
+}, "PopperContent"));
+function isNotNull(value) {
+	return value !== null;
+}
+__name$4(isNotNull, "isNotNull");
+var transformOrigin = /* @__PURE__ */ __name$4((options) => ({
+	name: "transformOrigin",
+	options,
+	fn(data) {
+		const { placement, rects, middlewareData } = data;
+		const isArrowHidden = middlewareData.arrow?.centerOffset !== 0;
+		const arrowWidth = isArrowHidden ? 0 : options.arrowWidth;
+		const arrowHeight = isArrowHidden ? 0 : options.arrowHeight;
+		const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
+		const noArrowAlign = {
+			start: "0%",
+			center: "50%",
+			end: "100%"
+		}[placedAlign];
+		const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2;
+		const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2;
+		let x = "";
+		let y = "";
+		if (placedSide === "bottom") {
+			x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+			y = `${-arrowHeight}px`;
+		} else if (placedSide === "top") {
+			x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+			y = `${rects.floating.height + arrowHeight}px`;
+		} else if (placedSide === "right") {
+			x = `${-arrowHeight}px`;
+			y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+		} else if (placedSide === "left") {
+			x = `${rects.floating.width + arrowHeight}px`;
+			y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+		}
+		return { data: {
+			x,
+			y
+		} };
+	}
+}), "transformOrigin");
+function getSideAndAlignFromPlacement(placement) {
+	const [side, align = "center"] = placement.split("-");
+	return [side, align];
+}
+__name$4(getSideAndAlignFromPlacement, "getSideAndAlignFromPlacement");
+var Root2$1 = Popper;
+var Anchor = PopperAnchor;
+var Content = PopperContent;
+//#endregion
+//#region node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
+var __defProp$3 = Object.defineProperty;
+var __name$3 = (target, value) => __defProp$3(target, "name", {
 	value,
 	configurable: true
 });
@@ -26,21 +252,21 @@ function useIsHydrated() {
 	}, []);
 	return isHydrated;
 }
-__name$4(useIsHydrated, "useIsHydrated");
+__name$3(useIsHydrated, "useIsHydrated");
 var useReactSyncExternalStore = import_react[" useSyncExternalStore ".trim().toString()];
 function subscribe() {
 	return () => {};
 }
-__name$4(subscribe, "subscribe");
+__name$3(subscribe, "subscribe");
 function useIsHydratedModern() {
 	return useReactSyncExternalStore(subscribe, () => true, () => false);
 }
-__name$4(useIsHydratedModern, "useIsHydratedModern");
+__name$3(useIsHydratedModern, "useIsHydratedModern");
 var useIsHydrated2 = typeof useReactSyncExternalStore === "function" ? useIsHydratedModern : useIsHydrated;
 //#endregion
 //#region node_modules/@radix-ui/react-roving-focus/dist/index.mjs
-var __defProp$3 = Object.defineProperty;
-var __name$3 = (target, value) => __defProp$3(target, "name", {
+var __defProp$2 = Object.defineProperty;
+var __name$2 = (target, value) => __defProp$2(target, "name", {
 	value,
 	configurable: true
 });
@@ -53,7 +279,7 @@ var GROUP_NAME = "RovingFocusGroup";
 var [Collection$1, useCollection$1, createCollectionScope$1] = createCollection(GROUP_NAME);
 var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope(GROUP_NAME, [createCollectionScope$1]);
 var [RovingFocusProvider, useRovingFocusContext] = createRovingFocusGroupContext(GROUP_NAME);
-var RovingFocusGroup = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$3(function RovingFocusGroup2(props, forwardedRef) {
+var RovingFocusGroup = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$2(function RovingFocusGroup2(props, forwardedRef) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Collection$1.Provider, {
 		scope: props.__scopeRovingFocusGroup,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Collection$1.Slot, {
@@ -65,7 +291,7 @@ var RovingFocusGroup = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ _
 		})
 	});
 }, "RovingFocusGroup"));
-var RovingFocusGroupImpl = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$3(function RovingFocusGroupImpl2(props, forwardedRef) {
+var RovingFocusGroupImpl = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$2(function RovingFocusGroupImpl2(props, forwardedRef) {
 	const { __scopeRovingFocusGroup, orientation, loop = false, dir, currentTabStopId: currentTabStopIdProp, defaultCurrentTabStopId, onCurrentTabStopIdChange, onEntryFocus, preventScrollOnEntryFocus = false, ...groupProps } = props;
 	const ref = import_react.useRef(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
@@ -131,7 +357,7 @@ var RovingFocusGroupImpl = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ 
 	});
 }, "RovingFocusGroupImpl"));
 var ITEM_NAME$1 = "RovingFocusGroupItem";
-var RovingFocusGroupItem = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$3(function RovingFocusGroupItem2(props, forwardedRef) {
+var RovingFocusGroupItem = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$2(function RovingFocusGroupItem2(props, forwardedRef) {
 	const { __scopeRovingFocusGroup, focusable = true, active = false, tabStopId, children, ...itemProps } = props;
 	const autoId = useId();
 	const id = tabStopId || autoId;
@@ -216,14 +442,14 @@ function getDirectionAwareKey(key, dir) {
 	if (dir !== "rtl") return key;
 	return key === "ArrowLeft" ? "ArrowRight" : key === "ArrowRight" ? "ArrowLeft" : key;
 }
-__name$3(getDirectionAwareKey, "getDirectionAwareKey");
+__name$2(getDirectionAwareKey, "getDirectionAwareKey");
 function getFocusIntent(event, orientation, dir) {
 	const key = getDirectionAwareKey(event.key, dir);
 	if (orientation === "vertical" && ["ArrowLeft", "ArrowRight"].includes(key)) return void 0;
 	if (orientation === "horizontal" && ["ArrowUp", "ArrowDown"].includes(key)) return void 0;
 	return MAP_KEY_TO_FOCUS_INTENT[key];
 }
-__name$3(getFocusIntent, "getFocusIntent");
+__name$2(getFocusIntent, "getFocusIntent");
 function focusFirst$1(candidates, preventScroll = false) {
 	const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
 	for (const candidate of candidates) {
@@ -232,239 +458,13 @@ function focusFirst$1(candidates, preventScroll = false) {
 		if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
 	}
 }
-__name$3(focusFirst$1, "focusFirst");
+__name$2(focusFirst$1, "focusFirst");
 function wrapArray$1(array, startIndex) {
 	return array.map((_, index) => array[(startIndex + index) % array.length]);
 }
-__name$3(wrapArray$1, "wrapArray");
+__name$2(wrapArray$1, "wrapArray");
 var Root = RovingFocusGroup;
 var Item = RovingFocusGroupItem;
-//#endregion
-//#region node_modules/@radix-ui/react-popper/dist/index.mjs
-var __defProp$2 = Object.defineProperty;
-var __name$2 = (target, value) => __defProp$2(target, "name", {
-	value,
-	configurable: true
-});
-var POPPER_NAME = "Popper";
-var [createPopperContext, createPopperScope] = createContextScope(POPPER_NAME);
-var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
-var Popper = /* @__PURE__ */ __name$2((props) => {
-	const { __scopePopper, children } = props;
-	const [anchor, setAnchor] = import_react.useState(null);
-	const [placementState, setPlacementState] = import_react.useState(void 0);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopperProvider, {
-		scope: __scopePopper,
-		anchor,
-		onAnchorChange: setAnchor,
-		placementState,
-		setPlacementState,
-		children
-	});
-}, "Popper");
-var ANCHOR_NAME = "PopperAnchor";
-var PopperAnchor = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$2(function PopperAnchor2(props, forwardedRef) {
-	const { __scopePopper, virtualRef, ...anchorProps } = props;
-	const context = usePopperContext(ANCHOR_NAME, __scopePopper);
-	const ref = import_react.useRef(null);
-	const onAnchorChange = context.onAnchorChange;
-	const callbackRef = import_react.useCallback((node) => {
-		ref.current = node;
-		if (node) onAnchorChange(node);
-	}, [onAnchorChange]);
-	const composedRefs = useComposedRefs(forwardedRef, callbackRef);
-	const anchorRef = import_react.useRef(null);
-	import_react.useEffect(() => {
-		if (!virtualRef) return;
-		const previousAnchor = anchorRef.current;
-		anchorRef.current = virtualRef.current;
-		if (previousAnchor !== anchorRef.current) onAnchorChange(anchorRef.current);
-	});
-	const sideAndAlign = context.placementState && getSideAndAlignFromPlacement(context.placementState);
-	const placedSide = sideAndAlign?.[0];
-	const placedAlign = sideAndAlign?.[1];
-	return virtualRef ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
-		"data-radix-popper-side": placedSide,
-		"data-radix-popper-align": placedAlign,
-		...anchorProps,
-		ref: composedRefs
-	});
-}, "PopperAnchor"));
-var CONTENT_NAME$2 = "PopperContent";
-var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$2);
-var PopperContent = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$2(function PopperContent2(props, forwardedRef) {
-	const { __scopePopper, side = "bottom", sideOffset = 0, align = "center", alignOffset = 0, arrowPadding = 0, avoidCollisions = true, collisionBoundary = [], collisionPadding: collisionPaddingProp = 0, sticky = "partial", hideWhenDetached = false, updatePositionStrategy = "optimized", onPlaced, ...contentProps } = props;
-	const context = usePopperContext(CONTENT_NAME$2, __scopePopper);
-	const [content, setContent] = import_react.useState(null);
-	const composedRefs = useComposedRefs(forwardedRef, setContent);
-	const [arrow$1, setArrow] = import_react.useState(null);
-	const arrowSize = useSize(arrow$1);
-	const arrowWidth = arrowSize?.width ?? 0;
-	const arrowHeight = arrowSize?.height ?? 0;
-	const desiredPlacement = side + (align !== "center" ? "-" + align : "");
-	const collisionPadding = typeof collisionPaddingProp === "number" ? collisionPaddingProp : {
-		top: 0,
-		right: 0,
-		bottom: 0,
-		left: 0,
-		...collisionPaddingProp
-	};
-	const boundary = Array.isArray(collisionBoundary) ? collisionBoundary : [collisionBoundary];
-	const hasExplicitBoundaries = boundary.length > 0;
-	const detectOverflowOptions = {
-		padding: collisionPadding,
-		boundary: boundary.filter(isNotNull),
-		altBoundary: hasExplicitBoundaries
-	};
-	const { refs, floatingStyles, placement, isPositioned, middlewareData } = useFloating({
-		strategy: "fixed",
-		placement: desiredPlacement,
-		whileElementsMounted: /* @__PURE__ */ __name$2((...args) => {
-			return autoUpdate(...args, { animationFrame: updatePositionStrategy === "always" });
-		}, "whileElementsMounted"),
-		elements: { reference: context.anchor },
-		middleware: [
-			offset({
-				mainAxis: sideOffset + arrowHeight,
-				alignmentAxis: alignOffset
-			}),
-			avoidCollisions && shift({
-				mainAxis: true,
-				crossAxis: false,
-				limiter: sticky === "partial" ? limitShift() : void 0,
-				...detectOverflowOptions
-			}),
-			avoidCollisions && flip({ ...detectOverflowOptions }),
-			size({
-				...detectOverflowOptions,
-				apply: /* @__PURE__ */ __name$2(({ elements, rects, availableWidth, availableHeight }) => {
-					const { width: anchorWidth, height: anchorHeight } = rects.reference;
-					const contentStyle = elements.floating.style;
-					contentStyle.setProperty("--radix-popper-available-width", `${availableWidth}px`);
-					contentStyle.setProperty("--radix-popper-available-height", `${availableHeight}px`);
-					contentStyle.setProperty("--radix-popper-anchor-width", `${anchorWidth}px`);
-					contentStyle.setProperty("--radix-popper-anchor-height", `${anchorHeight}px`);
-				}, "apply")
-			}),
-			arrow$1 && arrow({
-				element: arrow$1,
-				padding: arrowPadding
-			}),
-			transformOrigin({
-				arrowWidth,
-				arrowHeight
-			}),
-			hideWhenDetached && hide({
-				strategy: "referenceHidden",
-				...detectOverflowOptions,
-				boundary: hasExplicitBoundaries ? detectOverflowOptions.boundary : void 0
-			})
-		]
-	});
-	const setPlacementState = context.setPlacementState;
-	useLayoutEffect2(() => {
-		setPlacementState(placement);
-		return () => {
-			setPlacementState(void 0);
-		};
-	}, [placement, setPlacementState]);
-	const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
-	const handlePlaced = useCallbackRef(onPlaced);
-	useLayoutEffect2(() => {
-		if (isPositioned) handlePlaced?.();
-	}, [isPositioned, handlePlaced]);
-	const arrowX = middlewareData.arrow?.x;
-	const arrowY = middlewareData.arrow?.y;
-	const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
-	const [contentZIndex, setContentZIndex] = import_react.useState();
-	useLayoutEffect2(() => {
-		if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
-	}, [content]);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-		ref: refs.setFloating,
-		"data-radix-popper-content-wrapper": "",
-		style: {
-			...floatingStyles,
-			transform: isPositioned ? floatingStyles.transform : "translate(0, -200%)",
-			minWidth: "max-content",
-			zIndex: contentZIndex,
-			"--radix-popper-transform-origin": [middlewareData.transformOrigin?.x, middlewareData.transformOrigin?.y].join(" "),
-			...middlewareData.hide?.referenceHidden && {
-				visibility: "hidden",
-				pointerEvents: "none"
-			}
-		},
-		dir: props.dir,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopperContentProvider, {
-			scope: __scopePopper,
-			placedSide,
-			placedAlign,
-			onArrowChange: setArrow,
-			arrowX,
-			arrowY,
-			shouldHideArrow: cannotCenterArrow,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
-				"data-side": placedSide,
-				"data-align": placedAlign,
-				...contentProps,
-				ref: composedRefs,
-				style: {
-					...contentProps.style,
-					animation: !isPositioned ? "none" : contentProps.style?.animation
-				}
-			})
-		})
-	});
-}, "PopperContent"));
-function isNotNull(value) {
-	return value !== null;
-}
-__name$2(isNotNull, "isNotNull");
-var transformOrigin = /* @__PURE__ */ __name$2((options) => ({
-	name: "transformOrigin",
-	options,
-	fn(data) {
-		const { placement, rects, middlewareData } = data;
-		const isArrowHidden = middlewareData.arrow?.centerOffset !== 0;
-		const arrowWidth = isArrowHidden ? 0 : options.arrowWidth;
-		const arrowHeight = isArrowHidden ? 0 : options.arrowHeight;
-		const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
-		const noArrowAlign = {
-			start: "0%",
-			center: "50%",
-			end: "100%"
-		}[placedAlign];
-		const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2;
-		const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2;
-		let x = "";
-		let y = "";
-		if (placedSide === "bottom") {
-			x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
-			y = `${-arrowHeight}px`;
-		} else if (placedSide === "top") {
-			x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
-			y = `${rects.floating.height + arrowHeight}px`;
-		} else if (placedSide === "right") {
-			x = `${-arrowHeight}px`;
-			y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
-		} else if (placedSide === "left") {
-			x = `${rects.floating.width + arrowHeight}px`;
-			y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
-		}
-		return { data: {
-			x,
-			y
-		} };
-	}
-}), "transformOrigin");
-function getSideAndAlignFromPlacement(placement) {
-	const [side, align = "center"] = placement.split("-");
-	return [side, align];
-}
-__name$2(getSideAndAlignFromPlacement, "getSideAndAlignFromPlacement");
-var Root2$1 = Popper;
-var Anchor = PopperAnchor;
-var Content = PopperContent;
 //#endregion
 //#region node_modules/@radix-ui/react-menu/dist/index.mjs
 var __defProp$1 = Object.defineProperty;

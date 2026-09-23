@@ -1,6 +1,6 @@
 import { n as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "./@floating-ui/react-dom+[...].mjs";
-import { d as useComposedRefs, f as require_jsx_runtime, o as createContextScope, u as createSlot } from "./@radix-ui/react-avatar+[...].mjs";
+import { c as createContextScope, d as useComposedRefs, f as require_jsx_runtime, u as createSlot } from "./@radix-ui/react-avatar+[...].mjs";
 //#region node_modules/@radix-ui/react-collection/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_jsx_runtime = require_jsx_runtime();

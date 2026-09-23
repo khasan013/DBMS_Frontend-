@@ -1,1 +1,0 @@
-import{_ as e,d as t,h as n}from"./api-B3nJ8WPI.js";var r=e(n(),1);function i(e){let n=t();return r.useCallback(t=>n.navigate({...t,from:t.from??e?.from}),[e?.from,n])}export{i as t};
