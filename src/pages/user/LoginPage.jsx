@@ -18,7 +18,7 @@ export function LoginPage() {
   const submit = (event) => {
     event.preventDefault();
     const next = {};
-    if (!values.identifier.trim()) next.identifier = "Enter your student ID or admin email.";
+    if (!values.identifier.trim()) next.identifier = "Enter your student ID, vendor login ID, or admin email.";
     if (values.password.length < 8) next["password"] = "Password must be at least 8 characters.";
     setErrors(next);
     if (Object.keys(next).length) return;
@@ -34,7 +34,8 @@ export function LoginPage() {
         const account = result.user ?? result;
         saveSession({ token: result.accessToken, role: isAdminLogin ? "ADMIN" : "USER", user: account });
         toast.success(isAdminLogin ? "Welcome back, administrator" : "Welcome back to Campus Crate");
-        navigate({ to: isAdminLogin ? "/admin" : "/my-listings" });
+        if (isAdminLogin) { navigate({ to: "/admin" }); return; }
+        api("/api/vendors/me").then(() => navigate({ to: "/vendor" })).catch(() => navigate({ to: "/my-listings" }));
       })
       .catch((error) => toast.error(error.message))
       .finally(() => setLoading(false));
@@ -48,7 +49,7 @@ export function LoginPage() {
         <p className="mt-1.5 text-sm text-muted-foreground">Sign in to manage your campus listings.</p>
         <form className="mt-6 space-y-4" onSubmit={submit} noValidate>
           <div className="space-y-2">
-            <Label htmlFor="identifier">Student ID or admin email</Label>
+            <Label htmlFor="identifier">Student ID, vendor login ID, or admin email</Label>
             <Input id="identifier" autoComplete="username" placeholder="e.g. 20230001 or admin@example.com" value={values.identifier} onChange={(e) => setValues({ ...values, identifier: e.target.value })} aria-invalid={!!errors.identifier} />
             {errors.identifier && <p className="text-xs font-medium text-danger">{errors.identifier}</p>}
           </div>

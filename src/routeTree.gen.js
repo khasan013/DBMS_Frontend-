@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as EditProfileRouteImport } from './routes/edit-profile'
+import { Route as FoodRouteImport } from './routes/food'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LostAndFoundRouteImport } from './routes/lost-and-found'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
@@ -19,6 +20,7 @@ import { Route as MyListingsRouteImport } from './routes/my-listings'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ToLetRouteImport } from './routes/to-let'
+import { Route as VendorRouteImport } from './routes/vendor'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as ListingIdRouteImport } from './routes/listing.$id'
 
@@ -35,6 +37,11 @@ const AdminRoute = AdminRouteImport.update({
 const EditProfileRoute = EditProfileRouteImport.update({
   id: '/edit-profile',
   path: '/edit-profile',
+  getParentRoute: () => rootRouteImport,
+})
+const FoodRoute = FoodRouteImport.update({
+  id: '/food',
+  path: '/food',
   getParentRoute: () => rootRouteImport,
 })
 const LoginRoute = LoginRouteImport.update({
@@ -72,6 +79,11 @@ const ToLetRoute = ToLetRouteImport.update({
   path: '/to-let',
   getParentRoute: () => rootRouteImport,
 })
+const VendorRoute = VendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
+  getParentRoute: () => rootRouteImport,
+})
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
@@ -87,6 +99,7 @@ const rootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   EditProfileRoute: EditProfileRoute,
+  FoodRoute: FoodRoute,
   LoginRoute: LoginRoute,
   LostAndFoundRoute: LostAndFoundRoute,
   MarketplaceRoute: MarketplaceRoute,
@@ -94,6 +107,7 @@ const rootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   ToLetRoute: ToLetRoute,
+  VendorRoute: VendorRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   ListingIdRoute: ListingIdRoute,
 }

@@ -8,6 +8,7 @@ import {
   UserX,
   Trash2,
   Users,
+  Store,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, getSession } from "@/services/api";
@@ -52,6 +53,8 @@ export function AdminPage() {
   const [posts, setPosts] = useState({ lost: [], market: [], toLet: [] });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState("");
+  const [vendors, setVendors] = useState([]);
+  const [vendorForm, setVendorForm] = useState({ loginId: "", name: "", email: "", password: "", phone: "", location: "", description: "" });
 
   useEffect(() => {
     if (!isAdmin || !admin?.adminId) {
@@ -61,11 +64,13 @@ export function AdminPage() {
     Promise.all([
       api(`/api/admin/${admin.adminId}`),
       api("/api/admin/users"),
+      api("/api/admin/vendors"),
       ...postModules.map((module) => api(module.endpoint)),
     ])
-      .then(([adminProfile, userList, ...postLists]) => {
+      .then(([adminProfile, userList, vendorList, ...postLists]) => {
         setProfile(adminProfile);
         setUsers(userList);
+        setVendors(vendorList);
         setPosts(
           Object.fromEntries(
             postModules.map((module, index) => [module.key, postLists[index]]),
@@ -95,6 +100,7 @@ export function AdminPage() {
       .catch((error) => toast.error(error.message))
       .finally(() => setUpdating(""));
   };
+  const createVendor = (event) => { event.preventDefault(); setUpdating("vendor"); api("/api/admin/vendors", { method: "POST", body: JSON.stringify(vendorForm) }).then((vendor) => { setVendors((current) => [vendor, ...current]); setVendorForm({ loginId: "", name: "", email: "", password: "", phone: "", location: "", description: "" }); toast.success("Vendor account created."); }).catch((error) => toast.error(error.message)).finally(() => setUpdating("")); };
   const setStatus = (module, post, status) => {
     const postId = post[module.id];
     setUpdating(`${module.key}-${postId}`);
@@ -267,6 +273,10 @@ export function AdminPage() {
                 </table>
               </div>
             </div>
+          </section>
+          <section className="border-t border-border py-8">
+            <div className="mb-5 flex items-center gap-2"><Store className="text-primary" /><div><h2 className="font-display text-xl font-semibold">Food vendors</h2><p className="text-sm text-muted-foreground">Create vendor accounts. Vendors use their login ID and password to manage menu items.</p></div></div>
+            <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]"><form onSubmit={createVendor} className="grid gap-3 rounded-xl border border-border bg-card p-5 sm:grid-cols-2"><input required placeholder="Vendor login ID" value={vendorForm.loginId} onChange={(e) => setVendorForm({ ...vendorForm, loginId: e.target.value })} className="h-10 rounded-md border border-input bg-background px-3 text-sm"/><input required placeholder="Vendor name" value={vendorForm.name} onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })} className="h-10 rounded-md border border-input bg-background px-3 text-sm"/><input required type="email" placeholder="Email" value={vendorForm.email} onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })} className="h-10 rounded-md border border-input bg-background px-3 text-sm"/><input required type="password" minLength="8" placeholder="Temporary password" value={vendorForm.password} onChange={(e) => setVendorForm({ ...vendorForm, password: e.target.value })} className="h-10 rounded-md border border-input bg-background px-3 text-sm"/><input required placeholder="Phone" value={vendorForm.phone} onChange={(e) => setVendorForm({ ...vendorForm, phone: e.target.value })} className="h-10 rounded-md border border-input bg-background px-3 text-sm"/><input required placeholder="Location" value={vendorForm.location} onChange={(e) => setVendorForm({ ...vendorForm, location: e.target.value })} className="h-10 rounded-md border border-input bg-background px-3 text-sm"/><textarea placeholder="Description (optional)" value={vendorForm.description} onChange={(e) => setVendorForm({ ...vendorForm, description: e.target.value })} className="min-h-20 rounded-md border border-input bg-background p-3 text-sm sm:col-span-2"/><Button className="sm:col-span-2" disabled={updating === "vendor"}>{updating === "vendor" ? "Creating vendor…" : "Create vendor"}</Button></form><div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">{vendors.map((vendor) => <div key={vendor.vendorId} className="p-4"><p className="font-semibold">{vendor.name}</p><p className="mt-1 text-sm text-muted-foreground">{vendor.location} · {vendor.phone}</p><p className="mt-1 text-xs text-muted-foreground">{vendor.foodItems?.length ?? 0} food item(s)</p></div>)}{!vendors.length && <p className="p-8 text-center text-sm text-muted-foreground">No vendors created yet.</p>}</div></div>
           </section>
           <section className="border-t border-border py-8">
             <div className="mb-5 flex items-center gap-2">
