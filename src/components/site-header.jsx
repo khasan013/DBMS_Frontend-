@@ -10,10 +10,13 @@ import { clearSession, getSession } from "@/services/api";
 export function SiteHeader() {
   const [createOpen, setCreateOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [session, setSession] = useState(() => getSession());
+  // Start with the same state on the server and browser. Reading localStorage during
+  // the first browser render causes React hydration error #418 for signed-in users.
+  const [session, setSession] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     const refreshSession = () => setSession(getSession());
+    refreshSession();
     window.addEventListener("campus-crate-auth-change", refreshSession);
     window.addEventListener("storage", refreshSession);
     return () => {
