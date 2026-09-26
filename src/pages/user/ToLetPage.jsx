@@ -48,6 +48,7 @@ export function ToLetPage() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [isVendor, setIsVendor] = useState(false);
 
   useEffect(() => {
     api("/api/to-let/listings")
@@ -58,13 +59,15 @@ export function ToLetPage() {
       })
       .finally(() => setLoading(false));
   }, []);
+  useEffect(() => { if (!userId) return; api("/api/vendors/me").then(() => { setIsVendor(true); setShowForm(false); }).catch(() => setIsVendor(false)); }, [userId]);
 
   useEffect(() => {
+    if (isVendor) return;
     if (sessionStorage.getItem("campus-crate-open-to-let-form") !== "true")
       return;
     sessionStorage.removeItem("campus-crate-open-to-let-form");
     setShowForm(true);
-  }, []);
+  }, [isVendor]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -256,7 +259,7 @@ export function ToLetPage() {
                   Clear filters
                 </Button>
               )}
-              <Button
+              {!isVendor && <Button
                 className="w-full"
                 variant="outline"
                 onClick={() => {
@@ -268,7 +271,7 @@ export function ToLetPage() {
               >
                 <Plus />
                 Post to-let
-              </Button>
+              </Button>}
             </div>
           </aside>
           <div>

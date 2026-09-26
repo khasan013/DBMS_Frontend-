@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Edit3, Loader2, ShieldCheck } from "lucide-react";
 import { api, getSession } from "@/services/api";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,17 @@ export const Route = createFileRoute("/my-listings")({ component: MyListingsRout
 function MyListingsRoute() { return <RequireAuth><MyListingsPage /></RequireAuth>; }
 
 export function MyListingsPage() {
+  const navigate = useNavigate();
   const user = getSession()?.user;
   const [tab, setTab] = useState("all");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!user?.userId) return;
+    api("/api/vendors/me").then(() => navigate({ to: "/vendor", replace: true })).catch(() => {});
+  }, [navigate, user?.userId]);
 
   useEffect(() => {
     if (!user?.userId) return;
