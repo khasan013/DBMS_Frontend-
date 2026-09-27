@@ -37,6 +37,7 @@ const MAX_RENT = 100000;
 export function ToLetPage() {
   const navigate = useNavigate();
   const photoInputRef = useRef(null);
+  const submissionRef = useRef(false);
   const userId = getSession()?.user?.userId;
   const [listings, setListings] = useState([]);
   const [query, setQuery] = useState("");
@@ -50,6 +51,7 @@ export function ToLetPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [isVendor, setIsVendor] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
 
   usePolling(async () => {
@@ -109,23 +111,26 @@ export function ToLetPage() {
     setMaxRent(MAX_RENT);
     setBedrooms([]);
   };
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
+    if (submissionRef.current) return;
     if (!userId) {
       toast.error("Please sign in to post a rental listing.");
       navigate({ to: "/login" });
       return;
     }
-    Promise.all(
+    submissionRef.current = true;
+    setSubmitting(true);
+    try {
+      const photoUrls = await Promise.all(
       photos.map(async (photo) => {
         const body = new FormData();
         body.append("file", photo);
         return (await api("/api/uploads/images", { method: "POST", body }))
           .imageUrl;
       }),
-    )
-      .then((photoUrls) =>
-        api("/api/to-let/listings", {
+      );
+      const listing = await api("/api/to-let/listings", {
           method: "POST",
           body: JSON.stringify({
             ...form,
@@ -136,16 +141,14 @@ export function ToLetPage() {
             availableFrom: form.availableFrom || null,
             photoUrls,
           }),
-        }),
-      )
-      .then((listing) => {
-        setListings((current) => [listing, ...current]);
-        setForm(emptyForm);
-        setPhotos([]);
-        setShowForm(false);
-        toast.success("Your to-let listing was submitted. Please wait for admin approval.");
-      })
-      .catch((error) => toast.error(error.message));
+      });
+      setListings((current) => [listing, ...current]);
+      setForm(emptyForm);
+      setPhotos([]);
+      setShowForm(false);
+      toast.success("Your to-let listing was submitted. Please wait for admin approval.");
+    } catch (error) { toast.error(error.message); }
+    finally { submissionRef.current = false; setSubmitting(false); }
   };
 
   return (
@@ -406,10 +409,11 @@ export function ToLetPage() {
                   </p>
                 </div>
                 <div className="md:col-span-2 flex gap-3">
-                  <Button type="submit">Publish listing</Button>
+                  <Button type="submit" disabled={submitting}>{submitting ? "Publishing…" : "Publish listing"}</Button>
                   <Button
                     type="button"
                     variant="outline"
+                    disabled={submitting}
                     onClick={() => setShowForm(false)}
                   >
                     Cancel

@@ -18,6 +18,7 @@ import { Route as LostAndFoundRouteImport } from './routes/lost-and-found'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MyListingsRouteImport } from './routes/my-listings'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ToLetRouteImport } from './routes/to-let'
 import { Route as VendorRouteImport } from './routes/vendor'
@@ -69,6 +70,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 })
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+})
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -105,6 +111,7 @@ const rootRouteChildren = {
   MarketplaceRoute: MarketplaceRoute,
   MyListingsRoute: MyListingsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SearchRoute: SearchRoute,
   SignupRoute: SignupRoute,
   ToLetRoute: ToLetRoute,
   VendorRoute: VendorRoute,

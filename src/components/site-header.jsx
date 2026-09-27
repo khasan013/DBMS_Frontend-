@@ -61,7 +61,7 @@ export function SiteHeader() {
     setCreateOpen(false);
     navigate({ to: "/" });
   };
-  const runSearch = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const section = String(form.get("section")); const query = String(form.get("query") || "").trim(); const path = section === "lost" ? "/lost-and-found" : section === "market" ? "/marketplace" : section === "to-let" ? "/to-let" : section === "food" ? "/food" : "/"; window.location.assign(`${path}${query ? `?q=${encodeURIComponent(query)}` : ""}`); };
+  const runSearch = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const section = String(form.get("section")); const query = String(form.get("query") || "").trim(); const path = section === "lost" ? "/lost-and-found" : section === "market" ? "/marketplace" : section === "to-let" ? "/to-let" : section === "food" ? "/food" : "/search"; window.location.assign(`${path}${query ? `?q=${encodeURIComponent(query)}` : ""}`); };
   const links = [{ to: "/lost-and-found", label: "Lost & Found" }, { to: "/marketplace", label: "Marketplace" }, { to: "/to-let", label: "To-let" }, { to: "/food", label: "Food" }];
   return <>
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/92 backdrop-blur-xl">
