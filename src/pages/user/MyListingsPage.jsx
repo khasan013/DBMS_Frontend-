@@ -105,6 +105,15 @@ export function MyListingsPage() {
     } catch (requestError) { toast.error(requestError.message); }
     finally { setUpdatingId(""); }
   };
+  const markRented = async (post) => {
+    setUpdatingId(post.id);
+    try {
+      const updated = await api(`/api/to-let/listings/${post.resourceId}/rented?ownerId=${user.userId}`, { method: "PUT" });
+      setPosts((current) => current.map((item) => item.id === post.id ? { ...item, status: updated.status } : item));
+      toast.success("Listing marked as rented.");
+    } catch (requestError) { toast.error(requestError.message); }
+    finally { setUpdatingId(""); }
+  };
 
   return (
     <main className="container-shell py-10">
@@ -193,7 +202,7 @@ export function MyListingsPage() {
                     : post.module === "market"
                       ? "Marketplace"
                       : "Lost & Found"}
-                </span>{post.module === "market" && post.status === "ACTIVE" && <Button size="sm" variant="outline" disabled={updatingId === post.id} onClick={() => markSold(post)}>Mark sold</Button>}{(post.module === "market" || post.module === "to-let") && <Button size="icon" variant="destructive" disabled={updatingId === post.id} onClick={() => removePost(post)} aria-label={`Delete ${post.title}`}><Trash2 /></Button>}</div>
+                </span>{post.module === "market" && post.status === "ACTIVE" && <Button size="sm" variant="outline" disabled={updatingId === post.id} onClick={() => markSold(post)}>Mark sold</Button>}{post.module === "to-let" && post.status === "AVAILABLE" && <Button size="sm" variant="outline" disabled={updatingId === post.id} onClick={() => markRented(post)}>Mark rented</Button>}{(post.module === "market" || post.module === "to-let") && <Button size="icon" variant="destructive" disabled={updatingId === post.id} onClick={() => removePost(post)} aria-label={`Delete ${post.title}`}><Trash2 /></Button>}</div>
               </article>
             ))}
             {visible.length === 0 && (
