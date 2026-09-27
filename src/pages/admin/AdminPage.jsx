@@ -31,7 +31,7 @@ const postModules = [
     endpoint: "/api/admin/marketplace/posts",
     adminEndpoint: "/api/admin/marketplace/posts",
     id: "postId",
-    statuses: ["PENDING_APPROVAL", "ACTIVE", "SOLD", "CANCELLED"],
+    approval: { approve: "ACTIVE", reject: "CANCELLED" },
   },
   {
     key: "toLet",
@@ -39,7 +39,7 @@ const postModules = [
     endpoint: "/api/admin/to-let/listings",
     adminEndpoint: "/api/admin/to-let/listings",
     id: "listingId",
-    statuses: ["PENDING_APPROVAL", "AVAILABLE", "RENTED", "CLOSED"],
+    approval: { approve: "AVAILABLE", reject: "CLOSED" },
   },
 ];
 
@@ -340,20 +340,7 @@ function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
               </p>
               <div className="mt-3 flex items-center gap-2">
                 <StatusBadge status={post.status} />
-                <select
-                  value={post.status}
-                  disabled={updating === `${module.key}-${postId}`}
-                  onChange={(event) =>
-                    onStatusChange(module, post, event.target.value)
-                  }
-                  className="h-8 flex-1 rounded-md border border-input bg-background px-2 text-xs"
-                >
-                  {module.statuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
+                {module.approval && post.status === "PENDING_APPROVAL" ? <div className="flex flex-1 gap-2"><Button size="sm" disabled={updating === `${module.key}-${postId}`} onClick={() => onStatusChange(module, post, module.approval.approve)}>Approve</Button><Button size="sm" variant="destructive" disabled={updating === `${module.key}-${postId}`} onClick={() => onStatusChange(module, post, module.approval.reject)}>Reject</Button></div> : !module.approval ? <select value={post.status} disabled={updating === `${module.key}-${postId}`} onChange={(event) => onStatusChange(module, post, event.target.value)} className="h-8 flex-1 rounded-md border border-input bg-background px-2 text-xs">{module.statuses.map((status) => <option key={status} value={status}>{status}</option>)}</select> : <span className="flex-1 text-xs text-muted-foreground">Moderation complete</span>}
                 {updating === `${module.key}-${postId}` && (
                   <Loader2 className="size-4 animate-spin text-primary" />
                 )}
