@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { ListingCard } from "@/components/listing-card";
+import { usePolling } from "@/utils/use-polling";
 
 export const Route = createFileRoute("/to-let")({ component: ToLetPage });
 
@@ -51,14 +52,13 @@ export function ToLetPage() {
   const [isVendor, setIsVendor] = useState(false);
   useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
 
-  useEffect(() => {
-    api("/api/to-let/listings")
-      .then(setListings)
-      .catch((error) => {
-        setListings([]);
-        setLoadError(error.message);
-      })
-      .finally(() => setLoading(false));
+  usePolling(async () => {
+    try {
+      setListings(await api("/api/to-let/listings"));
+      setLoadError("");
+    } catch (error) {
+      setLoadError(error.message);
+    } finally { setLoading(false); }
   }, []);
   useEffect(() => { if (!userId) return; api("/api/vendors/me").then(() => { setIsVendor(true); setShowForm(false); }).catch(() => setIsVendor(false)); }, [userId]);
 

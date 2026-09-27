@@ -6,16 +6,18 @@ import { api, clearSession, getSession } from "@/services/api";
 
 export function AppLayout() {
   useEffect(() => {
-    const validateSession = () => {
+    let timer;
+    let active = true;
+    const validateSession = async () => {
       if (!getSession()) return;
-      api("/api/session").catch(() => {
+      await api("/api/session").catch(() => {
         clearSession();
         window.location.assign("/");
       });
+      if (active) timer = window.setTimeout(validateSession, 2000);
     };
     validateSession();
-    const timer = window.setInterval(validateSession, 2000);
-    return () => window.clearInterval(timer);
+    return () => { active = false; window.clearTimeout(timer); };
   }, []);
 
   return (

@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getListingReference } from "@/data/campus-data";
 import { RequireAuth } from "@/components/require-auth";
+import { usePolling } from "@/utils/use-polling";
 
 export const Route = createFileRoute("/my-listings")({ component: MyListingsRoute });
 function MyListingsRoute() { return <RequireAuth><MyListingsPage /></RequireAuth>; }
@@ -27,17 +28,17 @@ export function MyListingsPage() {
     api("/api/vendors/me").then(() => navigate({ to: "/vendor", replace: true })).catch(() => {});
   }, [navigate, user?.userId]);
 
-  useEffect(() => {
+  usePolling(async () => {
     if (!user?.userId) return;
-    Promise.all([
+    try {
+      const [items, marketplacePosts, toLetListings, orders] = await Promise.all([
       api("/api/items"),
       api(`/api/marketplace/users/${user.userId}/posts`),
       api(`/api/to-let/listings/owners/${user.userId}`),
       api("/api/food/orders/me"),
-    ])
-      .then(([items, marketplacePosts, toLetListings, orders]) => {
-        setFoodOrders(orders);
-        setPosts([
+      ]);
+      setFoodOrders(orders);
+      setPosts([
           ...items
             .filter((item) => item.reportedBy === user.userId)
             .map((item) => ({
@@ -68,10 +69,10 @@ export function MyListingsPage() {
             status: listing.status,
             createdAt: listing.createdAt,
           })),
-        ]);
-      })
-      .catch((requestError) => setError(requestError.message))
-      .finally(() => setLoading(false));
+      ]);
+      setError("");
+    } catch (requestError) { setError(requestError.message); }
+    finally { setLoading(false); }
   }, [user?.userId]);
 
   const visible = useMemo(

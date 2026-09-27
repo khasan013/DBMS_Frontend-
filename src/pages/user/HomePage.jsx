@@ -5,6 +5,7 @@ import { ListingCard } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/services/api";
+import { usePolling } from "@/utils/use-polling";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
@@ -19,10 +20,10 @@ export function HomePage() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let active = true;
-    const loadHighlights = () => api("/api/highlights/recent?limit=12")
-      .then((highlights) => active && setListings(highlights.map((highlight) => ({
+  usePolling(async () => {
+    try {
+      const highlights = await api("/api/highlights/recent?limit=12");
+      setListings(highlights.map((highlight) => ({
         id: highlight.highlightId,
         module: highlight.module,
         title: highlight.title,
@@ -31,12 +32,9 @@ export function HomePage() {
         tag: highlight.categoryOrArea,
         status: highlight.status,
         imageUrl: highlight.imageUrl,
-      }))))
-      .catch(() => active && setListings([]))
-      .finally(() => active && setLoading(false));
-    loadHighlights();
-    const timer = window.setInterval(loadHighlights, 2000);
-    return () => { active = false; window.clearInterval(timer); };
+      })));
+    } catch { setListings([]); }
+    finally { setLoading(false); }
   }, []);
 
   const visible = listings.filter((item) => tab === "all" || item.module === tab).slice(0, 8);

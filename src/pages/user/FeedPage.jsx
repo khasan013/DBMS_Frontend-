@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { api } from "@/services/api";
+import { usePolling } from "@/utils/use-polling";
 
 const config = {
   lost: {
@@ -32,12 +33,12 @@ export function FeedPage({ module }) {
   const content = config[module];
   const Icon = content.icon;
   useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
-  useEffect(() => {
+  usePolling(async () => {
     const endpoint =
       module === "lost" ? "/api/items" : "/api/marketplace/posts";
-    setLoadError("");
-    api(endpoint)
-      .then((data) =>
+    try {
+      const data = await api(endpoint);
+      setLoadError("");
         setRemoteListings(
           data.map((item) =>
             module === "lost"
@@ -64,12 +65,10 @@ export function FeedPage({ module }) {
                   owner: `Student #${item.sellerId}`,
                 },
           ),
-        ),
-      )
-      .catch((error) => {
-        setRemoteListings([]);
-        setLoadError(error.message);
-      });
+        );
+    } catch (error) {
+      setLoadError(error.message);
+    }
   }, [module]);
   const base = remoteListings;
   const filtered = useMemo(
