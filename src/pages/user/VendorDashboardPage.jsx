@@ -10,7 +10,21 @@ export const Route = createFileRoute("/vendor")({ component: VendorDashboardPage
 const empty = { name: "", description: "", price: "", imageUrl: "", available: true };
 export function VendorDashboardPage() {
   const navigate = useNavigate(), fileInput = useRef(null); const [vendor, setVendor] = useState(null), [orders, setOrders] = useState([]), [form, setForm] = useState(empty), [editingId, setEditingId] = useState(null), [saving, setSaving] = useState(false), [uploading, setUploading] = useState(false);
-  useEffect(() => { if (!getSession()) { navigate({ to: "/login" }); return; } Promise.all([api("/api/vendors/me"), api("/api/vendors/me/orders")]).then(([vendorData, orderData]) => { setVendor(vendorData); setOrders(orderData); }).catch((error) => { toast.error(error.message); navigate({ to: "/food" }); }); }, [navigate]);
+  useEffect(() => {
+    if (!getSession()) { navigate({ to: "/login" }); return; }
+    let active = true;
+    let failed = false;
+    const loadDashboard = () => Promise.all([api("/api/vendors/me"), api("/api/vendors/me/orders")]).then(([vendorData, orderData]) => {
+      if (!active) return;
+      setVendor(vendorData);
+      setOrders(orderData);
+    }).catch((error) => {
+      if (active && !failed) { failed = true; toast.error(error.message); navigate({ to: "/food" }); }
+    });
+    loadDashboard();
+    const timer = window.setInterval(loadDashboard, 2000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [navigate]);
   const upload = async (file) => { if (!file) return; setUploading(true); try { const body = new FormData(); body.append("file", file); const data = await api("/api/uploads/images", { method: "POST", body }); setForm((current) => ({ ...current, imageUrl: data.imageUrl })); } catch (error) { toast.error(error.message); } finally { setUploading(false); } };
   const create = async (event) => { event.preventDefault(); setSaving(true); try { const payload = { ...form, price: Number(form.price) }; const item = await api(editingId ? `/api/vendors/me/items/${editingId}` : "/api/vendors/me/items", { method: editingId ? "PUT" : "POST", body: JSON.stringify(payload) }); setVendor((current) => ({ ...current, foodItems: editingId ? current.foodItems.map((entry) => entry.foodItemId === editingId ? item : entry) : [item, ...current.foodItems] })); setForm(empty); setEditingId(null); toast.success(editingId ? "Food item updated." : "Food item published."); } catch (error) { toast.error(error.message); } finally { setSaving(false); } };
   const remove = async (item) => { if (!window.confirm(`Remove ${item.name}?`)) return; try { await api(`/api/vendors/me/items/${item.foodItemId}`, { method: "DELETE" }); setVendor((current) => ({ ...current, foodItems: current.foodItems.filter((entry) => entry.foodItemId !== item.foodItemId) })); toast.success("Food item removed."); } catch (error) { toast.error(error.message); } };

@@ -31,6 +31,7 @@ export function FeedPage({ module }) {
   const [loadError, setLoadError] = useState("");
   const content = config[module];
   const Icon = content.icon;
+  useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
   useEffect(() => {
     const endpoint =
       module === "lost" ? "/api/items" : "/api/marketplace/posts";

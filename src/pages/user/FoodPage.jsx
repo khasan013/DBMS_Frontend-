@@ -12,7 +12,21 @@ export const Route = createFileRoute("/food")({ component: FoodPage });
 export function FoodPage() {
   const navigate = useNavigate();
   const [vendors, setVendors] = useState([]), [selectedVendorId, setSelectedVendorId] = useState(null), [cart, setCart] = useState([]), [query, setQuery] = useState(""), [loading, setLoading] = useState(true), [checkoutOpen, setCheckoutOpen] = useState(false), [payment, setPayment] = useState("COD"), [deliveryLocation, setDeliveryLocation] = useState(""), [placing, setPlacing] = useState(false);
-  useEffect(() => { api("/api/food/vendors").then((data) => { setVendors(data); setSelectedVendorId(data[0]?.vendorId ?? null); }).catch((error) => toast.error(error.message)).finally(() => setLoading(false)); }, []);
+  useEffect(() => {
+    let active = true;
+    let reportedError = false;
+    const loadVendors = () => api("/api/food/vendors").then((data) => {
+      if (!active) return;
+      setVendors(data);
+      setSelectedVendorId((current) => data.some((item) => item.vendorId === current) ? current : (data[0]?.vendorId ?? null));
+    }).catch((error) => {
+      if (active && !reportedError) { reportedError = true; toast.error(error.message); }
+    }).finally(() => { if (active) setLoading(false); });
+    loadVendors();
+    const timer = window.setInterval(loadVendors, 2000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, []);
+  useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
   useEffect(() => { const payment = new URLSearchParams(window.location.search).get("payment"); if (!payment) return; window.history.replaceState({}, "", "/food"); if (payment === "success") { toast.success("Payment successful. Your food order is confirmed."); const timer = window.setTimeout(() => navigate({ to: "/" }), 1800); return () => window.clearTimeout(timer); } toast.error(payment === "cancelled" ? "Payment was cancelled." : "Payment could not be verified. No order was confirmed."); }, [navigate]);
   const vendor = vendors.find((entry) => entry.vendorId === selectedVendorId) ?? null;
   const menu = useMemo(() => (vendor?.foodItems ?? []).filter((item) => item.name.toLowerCase().includes(query.toLowerCase())), [vendor, query]);

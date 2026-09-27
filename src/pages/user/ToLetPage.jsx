@@ -49,6 +49,7 @@ export function ToLetPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [isVendor, setIsVendor] = useState(false);
+  useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
 
   useEffect(() => {
     api("/api/to-let/listings")
