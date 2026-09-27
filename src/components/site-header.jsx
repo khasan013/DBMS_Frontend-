@@ -337,7 +337,7 @@ export function SiteHeader() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
-                  <div className="flex items-center justify-between gap-3 px-2 py-1.5"><span className="text-sm font-semibold">Notifications</span>{notifications.some((note) => !note.read) && <button type="button" onClick={markAllNotificationsRead} className="text-xs font-semibold text-primary hover:underline">Mark all as read</button>}</div>
+                  <div className="flex items-center justify-between gap-3 px-3 py-2"><span className="text-sm font-semibold">Notifications</span><button type="button" onClick={markAllNotificationsRead} disabled={!notifications.some((note) => !note.read)} className="rounded-md px-2 py-1 text-xs font-semibold text-primary transition hover:bg-primary-soft disabled:cursor-default disabled:text-muted-foreground">Mark all as read</button></div>
                   <DropdownMenuSeparator />
                   {notifications.slice(0, 6).map((note) => (
                     <div
