@@ -143,7 +143,7 @@ export function ToLetPage() {
         setForm(emptyForm);
         setPhotos([]);
         setShowForm(false);
-        toast.success("Your to-let listing is live.");
+        toast.success("Your to-let listing was submitted. Please wait for admin approval.");
       })
       .catch((error) => toast.error(error.message));
   };

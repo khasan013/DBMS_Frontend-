@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Bell, LogIn, Menu, Plus, Search, Settings, ShieldCheck, UserPlus, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { CreatePostDialog } from "@/components/create-post-dialog";
 import { api, clearSession, getSession } from "@/services/api";
+import { toast } from "sonner";
 
 export function SiteHeader() {
   const [createOpen, setCreateOpen] = useState(false);
@@ -15,6 +16,7 @@ export function SiteHeader() {
   const [session, setSession] = useState(null);
   const [isVendor, setIsVendor] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const knownNotificationIds = useRef(null);
   const navigate = useNavigate();
   useEffect(() => {
     const refreshSession = () => setSession(getSession());
@@ -31,8 +33,16 @@ export function SiteHeader() {
     api("/api/vendors/me").then(() => setIsVendor(true)).catch(() => setIsVendor(false));
   }, [session]);
   useEffect(() => {
+    knownNotificationIds.current = null;
     if (!session?.token) { setNotifications([]); return; }
-    const loadNotifications = () => api(session.role === "ADMIN" ? "/api/notifications/admin" : "/api/notifications/me").then(setNotifications).catch(() => setNotifications([]));
+    const loadNotifications = () => api(session.role === "ADMIN" ? "/api/notifications/admin" : "/api/notifications/me").then((items) => {
+      const previous = knownNotificationIds.current;
+      if (previous && session.role === "ADMIN") {
+        items.filter((item) => !previous.has(item.notificationId) && item.title.startsWith("New food order")).forEach((item) => toast.info(item.title, { description: item.message }));
+      }
+      knownNotificationIds.current = new Set(items.map((item) => item.notificationId));
+      setNotifications(items);
+    }).catch(() => setNotifications([]));
     loadNotifications();
     const timer = window.setInterval(loadNotifications, 2000);
     return () => window.clearInterval(timer);

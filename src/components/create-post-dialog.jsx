@@ -156,7 +156,7 @@ export function CreatePostDialog({ open, onOpenChange }) {
           }),
         });
       }
-      toast.success("Your post is live.");
+      toast.success(type === "lost" ? "Your post is live." : "Your post was submitted. Please wait for admin approval.");
       finish();
       navigate({ to: type === "lost" ? "/lost-and-found" : "/marketplace" });
     } catch (error) {

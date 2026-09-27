@@ -61,13 +61,16 @@ export function AdminPage() {
       navigate({ to: "/", replace: true });
       return;
     }
-    Promise.all([
-      api(`/api/admin/${admin.adminId}`),
-      api("/api/admin/users"),
-      api("/api/admin/vendors"),
-      ...postModules.map((module) => api(module.endpoint)),
-    ])
+    let active = true;
+    let reportedError = false;
+    const loadDashboard = () => Promise.all([
+        api(`/api/admin/${admin.adminId}`),
+        api("/api/admin/users"),
+        api("/api/admin/vendors"),
+        ...postModules.map((module) => api(module.endpoint)),
+      ])
       .then(([adminProfile, userList, vendorList, ...postLists]) => {
+        if (!active) return;
         setProfile(adminProfile);
         setUsers(userList);
         setVendors(vendorList);
@@ -77,8 +80,11 @@ export function AdminPage() {
           ),
         );
       })
-      .catch((error) => toast.error(error.message))
-      .finally(() => setLoading(false));
+      .catch((error) => { if (active && !reportedError) { reportedError = true; toast.error(error.message); } })
+      .finally(() => { if (active) setLoading(false); });
+    loadDashboard();
+    const timer = window.setInterval(loadDashboard, 2000);
+    return () => { active = false; window.clearInterval(timer); };
   }, [admin?.adminId, isAdmin, navigate]);
 
   const setSuspended = (user, suspended) => {
