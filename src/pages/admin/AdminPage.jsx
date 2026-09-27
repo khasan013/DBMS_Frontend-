@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { api, getSession } from "@/services/api";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
 
@@ -55,6 +56,7 @@ export function AdminPage() {
   const [updating, setUpdating] = useState("");
   const [vendors, setVendors] = useState([]);
   const [vendorForm, setVendorForm] = useState({ loginId: "", name: "", email: "", password: "", phone: "", location: "", description: "" });
+  const [detailPost, setDetailPost] = useState(null);
 
   useEffect(() => {
     if (!isAdmin || !admin?.adminId) {
@@ -306,17 +308,19 @@ export function AdminPage() {
                   updating={updating}
                   onStatusChange={setStatus}
                   onDelete={deletePost}
+                  onViewDetails={(post) => setDetailPost({ module, post })}
                 />
               ))}
             </div>
           </section>
+          <PostDetailsDialog value={detailPost} onOpenChange={(open) => !open && setDetailPost(null)} />
         </>
       )}
     </main>
   );
 }
 
-function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
+function PostPanel({ module, posts, updating, onStatusChange, onDelete, onViewDetails }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="border-b border-border bg-surface-subtle px-4 py-3">
@@ -340,6 +344,7 @@ function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
               </p>
               <div className="mt-3 flex items-center gap-2">
                 <StatusBadge status={post.status} />
+                {(module.key === "market" || module.key === "toLet") && <Button size="sm" variant="outline" onClick={() => onViewDetails(post)}>View details</Button>}
                 {module.approval && post.status === "PENDING_APPROVAL" ? <div className="flex flex-1 gap-2"><Button size="sm" disabled={updating === `${module.key}-${postId}`} onClick={() => onStatusChange(module, post, module.approval.approve)}>Approve</Button><Button size="sm" variant="destructive" disabled={updating === `${module.key}-${postId}`} onClick={() => onStatusChange(module, post, module.approval.reject)}>Reject</Button></div> : !module.approval ? <select value={post.status} disabled={updating === `${module.key}-${postId}`} onChange={(event) => onStatusChange(module, post, event.target.value)} className="h-8 flex-1 rounded-md border border-input bg-background px-2 text-xs">{module.statuses.map((status) => <option key={status} value={status}>{status}</option>)}</select> : <span className="flex-1 text-xs text-muted-foreground">Moderation complete</span>}
                 {updating === `${module.key}-${postId}` && (
                   <Loader2 className="size-4 animate-spin text-primary" />
@@ -365,6 +370,23 @@ function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
       </div>
     </div>
   );
+}
+
+function PostDetailsDialog({ value, onOpenChange }) {
+  const entry = value?.post;
+  const isMarket = value?.module?.key === "market";
+  const isToLet = value?.module?.key === "toLet";
+  if (!entry) return null;
+  const details = isMarket ? [
+    ["Seller ID", entry.sellerId], ["Category ID", entry.categoryId], ["Location ID", entry.locationId],
+    ["Condition", entry.condition], ["Listing type", entry.sellingType], ["Price", entry.fixedPrice ? `৳${entry.fixedPrice}` : `Starting ৳${entry.startingPrice}`],
+    ["Created", entry.createdAt],
+  ] : [
+    ["Owner ID", entry.ownerId], ["Area", entry.area], ["Monthly rent", `৳${entry.monthlyRent}`],
+    ["Bedrooms", entry.bedrooms], ["Bathrooms", entry.bathrooms], ["Contact phone", entry.contactPhone],
+    ["Available from", entry.availableFrom || "Not specified"], ["Created", entry.createdAt],
+  ];
+  return <Dialog open={Boolean(entry)} onOpenChange={onOpenChange}><DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto"><DialogHeader><DialogTitle>{isMarket ? "Marketplace" : "To-let"} post details</DialogTitle><DialogDescription>Review the complete listing before taking moderation action.</DialogDescription></DialogHeader><div className="space-y-5"><div><p className="text-sm text-muted-foreground">Title</p><p className="font-display text-xl font-semibold">{entry.title}</p></div><div><p className="text-sm text-muted-foreground">Description</p><p className="mt-1 whitespace-pre-wrap leading-relaxed">{entry.description}</p></div><div className="grid gap-3 sm:grid-cols-2">{details.map(([label, content]) => <div key={label} className="rounded-lg bg-surface-subtle p-3"><p className="text-xs font-medium text-muted-foreground">{label}</p><p className="mt-1 break-words text-sm font-semibold">{content ?? "Not specified"}</p></div>)}</div>{isToLet && entry.photoUrls?.length > 0 && <div><p className="mb-2 text-sm font-medium">Photos</p><div className="grid gap-3 sm:grid-cols-2">{entry.photoUrls.map((url) => <img key={url} src={url} alt={entry.title} className="max-h-80 w-full rounded-lg bg-surface-subtle object-contain"/>)}</div></div>}<StatusBadge status={entry.status}/></div></DialogContent></Dialog>;
 }
 
 function StatusBadge({ status }) {

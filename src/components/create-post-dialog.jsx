@@ -169,7 +169,7 @@ export function CreatePostDialog({ open, onOpenChange }) {
     if (step === 1 && type === "to-let") {
       sessionStorage.setItem("campus-crate-open-to-let-form", "true");
       finish();
-      navigate({ to: "/to-let" });
+      window.location.assign("/to-let?create=1");
       return;
     }
     if (step === 2 && !valid()) return;

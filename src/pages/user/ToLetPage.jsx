@@ -5,7 +5,6 @@ import {
   Filter,
   Loader2,
   ImagePlus,
-  Plus,
   Search,
   X,
 } from "lucide-react";
@@ -66,9 +65,11 @@ export function ToLetPage() {
 
   useEffect(() => {
     if (isVendor) return;
-    if (sessionStorage.getItem("campus-crate-open-to-let-form") !== "true")
+    const createFromHeader = new URLSearchParams(window.location.search).get("create") === "1";
+    if (!createFromHeader && sessionStorage.getItem("campus-crate-open-to-let-form") !== "true")
       return;
     sessionStorage.removeItem("campus-crate-open-to-let-form");
+    if (createFromHeader) window.history.replaceState({}, "", "/to-let");
     setShowForm(true);
   }, [isVendor]);
 
@@ -263,19 +264,6 @@ export function ToLetPage() {
                   Clear filters
                 </Button>
               )}
-              {!isVendor && <Button
-                className="w-full"
-                variant="outline"
-                onClick={() => {
-                  if (!userId) {
-                    toast.error("Please sign in to post a rental listing.");
-                    navigate({ to: "/login" });
-                  } else setShowForm((open) => !open);
-                }}
-              >
-                <Plus />
-                Post to-let
-              </Button>}
             </div>
           </aside>
           <div>
