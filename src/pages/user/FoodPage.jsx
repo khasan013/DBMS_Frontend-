@@ -34,7 +34,19 @@ export function FoodPage() {
     [checkoutOpen, setCheckoutOpen] = useState(false),
     [payment, setPayment] = useState("COD"),
     [deliveryLocation, setDeliveryLocation] = useState(""),
-    [placing, setPlacing] = useState(false);
+    [placing, setPlacing] = useState(false),
+    [isVendor, setIsVendor] = useState(false);
+  useEffect(() => {
+    if (!getSession()) {
+      setIsVendor(false);
+      return;
+    }
+    let active = true;
+    api("/api/vendors/me")
+      .then(() => active && setIsVendor(true))
+      .catch(() => active && setIsVendor(false));
+    return () => { active = false; };
+  }, []);
   useEffect(() => {
     let active = true;
     let reportedError = false;
@@ -99,6 +111,9 @@ export function FoodPage() {
     0,
   );
   const add = (item) =>
+    isVendor
+      ? toast.error("Vendor accounts cannot place food orders.")
+      :
     setCart((current) => {
       const found = current.find(
         (entry) => entry.foodItemId === item.foodItemId,
@@ -123,6 +138,10 @@ export function FoodPage() {
     if (!getSession()) {
       toast.error("Sign in to place a food order.");
       navigate({ to: "/login" });
+      return;
+    }
+    if (isVendor) {
+      toast.error("Vendor accounts cannot place food orders.");
       return;
     }
     setCheckoutOpen(true);
@@ -272,9 +291,9 @@ export function FoodPage() {
                             <span className="font-display font-bold text-primary">
                               ৳{item.price}
                             </span>
-                            <Button size="sm" onClick={() => add(item)}>
+                            <Button size="sm" onClick={() => add(item)} disabled={isVendor}>
                               <Plus />
-                              Add
+                              {isVendor ? "Vendor only" : "Add"}
                             </Button>
                           </div>
                         </div>

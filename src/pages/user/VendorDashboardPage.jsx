@@ -160,7 +160,7 @@ export function VendorDashboardPage() {
             {vendor.location} · Manage food items and photos.
           </p>
         </div>
-        <div className="flex items-center gap-3"><div className={`rounded-full px-3 py-1.5 text-sm font-semibold ${vendor.active ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"}`}>{vendor.active ? "Store online" : "Store offline"}</div><Button size="sm" variant={vendor.active ? "outline" : "default"} disabled={saving === "store-status"} onClick={() => updateStoreStatus(!vendor.active)}>{saving === "store-status" ? "Updating…" : vendor.active ? "Go offline" : "Go online"}</Button><Store className="size-10 text-primary" /></div>
+        <div className="flex flex-wrap items-center gap-3"><div className={`rounded-full px-3 py-1.5 text-sm font-semibold ${vendor.active ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"}`}>{vendor.active ? "Store online" : "Store offline"}</div><Button size="sm" variant={vendor.active ? "outline" : "default"} disabled={saving === "store-status"} onClick={() => updateStoreStatus(!vendor.active)}>{saving === "store-status" ? "Updating…" : vendor.active ? "Go offline" : "Go online"}</Button><Store className="size-10 text-primary" /></div>
       </section>
       <div className="grid gap-8 py-8 lg:grid-cols-[380px_1fr]">
         <form

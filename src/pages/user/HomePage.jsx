@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Building2, Loader2, Search, ShieldCheck, ShoppingBag, CircleCheck, UtensilsCrossed } from "lucide-react";
 import { ListingCard } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/services/api";
 import { usePolling } from "@/utils/use-polling";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
@@ -17,9 +18,18 @@ const features = [
 ];
 
 export function HomePage() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("all");
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") !== "success" || params.get("redirect") !== "my-listings") return;
+    window.history.replaceState({}, "", "/");
+    toast.success("Payment successful. Your food order is confirmed.");
+    navigate({ to: "/my-listings" });
+  }, [navigate]);
 
   usePolling(async () => {
     try {
