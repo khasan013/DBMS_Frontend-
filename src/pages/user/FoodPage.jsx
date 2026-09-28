@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   CookingPot,
@@ -25,6 +25,7 @@ export const Route = createFileRoute("/food")({ component: FoodPage });
 
 export function FoodPage() {
   const navigate = useNavigate();
+  const placingRef = useRef(false);
   const [vendors, setVendors] = useState([]),
     [selectedVendorId, setSelectedVendorId] = useState(null),
     [cart, setCart] = useState([]),
@@ -37,8 +38,9 @@ export function FoodPage() {
   useEffect(() => {
     let active = true;
     let reportedError = false;
-    const loadVendors = () =>
-      api("/api/food/vendors")
+    const loadVendors = () => {
+      if (placingRef.current) return Promise.resolve();
+      return api("/api/food/vendors")
         .then((data) => {
           if (!active) return;
           setVendors(data);
@@ -57,6 +59,7 @@ export function FoodPage() {
         .finally(() => {
           if (active) setLoading(false);
         });
+    };
     loadVendors();
     const timer = window.setInterval(loadVendors, 2000);
     return () => {
@@ -125,10 +128,12 @@ export function FoodPage() {
     setCheckoutOpen(true);
   };
   const placeOrder = async () => {
+    if (placingRef.current) return;
     if (!vendor || !deliveryLocation.trim()) {
       toast.error("Enter the delivery location.");
       return;
     }
+    placingRef.current = true;
     setPlacing(true);
     try {
       const order = await api("/api/food/orders", {
@@ -154,6 +159,7 @@ export function FoodPage() {
     } catch (error) {
       toast.error(error.message);
     } finally {
+      placingRef.current = false;
       setPlacing(false);
     }
   };
@@ -403,7 +409,7 @@ export function FoodPage() {
             </label>
             <Button className="w-full" onClick={placeOrder} disabled={placing}>
               {placing
-                ? "Starting checkout…"
+                ? "Connecting securely to SSLCommerz…"
                 : payment === "COD"
                   ? "Place COD order"
                   : "Pay with SSLCommerz"}

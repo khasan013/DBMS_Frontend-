@@ -35,7 +35,10 @@ export function LoginPage() {
         saveSession({ token: result.accessToken, role: isAdminLogin ? "ADMIN" : "USER", user: account });
         toast.success(isAdminLogin ? "Welcome back, administrator" : "Welcome back to Campus Crate");
         if (isAdminLogin) { navigate({ to: "/admin" }); return; }
-        api("/api/vendors/me").then(() => navigate({ to: "/vendor" })).catch(() => navigate({ to: "/my-listings" }));
+        // Navigate first; the vendor lookup runs in the background so a slow/cold
+        // backend never leaves a successfully signed-in user on this page.
+        navigate({ to: "/my-listings" });
+        api("/api/vendors/me").then(() => navigate({ to: "/vendor" })).catch(() => {});
       })
       .catch((error) => toast.error(error.message))
       .finally(() => setLoading(false));
