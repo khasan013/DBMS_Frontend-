@@ -43,7 +43,20 @@ export function VendorDashboardPage() {
         setVendor(vendorData);
         setLoadError("");
         try {
-          setOrders(await api("/api/vendors/me/orders"));
+          const latestOrders = await api("/api/vendors/me/orders");
+          if (active) {
+            setOrders((current) =>
+              latestOrders.map((order) => {
+                const local = current.find(
+                  (existing) => existing.orderId === order.orderId,
+                );
+                return local && ["ACCEPTED", "REJECTED"].includes(local.orderStatus)
+                  && ["PLACED", "CONFIRMED"].includes(order.orderStatus)
+                  ? local
+                  : order;
+              }),
+            );
+          }
         } catch (error) {
           if (active) setLoadError(`Orders could not load: ${error.message}`);
         }
@@ -108,6 +121,7 @@ export function VendorDashboardPage() {
     }
   };
   const updateOrder = async (orderId, status) => {
+    if (saving === `order-${orderId}`) return;
     setSaving(`order-${orderId}`);
     try {
       await api(`/api/vendors/me/orders/${orderId}/status`, {
