@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({ component: HomePage });
 const features = [
   { title: "Lost & Found", copy: "Lost something? Found something? Help it find its way home.", action: "Browse Lost & Found", to: "/lost-and-found", icon: Search, tone: "feature-white" },
   { title: "Campus Marketplace", copy: "Buy smart, sell easily, and give useful things a second life.", action: "Explore Marketplace", to: "/marketplace", icon: ShoppingBag, tone: "feature-white" },
-  { title: "To-let Service", copy: "Find rooms and apartments near campus, or share an available place.", action: "Browse To-let", to: "/to-let", icon: Building2, tone: "feature-green" },
+  { title: "To-let Service", copy: "Find rooms and apartments near campus, or share an available place.", action: "Browse To-let", to: "/to-let", icon: Building2, tone: "feature-white" },
   { title: "Campus Food", copy: "Order fresh food from campus vendors and enjoy it right where you are.", action: "Order Food", to: "/food", icon: UtensilsCrossed, tone: "feature-white" },
 ];
 
