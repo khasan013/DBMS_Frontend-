@@ -120,6 +120,10 @@ export function ToLetPage() {
       navigate({ to: "/login" });
       return;
     }
+    if (!photos.length) {
+      toast.error("Upload at least one photo before publishing the listing.");
+      return;
+    }
     submissionRef.current = true;
     setSubmitting(true);
     try {
@@ -337,7 +341,7 @@ export function ToLetPage() {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <Label>Photos (up to 3)</Label>
+                  <Label>Photos (at least 1, up to 3)</Label>
                   <input
                     ref={photoInputRef}
                     type="file"

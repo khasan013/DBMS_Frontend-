@@ -102,11 +102,15 @@ export function CreatePostDialog({ open, onOpenChange }) {
       toast.error("Enter the item type.");
       return false;
     }
+    if (!file) {
+      toast.error("Upload one photo before continuing.");
+      return false;
+    }
     if (
       type === "market" &&
-      (!form.condition.trim() || !form.price || Number(form.price) <= 0 || !file)
+      (!form.condition.trim() || !form.price || Number(form.price) <= 0)
     ) {
-      toast.error("Add the item condition, a valid price, and one photo.");
+      toast.error("Enter the item condition and a valid price.");
       return false;
     }
     return true;
@@ -124,6 +128,11 @@ export function CreatePostDialog({ open, onOpenChange }) {
     setBusy(true);
     try {
       const imageUrl = await uploadImage();
+      if (!imageUrl) {
+        setStep(2);
+        toast.error("Upload one photo before publishing.");
+        return;
+      }
       if (type === "lost") {
         await api("/api/items", {
           method: "POST",
@@ -353,7 +362,7 @@ export function CreatePostDialog({ open, onOpenChange }) {
               />
             </div>
             <div className="sm:col-span-2">
-              <Label>Photo {type === "market" ? "(required)" : "(optional)"}</Label>
+              <Label>Photo (required)</Label>
               <input
                 ref={inputRef}
                 type="file"
@@ -403,6 +412,11 @@ export function CreatePostDialog({ open, onOpenChange }) {
               Your post will appear in {selected?.label} and the latest
               community highlights.
             </p>
+            {!file && (
+              <p className="mx-auto mt-4 max-w-sm rounded-lg border border-danger/25 bg-background/70 px-3 py-2 text-sm font-medium text-danger">
+                A photo is required. Go back and upload one before publishing.
+              </p>
+            )}
           </div>
         )}
         <div className="mt-2 flex justify-between border-t border-border pt-4">
@@ -416,7 +430,7 @@ export function CreatePostDialog({ open, onOpenChange }) {
             {step === 1 ? <X /> : <ChevronLeft />}
             {step === 1 ? "Cancel" : "Back"}
           </Button>
-          <Button disabled={busy} onClick={next}>
+          <Button disabled={busy || (step === 3 && !file)} onClick={next}>
             {busy ? (
               <Loader2 className="animate-spin" />
             ) : step === 1 && type === "to-let" ? (
