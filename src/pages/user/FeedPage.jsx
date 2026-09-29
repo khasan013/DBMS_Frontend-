@@ -63,6 +63,7 @@ export function FeedPage({ module }) {
                   tag: item.sellingType,
                   status: item.status,
                   owner: `Student #${item.sellerId}`,
+                  imageUrl: item.imageUrl,
                 },
           ),
         );

@@ -104,9 +104,9 @@ export function CreatePostDialog({ open, onOpenChange }) {
     }
     if (
       type === "market" &&
-      (!form.condition.trim() || !form.price || Number(form.price) <= 0)
+      (!form.condition.trim() || !form.price || Number(form.price) <= 0 || !file)
     ) {
-      toast.error("Enter the item condition and a valid price.");
+      toast.error("Add the item condition, a valid price, and one photo.");
       return false;
     }
     return true;
@@ -147,6 +147,7 @@ export function CreatePostDialog({ open, onOpenChange }) {
             locationId: Number(form.locationId),
             title: form.title,
             description: form.description,
+            imageUrl,
             condition: form.condition,
             sellingType: "FIXED_PRICE",
             fixedPrice: Number(form.price),
@@ -352,7 +353,7 @@ export function CreatePostDialog({ open, onOpenChange }) {
               />
             </div>
             <div className="sm:col-span-2">
-              <Label>Photo (optional)</Label>
+              <Label>Photo {type === "market" ? "(required)" : "(optional)"}</Label>
               <input
                 ref={inputRef}
                 type="file"
