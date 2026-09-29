@@ -4,7 +4,7 @@ import { c as HeadContent, d as Outlet, f as createFileRoute, g as useRouter, h 
 import { f as require_jsx_runtime, l as Slot, n as AvatarFallback$1, r as AvatarImage$1, t as Avatar$1 } from "../_libs/@radix-ui/react-avatar+[...].mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-import { A as Check, C as ImageOff, D as CircleCheck, E as Circle, F as ArrowLeft, M as CalendarDays, N as Building2, O as ChevronRight, P as ArrowRight, S as ImagePlus, T as ClipboardList, _ as MessageCircle, a as UserPlus, b as LogIn, c as Tag, d as Share2, f as Settings, g as PenLine, h as Phone, i as UserRound, j as Camera, k as ChevronLeft, l as ShoppingBag, m as Plus, n as Users, o as UserCheck, p as Search, r as UserX, s as Trash2, t as X, u as ShieldCheck, v as Menu, w as Funnel, x as LoaderCircle, y as MapPin } from "../_libs/lucide-react.mjs";
+import { A as ClipboardList, B as ArrowRight, C as MapPin, D as ImageOff, E as ImagePlus, F as Check, I as Camera, L as CalendarDays, M as CircleCheck, N as ChevronRight, O as Funnel, P as ChevronLeft, R as Building2, S as Menu, T as LoaderCircle, V as ArrowLeft, _ as Phone, a as UserRound, b as Minus, c as Trash2, d as ShoppingBag, f as ShieldCheck, g as Plus, h as Search, i as UserX, j as Circle, k as CookingPot, l as Tag, m as Settings, n as UtensilsCrossed, o as UserPlus, p as Share2, r as Users, s as UserCheck, t as X, u as Store, v as Pencil, w as LogIn, x as MessageCircle, y as PenLine, z as Bell } from "../_libs/lucide-react.mjs";
 import { n as clsx, t as cva } from "../_libs/class-variance-authority+clsx.mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
 import { n as CheckboxIndicator, t as Checkbox$1 } from "../_libs/@radix-ui/react-checkbox+[...].mjs";
@@ -14,10 +14,10 @@ import { n as toast, t as Toaster } from "../_libs/sonner.mjs";
 import { t as Root } from "../_libs/radix-ui__react-label.mjs";
 import { i as Trigger$1, n as List, r as Root2$1, t as Content } from "../_libs/radix-ui__react-tabs.mjs";
 import { i as SliderTrack, n as SliderRange, r as SliderThumb, t as Slider$1 } from "../_libs/@radix-ui/react-slider+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-g-o6iZVn.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-BIdl_Kxg.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var globals_default = "/assets/globals-DlV2c2OK.css";
+var globals_default = "/assets/globals-DI-fJbRj.css";
 function cn(...inputs) {
 	return twMerge(clsx(inputs));
 }
@@ -232,17 +232,23 @@ function clearSession() {
 async function api(path, options = {}) {
 	const session = getSession();
 	let response;
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), 15e3);
 	try {
 		response = await fetch(`${API_BASE_URL}${path}`, {
 			...options,
+			signal: options.signal ?? controller.signal,
 			headers: {
 				...options.body instanceof FormData ? {} : { "Content-Type": "application/json" },
 				...session?.token ? { Authorization: `Bearer ${session.token}` } : {},
 				...options.headers
 			}
 		});
-	} catch {
+	} catch (error) {
+		if (error.name === "AbortError") throw new Error("The server took too long to respond. Please try again.");
 		throw new Error("Cannot reach the server. Check that the backend is running and try again.");
+	} finally {
+		clearTimeout(timeout);
 	}
 	if (response.status === 204) return null;
 	const data = await response.json().catch(() => null);
@@ -324,6 +330,10 @@ function CreatePostDialog({ open, onOpenChange }) {
 			toast.error("Enter the item type.");
 			return false;
 		}
+		if (!file) {
+			toast.error("Upload one photo before continuing.");
+			return false;
+		}
 		if (type === "market" && (!form.condition.trim() || !form.price || Number(form.price) <= 0)) {
 			toast.error("Enter the item condition and a valid price.");
 			return false;
@@ -345,6 +355,11 @@ function CreatePostDialog({ open, onOpenChange }) {
 		setBusy(true);
 		try {
 			const imageUrl = await uploadImage();
+			if (!imageUrl) {
+				setStep(2);
+				toast.error("Upload one photo before publishing.");
+				return;
+			}
 			if (type === "lost") await api("/api/items", {
 				method: "POST",
 				body: JSON.stringify({
@@ -366,6 +381,7 @@ function CreatePostDialog({ open, onOpenChange }) {
 					locationId: Number(form.locationId),
 					title: form.title,
 					description: form.description,
+					imageUrl,
 					condition: form.condition,
 					sellingType: "FIXED_PRICE",
 					fixedPrice: Number(form.price),
@@ -374,7 +390,7 @@ function CreatePostDialog({ open, onOpenChange }) {
 					auctionEnd: null
 				})
 			});
-			toast.success("Your post is live.");
+			toast.success(type === "lost" ? "Your post is live." : "Your post was submitted. Please wait for admin approval.");
 			finish();
 			navigate({ to: type === "lost" ? "/lost-and-found" : "/marketplace" });
 		} catch (error) {
@@ -387,7 +403,7 @@ function CreatePostDialog({ open, onOpenChange }) {
 		if (step === 1 && type === "to-let") {
 			sessionStorage.setItem("campus-crate-open-to-let-form", "true");
 			finish();
-			navigate({ to: "/to-let" });
+			window.location.assign("/to-let?create=1");
 			return;
 		}
 		if (step === 2 && !valid()) return;
@@ -560,7 +576,7 @@ function CreatePostDialog({ open, onOpenChange }) {
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "sm:col-span-2",
 							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, { children: "Photo (optional)" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, { children: "Photo (required)" }),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 									ref: inputRef,
 									type: "file",
@@ -616,6 +632,10 @@ function CreatePostDialog({ open, onOpenChange }) {
 								selected?.label,
 								" and the latest community highlights."
 							]
+						}),
+						!file && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mx-auto mt-4 max-w-sm rounded-lg border border-danger/25 bg-background/70 px-3 py-2 text-sm font-medium text-danger",
+							children: "A photo is required. Go back and upload one before publishing."
 						})
 					]
 				}),
@@ -627,7 +647,7 @@ function CreatePostDialog({ open, onOpenChange }) {
 						onClick: () => step === 1 ? finish() : setStep((current) => current - 1),
 						children: [step === 1 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronLeft, {}), step === 1 ? "Cancel" : "Back"]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-						disabled: busy,
+						disabled: busy || step === 3 && !file,
 						onClick: next,
 						children: [busy ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin" }) : step === 1 && type === "to-let" ? "Post to-let" : step === 3 ? "Publish post" : "Continue", step < 3 && !busy && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, {})]
 					})]
@@ -639,10 +659,18 @@ function CreatePostDialog({ open, onOpenChange }) {
 function SiteHeader() {
 	const [createOpen, setCreateOpen] = (0, import_react.useState)(false);
 	const [mobileOpen, setMobileOpen] = (0, import_react.useState)(false);
-	const [session, setSession] = (0, import_react.useState)(() => getSession());
+	const [session, setSession] = (0, import_react.useState)(null);
+	const [isVendor, setIsVendor] = (0, import_react.useState)(false);
+	const [notifications, setNotifications] = (0, import_react.useState)([]);
+	const [searchQuery, setSearchQuery] = (0, import_react.useState)("");
+	const [suggestions, setSuggestions] = (0, import_react.useState)([]);
+	const [showSuggestions, setShowSuggestions] = (0, import_react.useState)(false);
+	const knownNotificationIds = (0, import_react.useRef)(null);
+	const searchIndex = (0, import_react.useRef)(null);
 	const navigate = useNavigate();
 	(0, import_react.useEffect)(() => {
 		const refreshSession = () => setSession(getSession());
+		refreshSession();
 		window.addEventListener("campus-crate-auth-change", refreshSession);
 		window.addEventListener("storage", refreshSession);
 		return () => {
@@ -650,6 +678,82 @@ function SiteHeader() {
 			window.removeEventListener("storage", refreshSession);
 		};
 	}, []);
+	(0, import_react.useEffect)(() => {
+		if (!session?.token || session.role === "ADMIN") {
+			setIsVendor(false);
+			return;
+		}
+		api("/api/vendors/me").then(() => setIsVendor(true)).catch(() => setIsVendor(false));
+	}, [session]);
+	(0, import_react.useEffect)(() => {
+		const query = searchQuery.trim().toLowerCase();
+		if (query.length < 2) {
+			setSuggestions([]);
+			return;
+		}
+		let active = true;
+		const timer = window.setTimeout(async () => {
+			try {
+				if (!searchIndex.current) {
+					const [lost, market, toLet, vendors] = await Promise.all([
+						api("/api/items"),
+						api("/api/marketplace/posts"),
+						api("/api/to-let/listings"),
+						api("/api/food/vendors")
+					]);
+					searchIndex.current = [
+						...lost.map((item) => ({
+							id: `lost-${item.itemId}`,
+							title: item.title,
+							detail: "Lost & Found",
+							href: `/listing/lost-${item.itemId}`
+						})),
+						...market.map((item) => ({
+							id: `market-${item.postId}`,
+							title: item.title,
+							detail: "Marketplace",
+							href: `/listing/market-${item.postId}`
+						})),
+						...toLet.map((item) => ({
+							id: `to-let-${item.listingId}`,
+							title: item.title,
+							detail: `${item.area} · To-let`,
+							href: `/listing/to-let-${item.listingId}`
+						})),
+						...vendors.flatMap((vendor) => (vendor.foodItems ?? []).map((item) => ({
+							id: `food-${item.foodItemId}`,
+							title: item.name,
+							detail: `${vendor.name} · ৳${item.price}`,
+							href: "/food"
+						})))
+					];
+				}
+				if (active) setSuggestions(searchIndex.current.filter((item) => `${item.title} ${item.detail}`.toLowerCase().includes(query)).slice(0, 7));
+			} catch {
+				if (active) setSuggestions([]);
+			}
+		}, 220);
+		return () => {
+			active = false;
+			window.clearTimeout(timer);
+		};
+	}, [searchQuery]);
+	(0, import_react.useEffect)(() => {
+		knownNotificationIds.current = null;
+		if (!session?.token) {
+			setNotifications([]);
+			return;
+		}
+		const loadNotifications = () => api(session.role === "ADMIN" ? "/api/notifications/admin" : "/api/notifications/me").then((items) => {
+			const previous = knownNotificationIds.current;
+			if (previous && session.role === "ADMIN") items.filter((item) => !previous.has(item.notificationId) && item.title.startsWith("New food order")).forEach((item) => toast.info(item.title, { description: item.message }));
+			knownNotificationIds.current = new Set(items.map((item) => item.notificationId));
+			setNotifications(items);
+		}).catch(() => setNotifications([]));
+		loadNotifications();
+		const timer = window.setInterval(loadNotifications, 2e3);
+		return () => window.clearInterval(timer);
+	}, [session]);
 	const signedIn = Boolean(session?.token);
 	const user = session?.user ?? {};
 	const isAdmin = session?.role === "ADMIN" || Boolean(user.adminId);
@@ -664,15 +768,32 @@ function SiteHeader() {
 		setCreateOpen(false);
 		navigate({ to: "/" });
 	};
+	const markAllNotificationsRead = async () => {
+		try {
+			await api(session.role === "ADMIN" ? "/api/notifications/admin/read-all" : "/api/notifications/me/read-all", { method: "PUT" });
+			setNotifications((current) => current.map((note) => ({
+				...note,
+				read: true
+			})));
+		} catch (error) {
+			toast.error(error.message);
+		}
+	};
 	const runSearch = (event) => {
 		event.preventDefault();
 		const form = new FormData(event.currentTarget);
 		const section = String(form.get("section"));
-		if (section === "lost") navigate({ to: "/lost-and-found" });
-		else if (section === "market") navigate({ to: "/marketplace" });
-		else if (section === "to-let") navigate({ to: "/to-let" });
+		const query = searchQuery.trim();
+		const path = section === "lost" ? "/lost-and-found" : section === "market" ? "/marketplace" : section === "to-let" ? "/to-let" : section === "food" ? "/food" : "/search";
+		setShowSuggestions(false);
+		window.location.assign(`${path}${query ? `?q=${encodeURIComponent(query)}` : ""}`);
 	};
-	const links = [
+	const openSuggestion = (suggestion) => {
+		setShowSuggestions(false);
+		setSearchQuery("");
+		window.location.assign(suggestion.href);
+	};
+	const communityLinks = [
 		{
 			to: "/lost-and-found",
 			label: "Lost & Found"
@@ -684,8 +805,13 @@ function SiteHeader() {
 		{
 			to: "/to-let",
 			label: "To-let"
+		},
+		{
+			to: "/food",
+			label: "Food"
 		}
 	];
+	const links = isVendor ? communityLinks.filter((link) => link.to === "/food") : communityLinks;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
 		className: "sticky top-0 z-40 border-b border-border/80 bg-background/92 backdrop-blur-xl",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -713,51 +839,140 @@ function SiteHeader() {
 						children: link.label
 					}, link.to))
 				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-					onSubmit: runSearch,
-					className: "mx-auto hidden h-10 max-w-md flex-1 items-center rounded-xl border border-border bg-muted/60 md:flex",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
-							name: "section",
-							"aria-label": "Search category",
-							className: "h-full w-28 bg-transparent px-3 text-xs font-semibold text-foreground outline-none",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-									value: "all",
-									children: "All"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-									value: "lost",
-									children: "Lost & Found"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-									value: "market",
-									children: "Marketplace"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-									value: "to-let",
-									children: "To-let"
-								})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-5 w-px bg-border" }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "mx-3 size-4 text-muted-foreground" }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							name: "query",
-							"aria-label": "Search Campus Crate",
-							placeholder: "Search campus…",
-							className: "min-w-0 flex-1 bg-transparent pr-3 text-sm outline-none placeholder:text-muted-foreground"
-						})
-					]
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "relative mx-auto hidden max-w-md flex-1 md:block",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: runSearch,
+						className: "flex h-10 items-center rounded-xl border border-border bg-muted/60",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+								name: "section",
+								"aria-label": "Search category",
+								className: "h-full w-28 bg-transparent px-3 text-xs font-semibold text-foreground outline-none",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "all",
+										children: "All"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "lost",
+										children: "Lost & Found"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "market",
+										children: "Marketplace"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "to-let",
+										children: "To-let"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "food",
+										children: "Food"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-5 w-px bg-border" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "mx-3 size-4 text-muted-foreground" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								name: "query",
+								value: searchQuery,
+								onFocus: () => setShowSuggestions(true),
+								onChange: (event) => {
+									setSearchQuery(event.target.value);
+									setShowSuggestions(true);
+								},
+								"aria-label": "Search Campus Crate",
+								placeholder: "Search campus…",
+								className: "min-w-0 flex-1 bg-transparent pr-3 text-sm outline-none placeholder:text-muted-foreground"
+							})
+						]
+					}), showSuggestions && searchQuery.trim().length >= 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "absolute left-0 right-0 top-12 z-50 overflow-hidden rounded-xl border border-border bg-card py-1 shadow-card",
+						children: [
+							suggestions.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onMouseDown: (event) => event.preventDefault(),
+								onClick: () => openSuggestion(item),
+								className: "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left hover:bg-accent",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "truncate text-sm font-medium",
+									children: item.title
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "shrink-0 text-xs text-muted-foreground",
+									children: item.detail
+								})]
+							}, item.id)),
+							!suggestions.length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "px-4 py-3 text-sm text-muted-foreground",
+								children: "No matching suggestions."
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onMouseDown: (event) => event.preventDefault(),
+								onClick: () => window.location.assign(`/search?q=${encodeURIComponent(searchQuery.trim())}`),
+								className: "flex w-full items-center gap-2 border-t border-border px-4 py-2.5 text-left text-sm font-semibold text-primary hover:bg-accent",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "size-4" }),
+									"Search all results for “",
+									searchQuery.trim(),
+									"”"
+								]
+							})
+						]
+					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "ml-auto flex items-center gap-2",
 					children: [
-						!isAdmin && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+						!isAdmin && !isVendor && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 							className: "hidden sm:inline-flex",
 							onClick: () => requireLogin(() => setCreateOpen(true)),
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {}), "Create Post"]
 						}),
+						signedIn && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenu, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuTrigger, {
+							asChild: true,
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+								variant: "ghost",
+								size: "icon",
+								className: "relative rounded-full",
+								"aria-label": "Notifications",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, {}), notifications.some((note) => !note.read) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "absolute right-0 top-0 size-2 rounded-full bg-primary" })]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenuContent, {
+							align: "end",
+							className: "w-80",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center justify-between gap-3 px-3 py-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm font-semibold",
+										children: "Notifications"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: markAllNotificationsRead,
+										disabled: !notifications.some((note) => !note.read),
+										className: "rounded-md px-2 py-1 text-xs font-semibold text-primary transition hover:bg-primary-soft disabled:cursor-default disabled:text-muted-foreground",
+										children: "Mark all as read"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuSeparator, {}),
+								notifications.slice(0, 6).map((note) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: `px-2 py-2 text-sm ${note.read ? "" : "bg-primary-soft/40"}`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "font-medium",
+										children: note.title
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-0.5 text-xs text-muted-foreground",
+										children: note.message
+									})]
+								}, note.notificationId)),
+								!notifications.length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "p-4 text-sm text-muted-foreground",
+									children: "No notifications yet."
+								})
+							]
+						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenu, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuTrigger, {
 							asChild: true,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
@@ -783,7 +998,7 @@ function SiteHeader() {
 										children: displayName
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 										className: "text-xs text-muted-foreground",
-										children: isAdmin ? "Administrator" : user.email || "Signed-in student"
+										children: isAdmin ? "Administrator" : isVendor ? "Food vendor" : user.email || "Signed-in student"
 									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuSeparator, {}),
@@ -793,7 +1008,19 @@ function SiteHeader() {
 										to: "/admin",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, {}), "Admin dashboard"]
 									})
-								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+								}) : isVendor ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuItem, {
+									asChild: true,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+										to: "/vendor",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserRound, {}), "Vendor dashboard"]
+									})
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuItem, {
+									asChild: true,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+										to: "/edit-profile",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, {}), "Edit profile"]
+									})
+								})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuItem, {
 										asChild: true,
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
@@ -850,7 +1077,7 @@ function SiteHeader() {
 				onClick: () => setMobileOpen(false),
 				className: "rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent",
 				children: link.label
-			}, link.to)), !isAdmin && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+			}, link.to)), !isAdmin && !isVendor && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 				className: "mt-2 sm:hidden",
 				onClick: () => requireLogin(() => setCreateOpen(true)),
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {}), "Create Post"]
@@ -875,16 +1102,21 @@ var Toaster$1 = ({ ...props }) => {
 };
 function AppLayout() {
 	(0, import_react.useEffect)(() => {
-		const validateSession = () => {
+		let timer;
+		let active = true;
+		const validateSession = async () => {
 			if (!getSession()) return;
-			api("/api/session").catch(() => {
+			await api("/api/session").catch(() => {
 				clearSession();
 				window.location.assign("/");
 			});
+			if (active) timer = window.setTimeout(validateSession, 2e3);
 		};
 		validateSession();
-		const timer = window.setInterval(validateSession, 2e3);
-		return () => window.clearInterval(timer);
+		return () => {
+			active = false;
+			window.clearTimeout(timer);
+		};
 	}, []);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SiteHeader, {}),
@@ -1141,7 +1373,34 @@ var TabsContent = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	...props
 }));
 TabsContent.displayName = Content.displayName;
-var Route$23 = createFileRoute("/")({ component: HomePage });
+/** Refreshes remote data without reloading the page or interrupting local UI state. */
+function usePolling(load, dependencies = [], delay = 2e3) {
+	const loadRef = (0, import_react.useRef)(load);
+	loadRef.current = load;
+	(0, import_react.useEffect)(() => {
+		let active = true;
+		let timer;
+		const run = async () => {
+			if (!active) return;
+			if (!document.hidden) await loadRef.current();
+			if (active) timer = window.setTimeout(run, delay);
+		};
+		run();
+		const refreshWhenVisible = () => {
+			if (!document.hidden) {
+				window.clearTimeout(timer);
+				run();
+			}
+		};
+		document.addEventListener("visibilitychange", refreshWhenVisible);
+		return () => {
+			active = false;
+			window.clearTimeout(timer);
+			document.removeEventListener("visibilitychange", refreshWhenVisible);
+		};
+	}, dependencies);
+}
+var Route$29 = createFileRoute("/")({ component: HomePage });
 var features = [
 	{
 		title: "Lost & Found",
@@ -1165,31 +1424,61 @@ var features = [
 		action: "Browse To-let",
 		to: "/to-let",
 		icon: Building2,
-		tone: "feature-green"
+		tone: "feature-white"
+	},
+	{
+		title: "Campus Food",
+		copy: "Order fresh food from campus vendors and enjoy it right where you are.",
+		action: "Order Food",
+		to: "/food",
+		icon: UtensilsCrossed,
+		tone: "feature-white"
 	}
 ];
 function HomePage() {
+	const navigate = useNavigate();
 	const [tab, setTab] = (0, import_react.useState)("all");
 	const [listings, setListings] = (0, import_react.useState)([]);
 	const [loading, setLoading] = (0, import_react.useState)(true);
 	(0, import_react.useEffect)(() => {
+		const session = getSession();
+		if (!session?.token || session.role === "ADMIN") return;
 		let active = true;
-		const loadHighlights = () => api("/api/highlights/recent?limit=12").then((highlights) => active && setListings(highlights.map((highlight) => ({
-			id: highlight.highlightId,
-			module: highlight.module,
-			title: highlight.title,
-			detail: highlight.module === "to-let" ? `৳${Number(highlight.price).toLocaleString()}/mo` : highlight.price ? `৳${Number(highlight.price).toLocaleString()}` : highlight.categoryOrArea,
-			meta: highlight.createdAt ?? "Recently",
-			tag: highlight.categoryOrArea,
-			status: highlight.status,
-			imageUrl: highlight.imageUrl
-		})))).catch(() => active && setListings([])).finally(() => active && setLoading(false));
-		loadHighlights();
-		const timer = window.setInterval(loadHighlights, 2e3);
+		api("/api/vendors/me").then(() => {
+			if (active) navigate({
+				to: "/vendor",
+				replace: true
+			});
+		}).catch(() => {});
 		return () => {
 			active = false;
-			window.clearInterval(timer);
 		};
+	}, [navigate]);
+	(0, import_react.useEffect)(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get("payment") !== "success" || params.get("redirect") !== "my-listings") return;
+		window.history.replaceState({}, "", "/");
+		toast.success("Payment successful. Your food order is confirmed.");
+		navigate({ to: "/my-listings" });
+	}, [navigate]);
+	usePolling(async () => {
+		try {
+			const highlights = await api("/api/highlights/recent?limit=12");
+			setListings(highlights.map((highlight) => ({
+				id: highlight.highlightId,
+				module: highlight.module,
+				title: highlight.title,
+				detail: highlight.module === "to-let" ? `৳${Number(highlight.price).toLocaleString()}/mo` : highlight.price ? `৳${Number(highlight.price).toLocaleString()}` : highlight.categoryOrArea,
+				meta: highlight.createdAt ?? "Recently",
+				tag: highlight.categoryOrArea,
+				status: highlight.status,
+				imageUrl: highlight.imageUrl
+			})));
+		} catch {
+			setListings([]);
+		} finally {
+			setLoading(false);
+		}
 	}, []);
 	const visible = listings.filter((item) => tab === "all" || item.module === tab).slice(0, 8);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { children: [
@@ -1273,30 +1562,30 @@ function HomePage() {
 				className: "mb-8",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "eyebrow",
-					children: "ONE COMMUNITY. THREE ESSENTIALS."
+					children: "ONE COMMUNITY. FOUR ESSENTIALS."
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 					className: "mt-2 font-display text-3xl font-bold",
 					children: "What do you need today?"
 				})]
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "grid gap-5 md:grid-cols-3",
+				className: "grid gap-5 sm:grid-cols-2 xl:grid-cols-4",
 				children: features.map((feature) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
-					className: `rounded-xl border border-border p-6 shadow-soft ${feature.tone}`,
+					className: `flex min-w-0 flex-col rounded-xl border border-border p-5 shadow-soft ${feature.tone}`,
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 							className: "flex size-11 items-center justify-center rounded-xl bg-card text-primary shadow-sm",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(feature.icon, {})
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							className: "mt-8 font-display text-xl font-bold",
+							className: "mt-6 font-display text-lg font-bold",
 							children: feature.title
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-2 min-h-12 text-sm leading-relaxed text-muted-foreground dark:text-white/80",
+							className: "mt-2 min-h-14 text-sm leading-relaxed text-muted-foreground dark:text-white/80",
 							children: feature.copy
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							className: "mt-6 w-full justify-between",
+							className: "mt-5 w-full justify-between",
 							variant: "outline",
 							asChild: true,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
@@ -1377,8 +1666,8 @@ function HomePage() {
 		})
 	] });
 }
-var Route$22 = Route$23;
-var Route$21 = createFileRoute("/admin")({ component: AdminPage });
+var Route$28 = Route$29;
+var Route$27 = createFileRoute("/admin")({ component: AdminPage });
 var postModules = [
 	{
 		key: "lost",
@@ -1399,11 +1688,10 @@ var postModules = [
 		endpoint: "/api/admin/marketplace/posts",
 		adminEndpoint: "/api/admin/marketplace/posts",
 		id: "postId",
-		statuses: [
-			"ACTIVE",
-			"SOLD",
-			"CANCELLED"
-		]
+		approval: {
+			approve: "ACTIVE",
+			reject: "CANCELLED"
+		}
 	},
 	{
 		key: "toLet",
@@ -1411,11 +1699,10 @@ var postModules = [
 		endpoint: "/api/admin/to-let/listings",
 		adminEndpoint: "/api/admin/to-let/listings",
 		id: "listingId",
-		statuses: [
-			"AVAILABLE",
-			"RENTED",
-			"CLOSED"
-		]
+		approval: {
+			approve: "AVAILABLE",
+			reject: "CLOSED"
+		}
 	}
 ];
 function AdminPage() {
@@ -1432,6 +1719,17 @@ function AdminPage() {
 	});
 	const [loading, setLoading] = (0, import_react.useState)(true);
 	const [updating, setUpdating] = (0, import_react.useState)("");
+	const [vendors, setVendors] = (0, import_react.useState)([]);
+	const [vendorForm, setVendorForm] = (0, import_react.useState)({
+		loginId: "",
+		name: "",
+		email: "",
+		password: "",
+		phone: "",
+		location: "",
+		description: ""
+	});
+	const [detailPost, setDetailPost] = (0, import_react.useState)(null);
 	(0, import_react.useEffect)(() => {
 		if (!isAdmin || !admin?.adminId) {
 			navigate({
@@ -1440,15 +1738,33 @@ function AdminPage() {
 			});
 			return;
 		}
-		Promise.all([
+		let active = true;
+		let reportedError = false;
+		const loadDashboard = () => Promise.all([
 			api(`/api/admin/${admin.adminId}`),
 			api("/api/admin/users"),
+			api("/api/admin/vendors"),
 			...postModules.map((module) => api(module.endpoint))
-		]).then(([adminProfile, userList, ...postLists]) => {
+		]).then(([adminProfile, userList, vendorList, ...postLists]) => {
+			if (!active) return;
 			setProfile(adminProfile);
 			setUsers(userList);
+			setVendors(vendorList);
 			setPosts(Object.fromEntries(postModules.map((module, index) => [module.key, postLists[index]])));
-		}).catch((error) => toast.error(error.message)).finally(() => setLoading(false));
+		}).catch((error) => {
+			if (active && !reportedError) {
+				reportedError = true;
+				toast.error(error.message);
+			}
+		}).finally(() => {
+			if (active) setLoading(false);
+		});
+		loadDashboard();
+		const timer = window.setInterval(loadDashboard, 2e3);
+		return () => {
+			active = false;
+			window.clearInterval(timer);
+		};
 	}, [
 		admin?.adminId,
 		isAdmin,
@@ -1462,6 +1778,26 @@ function AdminPage() {
 		}).then((updated) => {
 			setUsers((current) => current.map((item) => item.userId === updated.userId ? updated : item));
 			toast.success(`${updated.name} has been ${suspended ? "suspended" : "reactivated"}.`);
+		}).catch((error) => toast.error(error.message)).finally(() => setUpdating(""));
+	};
+	const createVendor = (event) => {
+		event.preventDefault();
+		setUpdating("vendor");
+		api("/api/admin/vendors", {
+			method: "POST",
+			body: JSON.stringify(vendorForm)
+		}).then((vendor) => {
+			setVendors((current) => [vendor, ...current]);
+			setVendorForm({
+				loginId: "",
+				name: "",
+				email: "",
+				password: "",
+				phone: "",
+				location: "",
+				description: ""
+			});
+			toast.success("Vendor account created.");
 		}).catch((error) => toast.error(error.message)).finally(() => setUpdating(""));
 	};
 	const setStatus = (module, post, status) => {
@@ -1495,6 +1831,7 @@ function AdminPage() {
 		setUpdating(`user-${user.userId}`);
 		api(`/api/admin/users/${user.userId}`, { method: "DELETE" }).then(() => {
 			setUsers((current) => current.filter((item) => item.userId !== user.userId));
+			setVendors((current) => current.filter((item) => item.userId !== user.userId));
 			toast.success(`${user.name}'s account was deleted.`);
 		}).catch((error) => toast.error(error.message)).finally(() => setUpdating(""));
 	};
@@ -1533,125 +1870,285 @@ function AdminPage() {
 		}), loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 			className: "flex justify-center py-20",
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin text-primary" })
-		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-			className: "py-8",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "mb-5 flex items-center gap-2",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, { className: "text-primary" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					className: "font-display text-xl font-semibold",
-					children: "Student accounts"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "text-sm text-muted-foreground",
-					children: "Suspension immediately blocks sign-in and posting."
-				})] })]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "overflow-hidden rounded-xl border border-border bg-card",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-						className: "w-full min-w-[720px] text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
-							className: "border-b border-border bg-surface-subtle text-muted-foreground",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-5 py-3 font-semibold",
-									children: "Student"
+		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "py-8",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-5 flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, { className: "text-primary" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-xl font-semibold",
+						children: "Student accounts"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: "Suspension immediately blocks sign-in and posting."
+					})] })]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-hidden rounded-xl border border-border bg-card",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "overflow-x-auto",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+							className: "w-full min-w-[720px] text-left text-sm",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+								className: "border-b border-border bg-surface-subtle text-muted-foreground",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-5 py-3 font-semibold",
+										children: "Student"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-5 py-3 font-semibold",
+										children: "Email"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-5 py-3 font-semibold",
+										children: "Phone"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-5 py-3 font-semibold",
+										children: "Status"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-5 py-3 text-right font-semibold",
+										children: "Action"
+									})
+								] })
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tbody", { children: [users.map((user) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "border-b border-border last:border-0",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										className: "px-5 py-4",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: user.name
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-xs text-muted-foreground",
+											children: user.studentId
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-5 py-4",
+										children: user.email
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-5 py-4",
+										children: user.phone
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-5 py-4",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatusBadge, { status: user.suspended ? "SUSPENDED" : user.emailVerified ? "ACTIVE" : "UNVERIFIED" })
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-5 py-4 text-right",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex justify-end gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+												size: "sm",
+												variant: user.suspended ? "outline" : "destructive",
+												disabled: updating === `user-${user.userId}`,
+												onClick: () => setSuspended(user, !user.suspended),
+												children: [updating === `user-${user.userId}` ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin" }) : user.suspended ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserCheck, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserX, {}), user.suspended ? "Reactivate" : "Suspend"]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+												size: "sm",
+												variant: "destructive",
+												disabled: updating === `user-${user.userId}`,
+												onClick: () => deleteUser(user),
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {}), "Delete"]
+											})]
+										})
+									})
+								]
+							}, user.userId)), users.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+								colSpan: "5",
+								className: "px-5 py-16 text-center text-muted-foreground",
+								children: "No student accounts found."
+							}) })] })]
+						})
+					})
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "border-t border-border py-8",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-5 flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Store, { className: "text-primary" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-xl font-semibold",
+						children: "Food vendors"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: "Create vendor accounts. Food items are published immediately and vendors are notified when a customer orders."
+					})] })]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "grid gap-6 lg:grid-cols-[1fr_1.4fr]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: createVendor,
+						className: "grid gap-3 rounded-xl border border-border bg-card p-5 sm:grid-cols-2",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								required: true,
+								placeholder: "Vendor login ID",
+								value: vendorForm.loginId,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									loginId: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-5 py-3 font-semibold",
-									children: "Email"
+								className: "h-10 rounded-md border border-input bg-background px-3 text-sm"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								required: true,
+								placeholder: "Vendor name",
+								value: vendorForm.name,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									name: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-5 py-3 font-semibold",
-									children: "Phone"
+								className: "h-10 rounded-md border border-input bg-background px-3 text-sm"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								required: true,
+								type: "email",
+								placeholder: "Email",
+								value: vendorForm.email,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									email: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-5 py-3 font-semibold",
-									children: "Status"
+								className: "h-10 rounded-md border border-input bg-background px-3 text-sm"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								required: true,
+								type: "password",
+								minLength: "8",
+								placeholder: "Temporary password",
+								value: vendorForm.password,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									password: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-5 py-3 text-right font-semibold",
-									children: "Action"
-								})
-							] })
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tbody", { children: [users.map((user) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-border last:border-0",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-									className: "px-5 py-4",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "font-semibold",
-										children: user.name
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs text-muted-foreground",
-										children: user.studentId
-									})]
+								className: "h-10 rounded-md border border-input bg-background px-3 text-sm"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								required: true,
+								placeholder: "Phone",
+								value: vendorForm.phone,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									phone: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-									className: "px-5 py-4",
-									children: user.email
+								className: "h-10 rounded-md border border-input bg-background px-3 text-sm"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								required: true,
+								placeholder: "Location",
+								value: vendorForm.location,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									location: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-									className: "px-5 py-4",
-									children: user.phone
+								className: "h-10 rounded-md border border-input bg-background px-3 text-sm"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+								placeholder: "Description (optional)",
+								value: vendorForm.description,
+								onChange: (e) => setVendorForm({
+									...vendorForm,
+									description: e.target.value
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-									className: "px-5 py-4",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatusBadge, { status: user.suspended ? "SUSPENDED" : user.emailVerified ? "ACTIVE" : "UNVERIFIED" })
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-									className: "px-5 py-4 text-right",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-end gap-2",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+								className: "min-h-20 rounded-md border border-input bg-background p-3 text-sm sm:col-span-2"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+								className: "sm:col-span-2",
+								disabled: updating === "vendor",
+								children: updating === "vendor" ? "Creating vendor…" : "Create vendor"
+							})
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "divide-y divide-border overflow-hidden rounded-xl border border-border bg-card",
+						children: [vendors.map((vendor) => {
+							const vendorUser = users.find((user) => user.userId === vendor.userId);
+							return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "p-4",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-start justify-between gap-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: vendor.name
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+											className: "mt-1 text-sm text-muted-foreground",
+											children: [
+												vendor.location,
+												" · ",
+												vendor.phone
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+											className: "mt-1 text-xs text-muted-foreground",
+											children: [
+												vendor.foodItems?.length ?? 0,
+												" food item(s) · ",
+												vendorUser?.suspended ? "Suspended" : "Active"
+											]
+										})
+									] }), vendorUser && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 											size: "sm",
-											variant: user.suspended ? "outline" : "destructive",
-											disabled: updating === `user-${user.userId}`,
-											onClick: () => setSuspended(user, !user.suspended),
-											children: [updating === `user-${user.userId}` ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin" }) : user.suspended ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserCheck, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserX, {}), user.suspended ? "Reactivate" : "Suspend"]
+											variant: vendorUser.suspended ? "outline" : "destructive",
+											disabled: updating === `user-${vendorUser.userId}`,
+											onClick: () => setSuspended(vendorUser, !vendorUser.suspended),
+											children: vendorUser.suspended ? "Reactivate" : "Suspend"
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 											size: "sm",
 											variant: "destructive",
-											disabled: updating === `user-${user.userId}`,
-											onClick: () => deleteUser(user),
+											disabled: updating === `user-${vendorUser.userId}`,
+											onClick: () => deleteUser(vendorUser),
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {}), "Delete"]
 										})]
-									})
+									})]
 								})
-							]
-						}, user.userId)), users.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-							colSpan: "5",
-							className: "px-5 py-16 text-center text-muted-foreground",
-							children: "No student accounts found."
-						}) })] })]
-					})
-				})
-			})]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-			className: "border-t border-border py-8",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "mb-5 flex items-center gap-2",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClipboardList, { className: "text-primary" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					className: "font-display text-xl font-semibold",
-					children: "Post management"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "text-sm text-muted-foreground",
-					children: "Update the status of any community post."
-				})] })]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "grid gap-6 xl:grid-cols-3",
-				children: postModules.map((module) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PostPanel, {
-					module,
-					posts: posts[module.key],
-					updating,
-					onStatusChange: setStatus,
-					onDelete: deletePost
-				}, module.key))
-			})]
-		})] })]
+							}, vendor.vendorId);
+						}), !vendors.length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "p-8 text-center text-sm text-muted-foreground",
+							children: "No vendors created yet."
+						})]
+					})]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "border-t border-border py-8",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-5 flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClipboardList, { className: "text-primary" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-xl font-semibold",
+						children: "Post management"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: "Update the status of any community post."
+					})] })]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "grid gap-6 xl:grid-cols-3",
+					children: postModules.map((module) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PostPanel, {
+						module,
+						posts: posts[module.key],
+						updating,
+						onStatusChange: setStatus,
+						onDelete: deletePost,
+						onViewDetails: (post) => setDetailPost({
+							module,
+							post
+						})
+					}, module.key))
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PostDetailsDialog, {
+				value: detailPost,
+				onOpenChange: (open) => !open && setDetailPost(null)
+			})
+		] })]
 	});
 }
-function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
+function PostPanel({ module, posts, updating, onStatusChange, onDelete, onViewDetails }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "overflow-hidden rounded-xl border border-border bg-card",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -1686,7 +2183,27 @@ function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
 							className: "mt-3 flex items-center gap-2",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatusBadge, { status: post.status }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", {
+								(module.key === "market" || module.key === "toLet") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									onClick: () => onViewDetails(post),
+									children: "View details"
+								}),
+								module.approval && post.status === "PENDING_APPROVAL" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-1 gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										disabled: updating === `${module.key}-${postId}`,
+										onClick: () => onStatusChange(module, post, module.approval.approve),
+										children: "Approve"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										variant: "destructive",
+										disabled: updating === `${module.key}-${postId}`,
+										onClick: () => onStatusChange(module, post, module.approval.reject),
+										children: "Reject"
+									})]
+								}) : !module.approval ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", {
 									value: post.status,
 									disabled: updating === `${module.key}-${postId}`,
 									onChange: (event) => onStatusChange(module, post, event.target.value),
@@ -1695,6 +2212,9 @@ function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
 										value: status,
 										children: status
 									}, status))
+								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "flex-1 text-xs text-muted-foreground",
+									children: "Moderation complete"
 								}),
 								updating === `${module.key}-${postId}` && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "size-4 animate-spin text-primary" }),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
@@ -1716,13 +2236,88 @@ function PostPanel({ module, posts, updating, onStatusChange, onDelete }) {
 		})]
 	});
 }
+function PostDetailsDialog({ value, onOpenChange }) {
+	const entry = value?.post;
+	const isMarket = value?.module?.key === "market";
+	const isToLet = value?.module?.key === "toLet";
+	if (!entry) return null;
+	const details = isMarket ? [
+		["Seller ID", entry.sellerId],
+		["Category ID", entry.categoryId],
+		["Location ID", entry.locationId],
+		["Condition", entry.condition],
+		["Listing type", entry.sellingType],
+		["Price", entry.fixedPrice ? `৳${entry.fixedPrice}` : `Starting ৳${entry.startingPrice}`],
+		["Created", entry.createdAt]
+	] : [
+		["Owner ID", entry.ownerId],
+		["Area", entry.area],
+		["Monthly rent", `৳${entry.monthlyRent}`],
+		["Bedrooms", entry.bedrooms],
+		["Bathrooms", entry.bathrooms],
+		["Contact phone", entry.contactPhone],
+		["Available from", entry.availableFrom || "Not specified"],
+		["Created", entry.createdAt]
+	];
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Dialog, {
+		open: Boolean(entry),
+		onOpenChange,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogContent, {
+			className: "max-h-[90vh] max-w-2xl overflow-y-auto",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogHeader, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogTitle, { children: [isMarket ? "Marketplace" : "To-let", " post details"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogDescription, { children: "Review the complete listing before taking moderation action." })] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-5",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: "Title"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "font-display text-xl font-semibold",
+						children: entry.title
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: "Description"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 whitespace-pre-wrap leading-relaxed",
+						children: entry.description
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "grid gap-3 sm:grid-cols-2",
+						children: details.map(([label, content]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "rounded-lg bg-surface-subtle p-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-xs font-medium text-muted-foreground",
+								children: label
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-1 break-words text-sm font-semibold",
+								children: content ?? "Not specified"
+							})]
+						}, label))
+					}),
+					isToLet && entry.photoUrls?.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mb-2 text-sm font-medium",
+						children: "Photos"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "grid gap-3 sm:grid-cols-2",
+						children: entry.photoUrls.map((url) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: url,
+							alt: entry.title,
+							className: "max-h-80 w-full rounded-lg bg-surface-subtle object-contain"
+						}, url))
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatusBadge, { status: entry.status })
+				]
+			})]
+		})
+	});
+}
 function StatusBadge({ status }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 		className: status === "SUSPENDED" || status === "CANCELLED" ? "rounded-full bg-danger-soft px-2 py-1 text-xs font-semibold text-danger" : status === "SOLD" || status === "RETURNED" || status === "RENTED" || status === "RESOLVED" ? "rounded-full bg-success-soft px-2 py-1 text-xs font-semibold text-success" : "rounded-full bg-primary-soft px-2 py-1 text-xs font-semibold text-primary",
 		children: status
 	});
 }
-var Route$20 = Route$21;
+var Route$26 = Route$27;
 /** Prevents protected page content from rendering for signed-out visitors. */
 function RequireAuth({ children }) {
 	const navigate = useNavigate();
@@ -1739,7 +2334,7 @@ function RequireAuth({ children }) {
 	});
 	return children;
 }
-var Route$19 = createFileRoute("/edit-profile")({ component: EditProfileRoute });
+var Route$25 = createFileRoute("/edit-profile")({ component: EditProfileRoute });
 function EditProfileRoute() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RequireAuth, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EditProfilePage, {}) });
 }
@@ -1945,8 +2540,379 @@ function EditProfilePage() {
 		]
 	});
 }
-var Route$18 = Route$19;
-var Route$17 = createFileRoute("/login")({ component: LoginPage });
+var Route$24 = Route$25;
+var Route$23 = createFileRoute("/food")({ component: FoodPage });
+function FoodPage() {
+	const navigate = useNavigate();
+	const placingRef = (0, import_react.useRef)(false);
+	const [vendors, setVendors] = (0, import_react.useState)([]), [selectedVendorId, setSelectedVendorId] = (0, import_react.useState)(null), [cart, setCart] = (0, import_react.useState)([]), [query, setQuery] = (0, import_react.useState)(""), [loading, setLoading] = (0, import_react.useState)(true), [checkoutOpen, setCheckoutOpen] = (0, import_react.useState)(false), [payment, setPayment] = (0, import_react.useState)("COD"), [deliveryLocation, setDeliveryLocation] = (0, import_react.useState)(""), [placing, setPlacing] = (0, import_react.useState)(false), [isVendor, setIsVendor] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		if (!getSession()) {
+			setIsVendor(false);
+			return;
+		}
+		let active = true;
+		api("/api/vendors/me").then(() => active && setIsVendor(true)).catch(() => active && setIsVendor(false));
+		return () => {
+			active = false;
+		};
+	}, []);
+	(0, import_react.useEffect)(() => {
+		let active = true;
+		let reportedError = false;
+		const loadVendors = () => {
+			if (placingRef.current) return Promise.resolve();
+			return api("/api/food/vendors").then((data) => {
+				if (!active) return;
+				setVendors(data);
+				setSelectedVendorId((current) => data.some((item) => item.vendorId === current) ? current : data[0]?.vendorId ?? null);
+			}).catch((error) => {
+				if (active && !reportedError) {
+					reportedError = true;
+					toast.error(error.message);
+				}
+			}).finally(() => {
+				if (active) setLoading(false);
+			});
+		};
+		loadVendors();
+		const timer = window.setInterval(loadVendors, 2e3);
+		return () => {
+			active = false;
+			window.clearInterval(timer);
+		};
+	}, []);
+	(0, import_react.useEffect)(() => {
+		setQuery(new URLSearchParams(window.location.search).get("q") || "");
+	}, []);
+	(0, import_react.useEffect)(() => {
+		const payment = new URLSearchParams(window.location.search).get("payment");
+		if (!payment) return;
+		window.history.replaceState({}, "", "/food");
+		if (payment === "success") {
+			toast.success("Payment successful. Your food order is confirmed.");
+			const timer = window.setTimeout(() => navigate({ to: "/" }), 1800);
+			return () => window.clearTimeout(timer);
+		}
+		toast.error(payment === "cancelled" ? "Payment was cancelled." : "Payment could not be verified. No order was confirmed.");
+	}, [navigate]);
+	const vendor = vendors.find((entry) => entry.vendorId === selectedVendorId) ?? null;
+	const menu = (0, import_react.useMemo)(() => (vendor?.foodItems ?? []).filter((item) => item.name.toLowerCase().includes(query.toLowerCase())), [vendor, query]);
+	const total = cart.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+	const add = (item) => isVendor ? toast.error("Vendor accounts cannot place food orders.") : setCart((current) => {
+		return current.find((entry) => entry.foodItemId === item.foodItemId) ? current.map((entry) => entry.foodItemId === item.foodItemId ? {
+			...entry,
+			quantity: entry.quantity + 1
+		} : entry) : [...current, {
+			...item,
+			quantity: 1
+		}];
+	});
+	const quantity = (id, next) => setCart((current) => next < 1 ? current.filter((item) => item.foodItemId !== id) : current.map((item) => item.foodItemId === id ? {
+		...item,
+		quantity: next
+	} : item));
+	const checkout = () => {
+		if (!getSession()) {
+			toast.error("Sign in to place a food order.");
+			navigate({ to: "/login" });
+			return;
+		}
+		if (isVendor) {
+			toast.error("Vendor accounts cannot place food orders.");
+			return;
+		}
+		setCheckoutOpen(true);
+	};
+	const placeOrder = async () => {
+		if (placingRef.current) return;
+		if (!vendor || !deliveryLocation.trim()) {
+			toast.error("Enter the delivery location.");
+			return;
+		}
+		placingRef.current = true;
+		setPlacing(true);
+		const paymentMethod = payment === "ONLINE" ? "ONLINE" : "COD";
+		try {
+			const order = await api("/api/food/orders", {
+				method: "POST",
+				body: JSON.stringify({
+					vendorId: vendor.vendorId,
+					paymentMethod,
+					deliveryLocation: deliveryLocation.trim(),
+					items: cart.map((item) => ({
+						foodItemId: item.foodItemId,
+						quantity: item.quantity
+					}))
+				})
+			});
+			if (paymentMethod === "ONLINE") {
+				if (!order.gatewayUrl) throw new Error("SSLCommerz could not start the payment session.");
+				window.location.assign(order.gatewayUrl);
+				return;
+			}
+			setCart([]);
+			setDeliveryLocation("");
+			setCheckoutOpen(false);
+			toast.success(`COD order #${order.orderId} was placed.`);
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			placingRef.current = false;
+			setPlacing(false);
+		}
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { children: [
+		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+			className: "border-b border-border bg-primary-soft",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "container-shell py-8 sm:py-16",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "eyebrow",
+						children: "CAMPUS FOOD"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "mt-2 font-display text-3xl font-bold sm:text-5xl",
+						children: "Good food, right around campus."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-3 max-w-2xl text-muted-foreground",
+						children: "Order directly from approved campus vendors."
+					})
+				]
+			})
+		}),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+			className: "container-shell grid gap-5 py-5 sm:gap-8 sm:py-8 lg:grid-cols-[1fr_340px]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "font-display text-2xl font-bold",
+					children: "Food vendors"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-1 text-sm text-muted-foreground",
+					children: "Choose a vendor to view its current menu."
+				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "relative w-full sm:w-64",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "absolute left-3 top-3 size-4 text-muted-foreground" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+						className: "pl-9",
+						value: query,
+						onChange: (event) => setQuery(event.target.value),
+						placeholder: "Search this menu"
+					})]
+				})]
+			}), loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "py-16 text-center text-muted-foreground",
+				children: "Loading vendors…"
+			}) : !vendors.length ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "mt-6 rounded-xl border border-dashed border-border py-16 text-center text-muted-foreground",
+				children: "No food vendors are available yet."
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "mt-6 flex gap-3 overflow-x-auto pb-2",
+				children: vendors.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					onClick: () => {
+						setSelectedVendorId(item.vendorId);
+						setCart([]);
+						setQuery("");
+					},
+					className: `min-w-52 rounded-xl border p-4 text-left transition ${item.vendorId === selectedVendorId ? "border-primary bg-primary-soft shadow-soft" : "border-border bg-card hover:border-primary/50"}`,
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "font-semibold",
+						children: item.name
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "mt-1 flex items-center gap-1 text-xs text-muted-foreground",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "size-3" }), item.location]
+					})]
+				}, item.vendorId))
+			}), vendor && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-8 flex items-center gap-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "flex size-11 items-center justify-center overflow-hidden rounded-xl bg-primary text-primary-foreground",
+						children: vendor.imageUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: vendor.imageUrl,
+							alt: "",
+							className: "size-full object-cover"
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UtensilsCrossed, {})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-2xl font-bold",
+						children: vendor.name
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: vendor.location
+					})] })]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "mt-5 grid gap-4 sm:grid-cols-2",
+					children: menu.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+						className: "overflow-hidden rounded-xl border border-border bg-card shadow-soft",
+						children: [item.imageUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex min-h-52 items-center justify-center bg-surface-subtle",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+								src: item.imageUrl,
+								alt: item.name,
+								className: "max-h-[28rem] w-full object-contain",
+								loading: "lazy"
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "p-4",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "font-semibold",
+									children: item.name
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-1 text-xs leading-relaxed text-muted-foreground",
+									children: item.description || "Freshly prepared."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-3 flex items-center justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "font-display font-bold text-primary",
+										children: ["৳", item.price]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+										size: "sm",
+										onClick: () => add(item),
+										disabled: isVendor,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {}), isVendor ? "Vendor only" : "Add"]
+									})]
+								})
+							]
+						})]
+					}, item.foodItemId))
+				}),
+				!menu.length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-6 rounded-xl border border-dashed border-border py-12 text-center text-muted-foreground",
+					children: "No available food matches your search."
+				})
+			] })] })] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+				className: "h-fit rounded-xl border border-border bg-card p-4 shadow-soft sm:p-5 lg:sticky lg:top-24",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center justify-between",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-xl font-bold",
+						children: "Your order"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShoppingBag, { className: "text-primary" })]
+				}), cart.length ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "mt-5 space-y-4",
+					children: cart.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-3",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "min-w-0 flex-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "truncate text-sm font-semibold",
+								children: item.name
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "text-xs text-muted-foreground",
+								children: [
+									"৳",
+									item.price,
+									" each"
+								]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									variant: "outline",
+									size: "icon",
+									className: "size-7",
+									onClick: () => quantity(item.foodItemId, item.quantity - 1),
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Minus, { className: "size-3" })
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "w-5 text-center text-sm",
+									children: item.quantity
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									variant: "outline",
+									size: "icon",
+									className: "size-7",
+									onClick: () => quantity(item.foodItemId, item.quantity + 1),
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "size-3" })
+								})
+							]
+						})]
+					}, item.foodItemId))
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-5 border-t border-border pt-4",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex justify-between font-display text-lg font-bold",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Total" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: ["৳", total.toFixed(2)] })]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+						className: "mt-4 w-full",
+						onClick: checkout,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CookingPot, {}), "Checkout"]
+					})]
+				})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "py-10 text-center text-sm text-muted-foreground",
+					children: "Your food order is empty."
+				})]
+			})]
+		}),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Dialog, {
+			open: checkoutOpen,
+			onOpenChange: setCheckoutOpen,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogContent, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogHeader, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogTitle, { children: "Choose payment method" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogDescription, { children: [
+				"Vendor: ",
+				vendor?.name,
+				" · Total ৳",
+				total.toFixed(2)
+			] })] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-3",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+						className: "block text-sm font-medium",
+						children: ["Delivery location", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+							required: true,
+							value: deliveryLocation,
+							onChange: (event) => setDeliveryLocation(event.target.value),
+							placeholder: "Building, room number, gate or landmark",
+							className: "mt-2 min-h-20 w-full rounded-md border border-input bg-background p-3 text-sm"
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+						className: `flex cursor-pointer items-center gap-3 rounded-lg border p-4 ${payment === "COD" ? "border-primary bg-primary-soft" : "border-border"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "radio",
+							checked: payment === "COD",
+							onChange: () => setPayment("COD")
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "font-semibold",
+							children: "Cash on delivery"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-xs text-muted-foreground",
+							children: "Pay the vendor when your order arrives."
+						})] })]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+						className: `flex cursor-pointer items-center gap-3 rounded-lg border p-4 ${payment === "ONLINE" ? "border-primary bg-primary-soft" : "border-border"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "radio",
+							checked: payment === "ONLINE",
+							onChange: () => setPayment("ONLINE")
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "font-semibold",
+							children: "Online payment"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-xs text-muted-foreground",
+							children: "Continue securely with SSLCommerz."
+						})] })]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+						className: "w-full",
+						onClick: placeOrder,
+						disabled: placing,
+						children: placing ? payment === "COD" ? "Placing cash on delivery order…" : "Connecting securely to SSLCommerz…" : payment === "COD" ? "Place COD order" : "Pay with SSLCommerz"
+					})
+				]
+			})] })
+		})
+	] });
+}
+var Route$22 = Route$23;
+var Route$21 = createFileRoute("/login")({ component: LoginPage });
 function LoginPage() {
 	const navigate = useNavigate();
 	const [values, setValues] = (0, import_react.useState)({
@@ -1958,7 +2924,7 @@ function LoginPage() {
 	const submit = (event) => {
 		event.preventDefault();
 		const next = {};
-		if (!values.identifier.trim()) next.identifier = "Enter your student ID or admin email.";
+		if (!values.identifier.trim()) next.identifier = "Enter your student ID, vendor login ID, or admin email.";
 		if (values.password.length < 8) next["password"] = "Password must be at least 8 characters.";
 		setErrors(next);
 		if (Object.keys(next).length) return;
@@ -1984,7 +2950,12 @@ function LoginPage() {
 				user: account
 			});
 			toast.success(isAdminLogin ? "Welcome back, administrator" : "Welcome back to Campus Crate");
-			navigate({ to: isAdminLogin ? "/admin" : "/my-listings" });
+			if (isAdminLogin) {
+				navigate({ to: "/admin" });
+				return;
+			}
+			navigate({ to: "/my-listings" });
+			api("/api/vendors/me").then(() => navigate({ to: "/vendor" })).catch(() => {});
 		}).catch((error) => toast.error(error.message)).finally(() => setLoading(false));
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
@@ -2015,7 +2986,7 @@ function LoginPage() {
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
 									htmlFor: "identifier",
-									children: "Student ID or admin email"
+									children: "Student ID, vendor login ID, or admin email"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 									id: "identifier",
@@ -2087,7 +3058,7 @@ function LoginPage() {
 		})
 	});
 }
-var Route$16 = Route$17;
+var Route$20 = Route$21;
 var Checkbox = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Checkbox$1, {
 	ref,
 	className: cn("grid place-content-center peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground", className),
@@ -2128,6 +3099,7 @@ var config = {
 	}
 };
 function FeedPage({ module }) {
+	const navigate = useNavigate();
 	const [query, setQuery] = (0, import_react.useState)("");
 	const [active, setActive] = (0, import_react.useState)([]);
 	const [showFilters, setShowFilters] = (0, import_react.useState)(false);
@@ -2136,30 +3108,50 @@ function FeedPage({ module }) {
 	const content = config[module];
 	const Icon = content.icon;
 	(0, import_react.useEffect)(() => {
+		const session = getSession();
+		if (!session?.token || session.role === "ADMIN") return;
+		let active = true;
+		api("/api/vendors/me").then(() => {
+			if (active) navigate({
+				to: "/vendor",
+				replace: true
+			});
+		}).catch(() => {});
+		return () => {
+			active = false;
+		};
+	}, [navigate]);
+	(0, import_react.useEffect)(() => {
+		setQuery(new URLSearchParams(window.location.search).get("q") || "");
+	}, []);
+	usePolling(async () => {
 		const endpoint = module === "lost" ? "/api/items" : "/api/marketplace/posts";
-		setLoadError("");
-		api(endpoint).then((data) => setRemoteListings(data.map((item) => module === "lost" ? {
-			id: `lost-${item.itemId}`,
-			module: "lost",
-			title: item.title,
-			detail: `Location #${item.locationId}`,
-			meta: item.createdAt ?? "Recently",
-			tag: item.itemType,
-			status: item.status,
-			imageUrl: item.imageUrl
-		} : {
-			id: `market-${item.postId}`,
-			module: "market",
-			title: item.title,
-			detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`,
-			meta: item.condition,
-			tag: item.sellingType,
-			status: item.status,
-			owner: `Student #${item.sellerId}`
-		}))).catch((error) => {
-			setRemoteListings([]);
+		try {
+			const data = await api(endpoint);
+			setLoadError("");
+			setRemoteListings(data.map((item) => module === "lost" ? {
+				id: `lost-${item.itemId}`,
+				module: "lost",
+				title: item.title,
+				detail: `Location #${item.locationId}`,
+				meta: item.createdAt ?? "Recently",
+				tag: item.itemType,
+				status: item.status,
+				imageUrl: item.imageUrl
+			} : {
+				id: `market-${item.postId}`,
+				module: "market",
+				title: item.title,
+				detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`,
+				meta: item.condition,
+				tag: item.sellingType,
+				status: item.status,
+				owner: `Student #${item.sellerId}`,
+				imageUrl: item.imageUrl
+			}));
+		} catch (error) {
 			setLoadError(error.message);
-		});
+		}
 	}, [module]);
 	const base = remoteListings;
 	const filtered = (0, import_react.useMemo)(() => base.filter((item) => item.title.toLowerCase().includes(query.toLowerCase()) && (!active.length || active.some((filter) => `${item.status} ${item.tag} ${item.meta}`.toLowerCase().includes(filter.toLowerCase())))), [
@@ -2323,171 +3315,333 @@ function FeedPage({ module }) {
 		})]
 	})] });
 }
-var Route$15 = createFileRoute("/lost-and-found")({ component: LostAndFoundPage });
+var Route$19 = createFileRoute("/lost-and-found")({ component: LostAndFoundPage });
 function LostAndFoundPage() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FeedPage, { module: "lost" });
 }
-var Route$14 = Route$15;
-var Route$13 = createFileRoute("/marketplace")({ component: MarketplacePage });
+var Route$18 = Route$19;
+var Route$17 = createFileRoute("/marketplace")({ component: MarketplacePage });
 function MarketplacePage() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FeedPage, { module: "market" });
 }
-var Route$12 = Route$13;
-var Route$11 = createFileRoute("/my-listings")({ component: MyListingsRoute });
+var Route$16 = Route$17;
+var Route$15 = createFileRoute("/my-listings")({ component: MyListingsRoute });
 function MyListingsRoute() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RequireAuth, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MyListingsPage, {}) });
 }
 function MyListingsPage() {
+	const navigate = useNavigate();
 	const user = getSession()?.user;
 	const [tab, setTab] = (0, import_react.useState)("all");
 	const [posts, setPosts] = (0, import_react.useState)([]);
+	const [foodOrders, setFoodOrders] = (0, import_react.useState)([]);
 	const [loading, setLoading] = (0, import_react.useState)(true);
 	const [error, setError] = (0, import_react.useState)("");
+	const [updatingId, setUpdatingId] = (0, import_react.useState)("");
 	(0, import_react.useEffect)(() => {
 		if (!user?.userId) return;
-		Promise.all([
-			api("/api/items"),
-			api(`/api/marketplace/users/${user.userId}/posts`),
-			api(`/api/to-let/listings/owners/${user.userId}`)
-		]).then(([items, marketplacePosts, toLetListings]) => setPosts([
-			...items.filter((item) => item.reportedBy === user.userId).map((item) => ({
-				id: `lost-${item.itemId}`,
-				module: "lost",
-				title: item.title,
-				detail: item.itemType,
-				status: item.status,
-				createdAt: item.createdAt
-			})),
-			...marketplacePosts.map((post) => ({
-				id: `market-${post.postId}`,
-				module: "market",
-				title: post.title,
-				detail: post.fixedPrice ? `৳${post.fixedPrice}` : `Starting ৳${post.startingPrice}`,
-				status: post.status,
-				createdAt: post.createdAt
-			})),
-			...toLetListings.map((listing) => ({
-				id: `to-let-${listing.listingId}`,
-				module: "to-let",
-				title: listing.title,
-				detail: `৳${listing.monthlyRent}/month · ${listing.area}`,
-				status: listing.status,
-				createdAt: listing.createdAt
-			}))
-		])).catch((requestError) => setError(requestError.message)).finally(() => setLoading(false));
+		api("/api/vendors/me").then(() => navigate({
+			to: "/vendor",
+			replace: true
+		})).catch(() => {});
+	}, [navigate, user?.userId]);
+	usePolling(async () => {
+		if (!user?.userId) return;
+		try {
+			const [items, marketplacePosts, toLetListings, orders] = await Promise.all([
+				api("/api/items"),
+				api(`/api/marketplace/users/${user.userId}/posts`),
+				api(`/api/to-let/listings/owners/${user.userId}`),
+				api("/api/food/orders/me")
+			]);
+			setFoodOrders(orders);
+			setPosts([
+				...items.filter((item) => item.reportedBy === user.userId).map((item) => ({
+					id: `lost-${item.itemId}`,
+					module: "lost",
+					title: item.title,
+					detail: item.itemType,
+					status: item.status,
+					createdAt: item.createdAt
+				})),
+				...marketplacePosts.map((post) => ({
+					id: `market-${post.postId}`,
+					resourceId: post.postId,
+					module: "market",
+					title: post.title,
+					detail: post.fixedPrice ? `৳${post.fixedPrice}` : `Starting ৳${post.startingPrice}`,
+					status: post.status,
+					createdAt: post.createdAt
+				})),
+				...toLetListings.map((listing) => ({
+					id: `to-let-${listing.listingId}`,
+					resourceId: listing.listingId,
+					module: "to-let",
+					title: listing.title,
+					detail: `৳${listing.monthlyRent}/month · ${listing.area}`,
+					status: listing.status,
+					createdAt: listing.createdAt
+				}))
+			]);
+			setError("");
+		} catch (requestError) {
+			setError(requestError.message);
+		} finally {
+			setLoading(false);
+		}
 	}, [user?.userId]);
 	const visible = (0, import_react.useMemo)(() => posts.filter((post) => tab === "all" || post.module === tab), [posts, tab]);
 	const initials = (user?.name || user?.studentId || "Student").split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+	const removePost = async (post) => {
+		if (!window.confirm(`Delete “${post.title}”?`)) return;
+		setUpdatingId(post.id);
+		try {
+			await api(post.module === "market" ? `/api/marketplace/posts/${post.resourceId}?sellerId=${user.userId}` : `/api/to-let/listings/${post.resourceId}?ownerId=${user.userId}`, { method: "DELETE" });
+			setPosts((current) => current.filter((item) => item.id !== post.id));
+			toast.success("Post deleted.");
+		} catch (requestError) {
+			toast.error(requestError.message);
+		} finally {
+			setUpdatingId("");
+		}
+	};
+	const markSold = async (post) => {
+		setUpdatingId(post.id);
+		try {
+			const updated = await api(`/api/marketplace/posts/${post.resourceId}/sold?sellerId=${user.userId}`, { method: "PUT" });
+			setPosts((current) => current.map((item) => item.id === post.id ? {
+				...item,
+				status: updated.status
+			} : item));
+			toast.success("Post marked as sold.");
+		} catch (requestError) {
+			toast.error(requestError.message);
+		} finally {
+			setUpdatingId("");
+		}
+	};
+	const markRented = async (post) => {
+		setUpdatingId(post.id);
+		try {
+			const updated = await api(`/api/to-let/listings/${post.resourceId}/rented?ownerId=${user.userId}`, { method: "PUT" });
+			setPosts((current) => current.map((item) => item.id === post.id ? {
+				...item,
+				status: updated.status
+			} : item));
+			toast.success("Listing marked as rented.");
+		} catch (requestError) {
+			toast.error(requestError.message);
+		} finally {
+			setUpdatingId("");
+		}
+	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
 		className: "container-shell py-10",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-			className: "flex flex-col justify-between gap-5 border-b border-border pb-8 sm:flex-row sm:items-center",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex items-center gap-4",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Avatar, {
-					className: "size-16 text-xl font-bold",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarImage, {
-						src: user?.profileImgUrl,
-						alt: `${user?.name || "Your"} profile`
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, {
-						className: "bg-primary text-primary-foreground",
-						children: initials
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-wrap items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-						className: "font-display text-2xl font-bold",
-						children: user?.name || "My profile"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-						className: "flex items-center gap-1 rounded-full bg-success-soft px-2 py-1 text-xs font-semibold text-success",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "size-3.5" }), "Verified Student"]
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-muted-foreground",
-					children: "Your live Campus Crate posts"
-				})] })]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-				asChild: true,
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
-					to: "/edit-profile",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenLine, {}), "Edit profile"]
-				})
-			})]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-			className: "py-8",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					className: "font-display text-xl font-semibold",
-					children: "My listings"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "text-sm text-muted-foreground",
-					children: "Posts currently saved in your account."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tabs, {
-					value: tab,
-					onValueChange: setTab,
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TabsList, { children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
-							value: "all",
-							children: "All"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
-							value: "lost",
-							children: "Lost & Found"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
-							value: "market",
-							children: "Marketplace"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
-							value: "to-let",
-							children: "To-let"
-						})
-					] })
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "flex flex-col justify-between gap-5 border-b border-border pb-8 sm:flex-row sm:items-center",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-4",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Avatar, {
+						className: "size-16 text-xl font-bold",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarImage, {
+							src: user?.profileImgUrl,
+							alt: `${user?.name || "Your"} profile`
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, {
+							className: "bg-primary text-primary-foreground",
+							children: initials
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+							className: "font-display text-2xl font-bold",
+							children: user?.name || "My profile"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "flex items-center gap-1 rounded-full bg-success-soft px-2 py-1 text-xs font-semibold text-success",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "size-3.5" }), "Verified Student"]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-sm text-muted-foreground",
+						children: "Your live Campus Crate posts"
+					})] })]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+					asChild: true,
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+						to: "/edit-profile",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenLine, {}), "Edit profile"]
+					})
 				})]
-			}), loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "flex justify-center py-16",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin" })
-			}) : error ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "rounded-xl border border-danger/30 bg-danger/5 p-5 text-danger",
-				children: error
-			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "overflow-hidden rounded-xl border border-border bg-card",
-				children: [visible.map((post) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
-					className: "flex flex-wrap items-center justify-between gap-4 border-b border-border p-5 last:border-0",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "py-8",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-xl font-semibold",
+						children: "My listings"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm text-muted-foreground",
+						children: "Posts currently saved in your account."
+					})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tabs, {
+						value: tab,
+						onValueChange: setTab,
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TabsList, { children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
+								value: "all",
+								children: "All"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
+								value: "lost",
+								children: "Lost & Found"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
+								value: "market",
+								children: "Marketplace"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TabsTrigger, {
+								value: "to-let",
+								children: "To-let"
+							})
+						] })
+					})]
+				}), loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "flex justify-center py-16",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "animate-spin" })
+				}) : error ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "rounded-xl border border-danger/30 bg-danger/5 p-5 text-danger",
+					children: error
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "overflow-hidden rounded-xl border border-border bg-card",
+					children: [visible.map((post) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+						className: "flex flex-wrap items-center justify-between gap-4 border-b border-border p-5 last:border-0",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "font-semibold",
+									children: post.title
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase text-accent-foreground",
+									children: post.status
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-1 text-sm text-muted-foreground",
+								children: post.detail
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+								children: ["Item ID: ", getListingReference(post.id)]
+							})
+						] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "flex items-center gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-								className: "font-semibold",
-								children: post.title
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase text-accent-foreground",
-								children: post.status
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-1 text-sm text-muted-foreground",
-							children: post.detail
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-							className: "mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-							children: ["Item ID: ", getListingReference(post.id)]
-						})
-					] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-						className: "text-xs font-semibold uppercase tracking-wide text-primary",
-						children: post.module === "to-let" ? "To-let" : post.module === "market" ? "Marketplace" : "Lost & Found"
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-xs font-semibold uppercase tracking-wide text-primary",
+									children: post.module === "to-let" ? "To-let" : post.module === "market" ? "Marketplace" : "Lost & Found"
+								}),
+								post.module === "market" && post.status === "ACTIVE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									disabled: updatingId === post.id,
+									onClick: () => markSold(post),
+									children: "Mark sold"
+								}),
+								post.module === "to-let" && post.status === "AVAILABLE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									disabled: updatingId === post.id,
+									onClick: () => markRented(post),
+									children: "Mark rented"
+								}),
+								(post.module === "market" || post.module === "to-let") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+									size: "icon",
+									variant: "destructive",
+									disabled: updatingId === post.id,
+									onClick: () => removePost(post),
+									"aria-label": `Delete ${post.title}`,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {})
+								})
+							]
+						})]
+					}, post.id)), visible.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "py-16 text-center text-muted-foreground",
+						children: "No real listings in this category yet."
 					})]
-				}, post.id)), visible.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "py-16 text-center text-muted-foreground",
-					children: "No real listings in this category yet."
 				})]
-			})]
-		})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "border-t border-border py-8",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-xl font-semibold",
+						children: "Food order history"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-sm text-muted-foreground",
+						children: "Your food orders and the vendor’s current decision."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-5 grid gap-4 lg:grid-cols-2",
+						children: [foodOrders.map((order) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+							className: "rounded-xl border border-border bg-card p-5 shadow-soft",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-start justify-between gap-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+										className: "font-semibold",
+										children: [
+											"Order #",
+											order.orderId,
+											" · ",
+											order.vendorName
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										className: "mt-1 text-sm text-muted-foreground",
+										children: [
+											order.paymentMethod,
+											" · ",
+											order.paymentStatus
+										]
+									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "rounded-full bg-primary-soft px-2 py-1 text-xs font-semibold text-primary",
+										children: order.orderStatus
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+									className: "mt-4 space-y-1 text-sm",
+									children: order.items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: [
+										item.quantity,
+										" × ",
+										item.name,
+										" ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "text-muted-foreground",
+											children: [
+												"(৳",
+												item.unitPrice,
+												")"
+											]
+										})
+									] }, `${item.name}-${index}`))
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+									className: "mt-4 border-t border-border pt-3 text-right font-semibold",
+									children: ["Total: ৳", order.totalAmount]
+								})
+							]
+						}, order.orderId)), !foodOrders.length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "rounded-xl border border-dashed border-border py-12 text-center text-muted-foreground lg:col-span-2",
+							children: "You have not placed any food orders yet."
+						})]
+					})
+				]
+			})
+		]
 	});
 }
-var Route$10 = Route$11;
-var Route$9 = createFileRoute("/reset-password")({ component: ResetPasswordPage });
+var Route$14 = Route$15;
+var Route$13 = createFileRoute("/reset-password")({ component: ResetPasswordPage });
 function ResetPasswordPage() {
 	const navigate = useNavigate();
 	const [step, setStep] = (0, import_react.useState)("request");
@@ -2655,8 +3809,198 @@ function ResetPasswordPage() {
 		})
 	});
 }
-var Route$8 = Route$9;
-var Route$7 = createFileRoute("/signup")({ component: SignupPage });
+var Route$12 = Route$13;
+var Route$11 = createFileRoute("/search")({ component: SearchPage });
+var sections = [
+	"all",
+	"lost",
+	"market",
+	"to-let",
+	"food"
+];
+var labels = {
+	all: "All",
+	lost: "Lost & Found",
+	market: "Marketplace",
+	"to-let": "To-let",
+	food: "Food"
+};
+function SearchPage() {
+	const [query, setQuery] = (0, import_react.useState)("");
+	const [section, setSection] = (0, import_react.useState)("all");
+	const [results, setResults] = (0, import_react.useState)([]);
+	const [loading, setLoading] = (0, import_react.useState)(true);
+	const [error, setError] = (0, import_react.useState)("");
+	(0, import_react.useEffect)(() => setQuery(new URLSearchParams(window.location.search).get("q") || ""), []);
+	usePolling(async () => {
+		try {
+			const [lost, market, toLet, vendors] = await Promise.all([
+				api("/api/items"),
+				api("/api/marketplace/posts"),
+				api("/api/to-let/listings"),
+				api("/api/food/vendors")
+			]);
+			setResults([
+				...lost.map((item) => ({
+					id: `lost-${item.itemId}`,
+					module: "lost",
+					title: item.title,
+					description: item.description,
+					detail: `Location #${item.locationId}`,
+					meta: item.createdAt ?? "Recently",
+					tag: item.itemType,
+					status: item.status,
+					imageUrl: item.imageUrl
+				})),
+				...market.map((item) => ({
+					id: `market-${item.postId}`,
+					module: "market",
+					title: item.title,
+					description: item.description,
+					detail: item.fixedPrice ? `৳${item.fixedPrice}` : `Starting ৳${item.startingPrice}`,
+					meta: item.condition,
+					tag: item.sellingType,
+					status: item.status,
+					owner: `Student #${item.sellerId}`
+				})),
+				...toLet.map((item) => ({
+					id: `to-let-${item.listingId}`,
+					module: "to-let",
+					title: item.title,
+					description: item.description,
+					detail: `৳${item.monthlyRent}/month`,
+					meta: item.area,
+					tag: `${item.bedrooms} bed · ${item.bathrooms} bath`,
+					status: item.status,
+					imageUrl: item.photoUrls?.[0],
+					owner: `Student #${item.ownerId}`
+				})),
+				...vendors.flatMap((vendor) => (vendor.foodItems ?? []).map((item) => ({
+					id: `food-${item.foodItemId}`,
+					module: "food",
+					title: item.name,
+					description: item.description || "Freshly prepared.",
+					detail: `৳${item.price}`,
+					meta: vendor.name,
+					tag: "Food",
+					status: "AVAILABLE",
+					imageUrl: item.imageUrl,
+					vendorId: vendor.vendorId
+				})))
+			]);
+			setError("");
+		} catch (requestError) {
+			setError(requestError.message);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
+	const filtered = (0, import_react.useMemo)(() => {
+		const needle = query.trim().toLowerCase();
+		return results.filter((item) => (section === "all" || item.module === section) && (!needle || `${item.title} ${item.description} ${item.detail} ${item.meta} ${item.tag}`.toLowerCase().includes(needle)));
+	}, [
+		query,
+		results,
+		section
+	]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+		className: "container-shell py-8 sm:py-12",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+			className: "mx-auto max-w-4xl",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "eyebrow",
+					children: "CAMPUS SEARCH"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "mt-2 font-display text-3xl font-bold sm:text-4xl",
+					children: "Search results"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-2 text-muted-foreground",
+					children: "Find related posts, rooms, and food menus in one place."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "relative mt-6",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "absolute left-3 top-3 size-5 text-muted-foreground" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+						autoFocus: true,
+						value: query,
+						onChange: (event) => setQuery(event.target.value),
+						className: "h-11 pl-10",
+						placeholder: "Search Campus Crate"
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "mt-4 flex flex-wrap gap-2",
+					children: sections.map((value) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+						size: "sm",
+						variant: section === value ? "default" : "outline",
+						onClick: () => setSection(value),
+						children: labels[value]
+					}, value))
+				})
+			]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+			className: "mt-10",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+				className: "mb-4 text-sm text-muted-foreground",
+				children: [
+					filtered.length,
+					" related result",
+					filtered.length === 1 ? "" : "s"
+				]
+			}), error ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "rounded-xl border border-danger/30 bg-danger/5 p-5 text-danger",
+				children: error
+			}) : loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "py-14 text-center text-muted-foreground",
+				children: "Searching campus posts…"
+			}) : filtered.length ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "grid gap-5 sm:grid-cols-2 xl:grid-cols-3",
+				children: filtered.map((item) => item.module === "food" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+					to: "/food",
+					className: "overflow-hidden rounded-xl border border-border bg-card shadow-soft transition hover:-translate-y-0.5",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "aspect-video",
+						children: item.imageUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: item.imageUrl,
+							alt: item.title,
+							className: "h-full w-full object-cover"
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex h-full items-center justify-center bg-primary-soft text-primary",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UtensilsCrossed, { className: "size-12" })
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "p-4",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-xs font-semibold text-primary",
+								children: item.meta
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "mt-1 font-display font-semibold",
+								children: item.title
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-2 line-clamp-2 text-sm text-muted-foreground",
+								children: item.description
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-3 font-semibold text-primary",
+								children: item.detail
+							})
+						]
+					})]
+				}, item.id) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ListingCard, { listing: item }, item.id))
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "rounded-xl border border-dashed border-border py-16 text-center text-muted-foreground",
+				children: "No related items found. Try another word or filter."
+			})]
+		})]
+	});
+}
+var Route$10 = Route$11;
+var Route$9 = createFileRoute("/signup")({ component: SignupPage });
 function SignupPage() {
 	const navigate = useNavigate();
 	const [values, setValues] = (0, import_react.useState)({
@@ -2894,8 +4238,8 @@ function SignupPage() {
 		})
 	});
 }
-var Route$6 = Route$7;
-var Route$5 = createFileRoute("/to-let")({ component: ToLetPage });
+var Route$8 = Route$9;
+var Route$7 = createFileRoute("/to-let")({ component: ToLetPage });
 var emptyForm = {
 	title: "",
 	description: "",
@@ -2910,6 +4254,7 @@ var MAX_RENT = 1e5;
 function ToLetPage() {
 	const navigate = useNavigate();
 	const photoInputRef = (0, import_react.useRef)(null);
+	const submissionRef = (0, import_react.useRef)(false);
 	const userId = getSession()?.user?.userId;
 	const [listings, setListings] = (0, import_react.useState)([]);
 	const [query, setQuery] = (0, import_react.useState)("");
@@ -2922,17 +4267,40 @@ function ToLetPage() {
 	const [photos, setPhotos] = (0, import_react.useState)([]);
 	const [loading, setLoading] = (0, import_react.useState)(true);
 	const [loadError, setLoadError] = (0, import_react.useState)("");
+	const [isVendor, setIsVendor] = (0, import_react.useState)(false);
+	const [submitting, setSubmitting] = (0, import_react.useState)(false);
 	(0, import_react.useEffect)(() => {
-		api("/api/to-let/listings").then(setListings).catch((error) => {
-			setListings([]);
+		setQuery(new URLSearchParams(window.location.search).get("q") || "");
+	}, []);
+	usePolling(async () => {
+		try {
+			setListings(await api("/api/to-let/listings"));
+			setLoadError("");
+		} catch (error) {
 			setLoadError(error.message);
-		}).finally(() => setLoading(false));
+		} finally {
+			setLoading(false);
+		}
 	}, []);
 	(0, import_react.useEffect)(() => {
-		if (sessionStorage.getItem("campus-crate-open-to-let-form") !== "true") return;
+		if (!userId) return;
+		api("/api/vendors/me").then(() => {
+			setIsVendor(true);
+			setShowForm(false);
+			navigate({
+				to: "/vendor",
+				replace: true
+			});
+		}).catch(() => setIsVendor(false));
+	}, [userId, navigate]);
+	(0, import_react.useEffect)(() => {
+		if (isVendor) return;
+		const createFromHeader = new URLSearchParams(window.location.search).get("create") === "1";
+		if (!createFromHeader && sessionStorage.getItem("campus-crate-open-to-let-form") !== "true") return;
 		sessionStorage.removeItem("campus-crate-open-to-let-form");
+		if (createFromHeader) window.history.replaceState({}, "", "/to-let");
 		setShowForm(true);
-	}, []);
+	}, [isVendor]);
 	const filtered = (0, import_react.useMemo)(() => {
 		const needle = query.trim().toLowerCase();
 		const selectedBedrooms = bedrooms.map(Number);
@@ -2959,38 +4327,52 @@ function ToLetPage() {
 		setMaxRent(MAX_RENT);
 		setBedrooms([]);
 	};
-	const submit = (event) => {
+	const submit = async (event) => {
 		event.preventDefault();
+		if (submissionRef.current) return;
 		if (!userId) {
 			toast.error("Please sign in to post a rental listing.");
 			navigate({ to: "/login" });
 			return;
 		}
-		Promise.all(photos.map(async (photo) => {
-			const body = new FormData();
-			body.append("file", photo);
-			return (await api("/api/uploads/images", {
+		if (!photos.length) {
+			toast.error("Upload at least one photo before publishing the listing.");
+			return;
+		}
+		submissionRef.current = true;
+		setSubmitting(true);
+		try {
+			const photoUrls = await Promise.all(photos.map(async (photo) => {
+				const body = new FormData();
+				body.append("file", photo);
+				return (await api("/api/uploads/images", {
+					method: "POST",
+					body
+				})).imageUrl;
+			}));
+			const listing = await api("/api/to-let/listings", {
 				method: "POST",
-				body
-			})).imageUrl;
-		})).then((photoUrls) => api("/api/to-let/listings", {
-			method: "POST",
-			body: JSON.stringify({
-				...form,
-				ownerId: userId,
-				monthlyRent: Number(form.monthlyRent),
-				bedrooms: Number(form.bedrooms),
-				bathrooms: Number(form.bathrooms),
-				availableFrom: form.availableFrom || null,
-				photoUrls
-			})
-		})).then((listing) => {
+				body: JSON.stringify({
+					...form,
+					ownerId: userId,
+					monthlyRent: Number(form.monthlyRent),
+					bedrooms: Number(form.bedrooms),
+					bathrooms: Number(form.bathrooms),
+					availableFrom: form.availableFrom || null,
+					photoUrls
+				})
+			});
 			setListings((current) => [listing, ...current]);
 			setForm(emptyForm);
 			setPhotos([]);
 			setShowForm(false);
-			toast.success("Your to-let listing is live.");
-		}).catch((error) => toast.error(error.message));
+			toast.success("Your to-let listing was submitted. Please wait for admin approval.");
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			submissionRef.current = false;
+			setSubmitting(false);
+		}
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
 		className: "border-b border-border bg-surface-subtle",
@@ -3095,17 +4477,6 @@ function ToLetPage() {
 							size: "sm",
 							onClick: clearFilters,
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {}), "Clear filters"]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-							className: "w-full",
-							variant: "outline",
-							onClick: () => {
-								if (!userId) {
-									toast.error("Please sign in to post a rental listing.");
-									navigate({ to: "/login" });
-								} else setShowForm((open) => !open);
-							},
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {}), "Post to-let"]
 						})
 					]
 				})
@@ -3169,7 +4540,7 @@ function ToLetPage() {
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "md:col-span-2",
 						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, { children: "Photos (up to 3)" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, { children: "Photos (at least 1, up to 3)" }),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 								ref: photoInputRef,
 								type: "file",
@@ -3218,10 +4589,12 @@ function ToLetPage() {
 						className: "md:col-span-2 flex gap-3",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 							type: "submit",
-							children: "Publish listing"
+							disabled: submitting,
+							children: submitting ? "Publishing…" : "Publish listing"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 							type: "button",
 							variant: "outline",
+							disabled: submitting,
 							onClick: () => setShowForm(false),
 							children: "Cancel"
 						})]
@@ -3258,6 +4631,451 @@ function ToLetPage() {
 			})] })]
 		})]
 	})] });
+}
+var Route$6 = Route$7;
+var Route$5 = createFileRoute("/vendor")({ component: VendorDashboardPage });
+var empty = {
+	name: "",
+	description: "",
+	price: "",
+	imageUrl: "",
+	available: true
+};
+function VendorDashboardPage() {
+	const navigate = useNavigate(), fileInput = (0, import_react.useRef)(null), dashboardLoadRef = (0, import_react.useRef)(false);
+	const [vendor, setVendor] = (0, import_react.useState)(null), [orders, setOrders] = (0, import_react.useState)([]), [loadError, setLoadError] = (0, import_react.useState)(""), [form, setForm] = (0, import_react.useState)(empty), [editingId, setEditingId] = (0, import_react.useState)(null), [saving, setSaving] = (0, import_react.useState)(false), [uploading, setUploading] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		if (!getSession()) {
+			navigate({ to: "/login" });
+			return;
+		}
+		let active = true;
+		let failed = false;
+		const loadDashboard = async () => {
+			if (dashboardLoadRef.current) return;
+			dashboardLoadRef.current = true;
+			try {
+				const vendorData = await api("/api/vendors/me");
+				if (!active) return;
+				setVendor(vendorData);
+				setLoadError("");
+				try {
+					const latestOrders = await api("/api/vendors/me/orders");
+					if (active) setOrders((current) => latestOrders.map((order) => {
+						const local = current.find((existing) => existing.orderId === order.orderId);
+						return local && ["ACCEPTED", "REJECTED"].includes(local.orderStatus) && ["PLACED", "CONFIRMED"].includes(order.orderStatus) ? local : order;
+					}));
+				} catch (error) {
+					if (active) setLoadError(`Orders could not load: ${error.message}`);
+				}
+			} catch (error) {
+				if (active && !failed) {
+					failed = true;
+					setLoadError(error.message);
+					toast.error(error.message);
+					navigate({ to: "/food" });
+				}
+			} finally {
+				dashboardLoadRef.current = false;
+			}
+		};
+		loadDashboard();
+		const timer = window.setInterval(loadDashboard, 2e3);
+		return () => {
+			active = false;
+			window.clearInterval(timer);
+		};
+	}, [navigate]);
+	const upload = async (file) => {
+		if (!file) return;
+		setUploading(true);
+		try {
+			const body = new FormData();
+			body.append("file", file);
+			const data = await api("/api/uploads/images", {
+				method: "POST",
+				body
+			});
+			setForm((current) => ({
+				...current,
+				imageUrl: data.imageUrl
+			}));
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setUploading(false);
+		}
+	};
+	const create = async (event) => {
+		event.preventDefault();
+		setSaving(true);
+		try {
+			const payload = {
+				...form,
+				price: Number(form.price)
+			};
+			const item = await api(editingId ? `/api/vendors/me/items/${editingId}` : "/api/vendors/me/items", {
+				method: editingId ? "PUT" : "POST",
+				body: JSON.stringify(payload)
+			});
+			setVendor((current) => ({
+				...current,
+				foodItems: editingId ? current.foodItems.map((entry) => entry.foodItemId === editingId ? item : entry) : [item, ...current.foodItems]
+			}));
+			setForm(empty);
+			setEditingId(null);
+			toast.success(editingId ? "Food item updated." : "Food item published.");
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setSaving(false);
+		}
+	};
+	const updateOrder = async (orderId, status) => {
+		if (saving === `order-${orderId}`) return;
+		setSaving(`order-${orderId}`);
+		try {
+			await api(`/api/vendors/me/orders/${orderId}/status`, {
+				method: "PUT",
+				body: JSON.stringify({ status })
+			});
+			setOrders((current) => current.map((order) => order.orderId === orderId ? {
+				...order,
+				orderStatus: status
+			} : order));
+			toast.success(`Order ${status.toLowerCase()}. The customer was notified.`);
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setSaving(false);
+		}
+	};
+	const updateStoreStatus = async (online) => {
+		setSaving("store-status");
+		try {
+			const updated = await api("/api/vendors/me/store-status", {
+				method: "PUT",
+				body: JSON.stringify({ online })
+			});
+			setVendor(updated);
+			toast.success(online ? "Your store is now online and accepting orders." : "Your store is now offline. Customers cannot place new orders.");
+		} catch (error) {
+			toast.error(error.message);
+		} finally {
+			setSaving(false);
+		}
+	};
+	const remove = async (item) => {
+		if (!window.confirm(`Remove ${item.name}?`)) return;
+		try {
+			await api(`/api/vendors/me/items/${item.foodItemId}`, { method: "DELETE" });
+			setVendor((current) => ({
+				...current,
+				foodItems: current.foodItems.filter((entry) => entry.foodItemId !== item.foodItemId)
+			}));
+			toast.success("Food item removed.");
+		} catch (error) {
+			toast.error(error.message);
+		}
+	};
+	if (!vendor) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
+		className: "container-shell py-16 text-center text-muted-foreground",
+		children: "Loading vendor dashboard…"
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+		className: "container-shell py-10",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "flex flex-col justify-between gap-4 border-b border-border pb-7 sm:flex-row sm:items-start",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "eyebrow",
+						children: "VENDOR DASHBOARD"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "mt-2 font-display text-3xl font-bold",
+						children: vendor.name
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "mt-2 text-muted-foreground",
+						children: [vendor.location, " · Manage food items and photos."]
+					})
+				] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center gap-3",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: `rounded-full px-3 py-1.5 text-sm font-semibold ${vendor.active ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"}`,
+							children: vendor.active ? "Store online" : "Store offline"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							size: "sm",
+							variant: vendor.active ? "outline" : "default",
+							disabled: saving === "store-status",
+							onClick: () => updateStoreStatus(!vendor.active),
+							children: saving === "store-status" ? "Updating…" : vendor.active ? "Go offline" : "Go online"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Store, { className: "size-10 text-primary" })
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid gap-8 py-8 lg:grid-cols-[380px_1fr]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+					onSubmit: create,
+					className: "h-fit space-y-4 rounded-xl border border-border bg-card p-5 shadow-soft",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: "font-display text-xl font-bold",
+							children: editingId ? "Update food item" : "Post food item"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+							required: true,
+							placeholder: "Food name",
+							value: form.name,
+							onChange: (e) => setForm({
+								...form,
+								name: e.target.value
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+							placeholder: "Description",
+							value: form.description,
+							onChange: (e) => setForm({
+								...form,
+								description: e.target.value
+							}),
+							className: "min-h-24 w-full rounded-md border border-input bg-background p-3 text-sm"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+							required: true,
+							min: "1",
+							type: "number",
+							placeholder: "Price (৳)",
+							value: form.price,
+							onChange: (e) => setForm({
+								...form,
+								price: e.target.value
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							ref: fileInput,
+							type: "file",
+							accept: "image/jpeg,image/png,image/webp",
+							className: "hidden",
+							onChange: (e) => upload(e.target.files?.[0])
+						}),
+						form.imageUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							className: "block w-full",
+							onClick: () => fileInput.current?.click(),
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+								src: form.imageUrl,
+								alt: "Food preview",
+								className: "h-36 w-full rounded-lg object-cover"
+							})
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+							type: "button",
+							variant: "outline",
+							className: "w-full",
+							onClick: () => fileInput.current?.click(),
+							disabled: uploading,
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, {}), uploading ? "Uploading…" : "Upload food photo"]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+							className: "flex items-center gap-2 text-sm",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: form.available,
+									onChange: (e) => setForm({
+										...form,
+										available: e.target.checked
+									})
+								}),
+								" ",
+								"Available now"
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+							className: "w-full",
+							disabled: saving || uploading,
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {}), saving ? "Saving…" : editingId ? "Save changes" : "Publish food item"]
+						}),
+						editingId && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							type: "button",
+							variant: "outline",
+							className: "w-full",
+							onClick: () => {
+								setEditingId(null);
+								setForm(empty);
+							},
+							children: "Cancel edit"
+						})
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "font-display text-xl font-bold",
+					children: "Your food items"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-4 grid gap-4 sm:grid-cols-2",
+					children: [(vendor.foodItems ?? []).map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+						className: "overflow-hidden rounded-xl border border-border bg-card shadow-soft",
+						children: [item.imageUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: item.imageUrl,
+							alt: item.name,
+							className: "h-36 w-full object-cover"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "p-4",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex justify-between gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "font-semibold",
+									children: item.name
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+									className: "mt-1 text-sm text-muted-foreground",
+									children: [
+										"৳",
+										item.price,
+										" ·",
+										" ",
+										item.available ? "Available" : "Hidden"
+									]
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										size: "icon",
+										variant: "outline",
+										onClick: () => {
+											setEditingId(item.foodItemId);
+											setForm({
+												name: item.name,
+												description: item.description || "",
+												price: String(item.price),
+												imageUrl: item.imageUrl || "",
+												available: item.available
+											});
+										},
+										"aria-label": `Edit ${item.name}`,
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, {})
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										size: "icon",
+										variant: "destructive",
+										onClick: () => remove(item),
+										"aria-label": `Remove ${item.name}`,
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {})
+									})]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-2 text-sm text-muted-foreground",
+								children: item.description
+							})]
+						})]
+					}, item.foodItemId)), !(vendor.foodItems ?? []).length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "rounded-xl border border-dashed border-border py-12 text-center text-muted-foreground sm:col-span-2",
+						children: "No food items posted yet."
+					})]
+				})] })]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "border-t border-border py-8",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-2xl font-bold",
+						children: "Customer orders"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-sm text-muted-foreground",
+						children: "Accept or reject new orders; the customer is notified immediately."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-5 grid gap-4 lg:grid-cols-2",
+						children: [
+							loadError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "rounded-xl border border-danger/30 bg-danger/5 p-4 text-sm text-danger lg:col-span-2",
+								children: loadError
+							}),
+							orders.map((order) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+								className: "rounded-xl border border-border bg-card p-5 shadow-soft",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between gap-4",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+											className: "font-semibold",
+											children: [
+												"Order #",
+												order.orderId,
+												" · ",
+												order.buyerName
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1 text-sm text-muted-foreground",
+											children: order.buyerPhone
+										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "h-fit rounded-full bg-primary-soft px-2 py-1 text-xs font-semibold text-primary",
+											children: order.orderStatus
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: `mt-3 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${order.paymentMethod === "COD" ? "bg-amber-100 text-amber-800" : order.paymentStatus === "PAID" ? "bg-success-soft text-success" : "bg-primary-soft text-primary"}`,
+										children: order.paymentMethod === "COD" ? "Cash on delivery" : order.paymentStatus === "PAID" ? "Paid online" : "Online payment pending"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-4 rounded-lg bg-surface-subtle p-3 text-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-medium",
+											children: "Deliver to"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1 whitespace-pre-line text-muted-foreground",
+											children: order.deliveryLocation
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+										className: "mt-4 space-y-1 text-sm",
+										children: order.items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: [
+											item.quantity,
+											" × ",
+											item.name,
+											" ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "text-muted-foreground",
+												children: [
+													"(৳",
+													item.unitPrice,
+													")"
+												]
+											})
+										] }, `${item.name}-${index}`))
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										className: "mt-4 border-t border-border pt-3 text-right font-semibold",
+										children: ["Total: ৳", order.totalAmount]
+									}),
+									["PLACED", "CONFIRMED"].includes(order.orderStatus) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-4 flex gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+											size: "sm",
+											disabled: saving === `order-${order.orderId}`,
+											onClick: () => updateOrder(order.orderId, "ACCEPTED"),
+											children: "Accept"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+											size: "sm",
+											variant: "destructive",
+											disabled: saving === `order-${order.orderId}`,
+											onClick: () => updateOrder(order.orderId, "REJECTED"),
+											children: "Reject"
+										})]
+									})
+								]
+							}, order.orderId)),
+							!orders.length && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "rounded-xl border border-dashed border-border py-12 text-center text-muted-foreground lg:col-span-2",
+								children: "No customer orders yet."
+							})
+						]
+					})
+				]
+			})
+		]
+	});
 }
 var Route$4 = Route$5;
 var OTP_LIFETIME_SECONDS = 600;
@@ -3408,6 +5226,7 @@ function normalizeListing(module, item) {
 		meta: item.condition,
 		tag: item.sellingType,
 		status: item.status,
+		imageUrl: item.imageUrl,
 		owner: `Student #${item.sellerId}`
 	};
 	return {
@@ -3434,6 +5253,20 @@ function ListingDetailsPage({ id }) {
 	const [contact, setContact] = (0, import_react.useState)(null);
 	const [contactError, setContactError] = (0, import_react.useState)("");
 	const [contactLoading, setContactLoading] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		const session = getSession();
+		if (!session?.token || session.role === "ADMIN") return;
+		let active = true;
+		api("/api/vendors/me").then(() => {
+			if (active) navigate({
+				to: "/vendor",
+				replace: true
+			});
+		}).catch(() => {});
+		return () => {
+			active = false;
+		};
+	}, [navigate]);
 	(0, import_react.useEffect)(() => {
 		const listingKey = parseListingId(id);
 		if (!listingKey) {
@@ -3669,54 +5502,69 @@ function ListingDetailsPage({ id }) {
 }
 var Route = Route$1;
 var rootRouteChildren = {
-	IndexRoute: Route$22.update({
+	IndexRoute: Route$28.update({
 		id: "/",
 		path: "/",
 		getParentRoute: () => rootRoute
 	}),
-	AdminRoute: Route$20.update({
+	AdminRoute: Route$26.update({
 		id: "/admin",
 		path: "/admin",
 		getParentRoute: () => rootRoute
 	}),
-	EditProfileRoute: Route$18.update({
+	EditProfileRoute: Route$24.update({
 		id: "/edit-profile",
 		path: "/edit-profile",
 		getParentRoute: () => rootRoute
 	}),
-	LoginRoute: Route$16.update({
+	FoodRoute: Route$22.update({
+		id: "/food",
+		path: "/food",
+		getParentRoute: () => rootRoute
+	}),
+	LoginRoute: Route$20.update({
 		id: "/login",
 		path: "/login",
 		getParentRoute: () => rootRoute
 	}),
-	LostAndFoundRoute: Route$14.update({
+	LostAndFoundRoute: Route$18.update({
 		id: "/lost-and-found",
 		path: "/lost-and-found",
 		getParentRoute: () => rootRoute
 	}),
-	MarketplaceRoute: Route$12.update({
+	MarketplaceRoute: Route$16.update({
 		id: "/marketplace",
 		path: "/marketplace",
 		getParentRoute: () => rootRoute
 	}),
-	MyListingsRoute: Route$10.update({
+	MyListingsRoute: Route$14.update({
 		id: "/my-listings",
 		path: "/my-listings",
 		getParentRoute: () => rootRoute
 	}),
-	ResetPasswordRoute: Route$8.update({
+	ResetPasswordRoute: Route$12.update({
 		id: "/reset-password",
 		path: "/reset-password",
 		getParentRoute: () => rootRoute
 	}),
-	SignupRoute: Route$6.update({
+	SearchRoute: Route$10.update({
+		id: "/search",
+		path: "/search",
+		getParentRoute: () => rootRoute
+	}),
+	SignupRoute: Route$8.update({
 		id: "/signup",
 		path: "/signup",
 		getParentRoute: () => rootRoute
 	}),
-	ToLetRoute: Route$4.update({
+	ToLetRoute: Route$6.update({
 		id: "/to-let",
 		path: "/to-let",
+		getParentRoute: () => rootRoute
+	}),
+	VendorRoute: Route$4.update({
+		id: "/vendor",
+		path: "/vendor",
 		getParentRoute: () => rootRoute
 	}),
 	VerifyEmailRoute: Route$2.update({

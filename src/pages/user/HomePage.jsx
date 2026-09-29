@@ -4,7 +4,7 @@ import { ArrowRight, Building2, Loader2, Search, ShieldCheck, ShoppingBag, Circl
 import { ListingCard } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api } from "@/services/api";
+import { api, getSession } from "@/services/api";
 import { usePolling } from "@/utils/use-polling";
 import { toast } from "sonner";
 
@@ -22,6 +22,21 @@ export function HomePage() {
   const [tab, setTab] = useState("all");
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Vendors have a separate workspace and should not land on community modules.
+  useEffect(() => {
+    const session = getSession();
+    if (!session?.token || session.role === "ADMIN") return;
+    let active = true;
+    api("/api/vendors/me")
+      .then(() => {
+        if (active) navigate({ to: "/vendor", replace: true });
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

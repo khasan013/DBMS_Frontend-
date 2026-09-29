@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Check, Filter, Search, ShoppingBag } from "lucide-react";
 import { moduleLabel } from "@/data/campus-data";
 import { ListingCard } from "@/components/listing-card";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { api } from "@/services/api";
+import { api, getSession } from "@/services/api";
 import { usePolling } from "@/utils/use-polling";
 
 const config = {
@@ -25,6 +26,7 @@ const config = {
 };
 
 export function FeedPage({ module }) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -32,6 +34,22 @@ export function FeedPage({ module }) {
   const [loadError, setLoadError] = useState("");
   const content = config[module];
   const Icon = content.icon;
+
+  // Vendors use only the food area; block direct URLs as well as the header links.
+  useEffect(() => {
+    const session = getSession();
+    if (!session?.token || session.role === "ADMIN") return;
+    let active = true;
+    api("/api/vendors/me")
+      .then(() => {
+        if (active) navigate({ to: "/vendor", replace: true });
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
   useEffect(() => { setQuery(new URLSearchParams(window.location.search).get("q") || ""); }, []);
   usePolling(async () => {
     const endpoint =

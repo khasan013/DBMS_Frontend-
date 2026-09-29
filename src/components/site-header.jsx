@@ -207,12 +207,15 @@ export function SiteHeader() {
     setSearchQuery("");
     window.location.assign(suggestion.href);
   };
-  const links = [
+  const communityLinks = [
     { to: "/lost-and-found", label: "Lost & Found" },
     { to: "/marketplace", label: "Marketplace" },
     { to: "/to-let", label: "To-let" },
     { to: "/food", label: "Food" },
   ];
+  const links = isVendor
+    ? communityLinks.filter((link) => link.to === "/food")
+    : communityLinks;
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/92 backdrop-blur-xl">

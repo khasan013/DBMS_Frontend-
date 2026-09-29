@@ -72,6 +72,7 @@ function normalizeListing(module, item) {
       meta: item.condition,
       tag: item.sellingType,
       status: item.status,
+      imageUrl: item.imageUrl,
       owner: `Student #${item.sellerId}`,
     };
   return {
@@ -99,6 +100,21 @@ export function ListingDetailsPage({ id }) {
   const [contact, setContact] = useState(null);
   const [contactError, setContactError] = useState("");
   const [contactLoading, setContactLoading] = useState(false);
+
+  // Food vendors have a dedicated dashboard and must not browse community listings.
+  useEffect(() => {
+    const session = getSession();
+    if (!session?.token || session.role === "ADMIN") return;
+    let active = true;
+    api("/api/vendors/me")
+      .then(() => {
+        if (active) navigate({ to: "/vendor", replace: true });
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const listingKey = parseListingId(id);

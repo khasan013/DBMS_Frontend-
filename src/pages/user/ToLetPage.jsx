@@ -61,7 +61,16 @@ export function ToLetPage() {
       setLoadError(error.message);
     } finally { setLoading(false); }
   }, []);
-  useEffect(() => { if (!userId) return; api("/api/vendors/me").then(() => { setIsVendor(true); setShowForm(false); }).catch(() => setIsVendor(false)); }, [userId]);
+  useEffect(() => {
+    if (!userId) return;
+    api("/api/vendors/me")
+      .then(() => {
+        setIsVendor(true);
+        setShowForm(false);
+        navigate({ to: "/vendor", replace: true });
+      })
+      .catch(() => setIsVendor(false));
+  }, [userId, navigate]);
 
   useEffect(() => {
     if (isVendor) return;

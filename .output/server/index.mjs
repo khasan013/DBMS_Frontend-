@@ -16,26 +16,12 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/globals-DlV2c2OK.css": {
+	"/assets/globals-DI-fJbRj.css": {
 		"type": "text/css; charset=utf-8",
-		"etag": "\"c7a9-gWPvNNHHh4GdJEP+lVGXXV8Q0QQ\"",
-		"mtime": "2026-09-23T15:15:35.023Z",
-		"size": 51113,
-		"path": "../public/assets/globals-DlV2c2OK.css"
-	},
-	"/assets/index-ByV4hR57.js": {
-		"type": "text/javascript; charset=utf-8",
-		"etag": "\"9c720-cJAPHdIDj4IjFnTJR/WD3lSwi34\"",
-		"mtime": "2026-09-23T15:15:35.022Z",
-		"size": 640800,
-		"path": "../public/assets/index-ByV4hR57.js"
-	},
-	"/campus-crate-logo.png": {
-		"type": "image/png",
-		"etag": "\"9d6-KZhBuXsxPOyciSc5eH8NwVDfaYs\"",
-		"mtime": "2026-09-17T14:24:18.819Z",
-		"size": 2518,
-		"path": "../public/campus-crate-logo.png"
+		"etag": "\"d560-z0IprfJtJ5ZD7dYXyBi46N8oThM\"",
+		"mtime": "2026-09-29T18:23:17.199Z",
+		"size": 54624,
+		"path": "../public/assets/globals-DI-fJbRj.css"
 	},
 	"/robots.txt": {
 		"type": "text/plain; charset=utf-8",
@@ -43,6 +29,20 @@ var public_assets_data_default = {
 		"mtime": "2026-09-12T13:45:41.545Z",
 		"size": 160,
 		"path": "../public/robots.txt"
+	},
+	"/assets/index-Dd4MOyYm.js": {
+		"type": "text/javascript; charset=utf-8",
+		"etag": "\"a6c97-vbat6NDEEGRu1ylANKaEJTS/bnk\"",
+		"mtime": "2026-09-29T18:23:17.198Z",
+		"size": 683159,
+		"path": "../public/assets/index-Dd4MOyYm.js"
+	},
+	"/campus-crate-logo.png": {
+		"type": "image/png",
+		"etag": "\"9d6-KZhBuXsxPOyciSc5eH8NwVDfaYs\"",
+		"mtime": "2026-09-17T14:24:18.819Z",
+		"size": 2518,
+		"path": "../public/campus-crate-logo.png"
 	}
 };
 //#endregion
