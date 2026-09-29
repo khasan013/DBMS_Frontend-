@@ -154,12 +154,13 @@ export function FoodPage() {
     }
     placingRef.current = true;
     setPlacing(true);
+    const paymentMethod = payment === "ONLINE" ? "ONLINE" : "COD";
     try {
       const order = await api("/api/food/orders", {
         method: "POST",
         body: JSON.stringify({
           vendorId: vendor.vendorId,
-          paymentMethod: payment,
+          paymentMethod,
           deliveryLocation: deliveryLocation.trim(),
           items: cart.map((item) => ({
             foodItemId: item.foodItemId,
@@ -167,7 +168,10 @@ export function FoodPage() {
           })),
         }),
       });
-      if (payment === "ONLINE" && order.gatewayUrl) {
+      if (paymentMethod === "ONLINE") {
+        if (!order.gatewayUrl) {
+          throw new Error("SSLCommerz could not start the payment session.");
+        }
         window.location.assign(order.gatewayUrl);
         return;
       }
@@ -428,7 +432,9 @@ export function FoodPage() {
             </label>
             <Button className="w-full" onClick={placeOrder} disabled={placing}>
               {placing
-                ? "Connecting securely to SSLCommerz…"
+                ? payment === "COD"
+                  ? "Placing cash on delivery order…"
+                  : "Connecting securely to SSLCommerz…"
                 : payment === "COD"
                   ? "Place COD order"
                   : "Pay with SSLCommerz"}

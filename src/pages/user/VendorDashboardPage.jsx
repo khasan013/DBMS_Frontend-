@@ -18,9 +18,11 @@ const empty = {
 };
 export function VendorDashboardPage() {
   const navigate = useNavigate(),
-    fileInput = useRef(null);
+    fileInput = useRef(null),
+    dashboardLoadRef = useRef(false);
   const [vendor, setVendor] = useState(null),
     [orders, setOrders] = useState([]),
+    [loadError, setLoadError] = useState(""),
     [form, setForm] = useState(empty),
     [editingId, setEditingId] = useState(null),
     [saving, setSaving] = useState(false),
@@ -32,20 +34,30 @@ export function VendorDashboardPage() {
     }
     let active = true;
     let failed = false;
-    const loadDashboard = () =>
-      Promise.all([api("/api/vendors/me"), api("/api/vendors/me/orders")])
-        .then(([vendorData, orderData]) => {
-          if (!active) return;
-          setVendor(vendorData);
-          setOrders(orderData);
-        })
-        .catch((error) => {
-          if (active && !failed) {
-            failed = true;
-            toast.error(error.message);
-            navigate({ to: "/food" });
-          }
-        });
+    const loadDashboard = async () => {
+      if (dashboardLoadRef.current) return;
+      dashboardLoadRef.current = true;
+      try {
+        const vendorData = await api("/api/vendors/me");
+        if (!active) return;
+        setVendor(vendorData);
+        setLoadError("");
+        try {
+          setOrders(await api("/api/vendors/me/orders"));
+        } catch (error) {
+          if (active) setLoadError(`Orders could not load: ${error.message}`);
+        }
+      } catch (error) {
+        if (active && !failed) {
+          failed = true;
+          setLoadError(error.message);
+          toast.error(error.message);
+          navigate({ to: "/food" });
+        }
+      } finally {
+        dashboardLoadRef.current = false;
+      }
+    };
     loadDashboard();
     const timer = window.setInterval(loadDashboard, 2000);
     return () => {
@@ -256,7 +268,7 @@ export function VendorDashboardPage() {
         <section>
           <h2 className="font-display text-xl font-bold">Your food items</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {vendor.foodItems.map((item) => (
+            {(vendor.foodItems ?? []).map((item) => (
               <article
                 key={item.foodItemId}
                 className="overflow-hidden rounded-xl border border-border bg-card shadow-soft"
@@ -311,7 +323,7 @@ export function VendorDashboardPage() {
                 </div>
               </article>
             ))}
-            {!vendor.foodItems.length && (
+            {!(vendor.foodItems ?? []).length && (
               <p className="rounded-xl border border-dashed border-border py-12 text-center text-muted-foreground sm:col-span-2">
                 No food items posted yet.
               </p>
@@ -325,6 +337,7 @@ export function VendorDashboardPage() {
           Accept or reject new orders; the customer is notified immediately.
         </p>
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {loadError && <p className="rounded-xl border border-danger/30 bg-danger/5 p-4 text-sm text-danger lg:col-span-2">{loadError}</p>}
           {orders.map((order) => (
             <article
               key={order.orderId}
@@ -342,6 +355,13 @@ export function VendorDashboardPage() {
                 <span className="h-fit rounded-full bg-primary-soft px-2 py-1 text-xs font-semibold text-primary">
                   {order.orderStatus}
                 </span>
+              </div>
+              <div className={`mt-3 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${order.paymentMethod === "COD" ? "bg-amber-100 text-amber-800" : order.paymentStatus === "PAID" ? "bg-success-soft text-success" : "bg-primary-soft text-primary"}`}>
+                {order.paymentMethod === "COD"
+                  ? "Cash on delivery"
+                  : order.paymentStatus === "PAID"
+                    ? "Paid online"
+                    : "Online payment pending"}
               </div>
               <div className="mt-4 rounded-lg bg-surface-subtle p-3 text-sm">
                 <p className="font-medium">Deliver to</p>

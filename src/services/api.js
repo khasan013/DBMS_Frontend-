@@ -28,9 +28,12 @@ export function clearSession() {
 export async function api(path, options = {}) {
   const session = getSession();
   let response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
+      signal: options.signal ?? controller.signal,
       headers: {
         ...(options.body instanceof FormData
           ? {}
@@ -39,10 +42,15 @@ export async function api(path, options = {}) {
         ...options.headers,
       },
     });
-  } catch {
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("The server took too long to respond. Please try again.");
+    }
     throw new Error(
       "Cannot reach the server. Check that the backend is running and try again.",
     );
+  } finally {
+    clearTimeout(timeout);
   }
   if (response.status === 204) return null;
   const data = await response.json().catch(() => null);
