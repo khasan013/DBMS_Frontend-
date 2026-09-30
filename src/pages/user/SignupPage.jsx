@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { api, saveSession } from "@/services/api";
+import { api } from "@/services/api";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
 
@@ -33,9 +33,8 @@ export function SignupPage() {
     const { confirm, ...request } = values;
     api("/api/users/register", { method: "POST", body: JSON.stringify(request) })
       .then((user) => {
-        saveSession({ user });
-        toast.success("We sent a verification code to your email.");
-        navigate({ to: "/verify-email", search: { email: values.email } });
+        toast.success("Account created. You can now sign in.");
+        navigate({ to: "/login" });
       })
       .catch((error) => toast.error(error.message))
       .finally(() => setLoading(false));
